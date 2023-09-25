@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, Modal } from 'react-native';
 import { styles } from './style';
 import ExpenseModal from './ExpenseModal'; // Import the ExpenseModal component
+import SessionContext from '../../context/SessionContext';
 
 const data = [
   { id: 1, title: 'Item 1', value: 10, date: '2023-09-13' },
@@ -14,6 +15,7 @@ const data = [
 const Table = () => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [expenses, setExpenses] = useState(data);
+  const {sessionCookie, setSessionCookie} = React.useContext(SessionContext);
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -23,6 +25,8 @@ const Table = () => {
     setExpenses([...expenses, newExpense]);
     toggleModal(); // Close the modal after saving
   };
+
+  console.log("HomeScreen, Cookie: \"" + sessionCookie + "\"");
 
   return (
     <View style={styles.appContainer}>
