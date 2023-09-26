@@ -3,21 +3,21 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Modal, TouchableOpacity, StyleSheet } from 'react-native';
 
 const ExpenseModal = ({ isVisible, onClose, onSave }) => {
-  const [title, setTitle] = useState('');
-  const [value, setValue] = useState('');
+  const [concept, setConcept] = useState('');
+  const [amount, setAmount] = useState('');
   const [date, setDate] = useState('');
 
   const handleSave = () => {
-    onSave({ title, value, date });
-    setTitle('');
-    setValue('');
+    onSave({ concept, amount, date });
+    setConcept('');
+    setAmount('');
     setDate('');
     onClose();
   };
 
   const handleCancel = () => {
-    setTitle('');
-    setValue('');
+    setConcept('');
+    setAmount('');
     setDate('');
     onClose();
   };
@@ -30,14 +30,14 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
           <TextInput
             style={styles.input}
             placeholder="Title"
-            value={title}
-            onChangeText={(text) => setTitle(text)}
+            value={concept}
+            onChangeText={(text) => setConcept(text)}
           />
           <TextInput
             style={styles.input}
             placeholder="Value"
-            value={value}
-            onChangeText={(text) => setValue(text)}
+            value={amount}
+            onChangeText={(text) => setAmount(text)}
             keyboardType="numeric"
           />
           <TextInput

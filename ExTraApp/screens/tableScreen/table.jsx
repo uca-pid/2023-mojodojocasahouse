@@ -1,32 +1,64 @@
-
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, Modal } from 'react-native';
 import { styles } from './style';
 import ExpenseModal from './ExpenseModal'; // Import the ExpenseModal component
 import SessionContext from '../../context/SessionContext';
 
-const data = [
-  { id: 1, title: 'Item 1', value: 10, date: '2023-09-13' },
-  { id: 2, title: 'Item 2', value: 20, date: '2023-09-14' },
-  { id: 3, title: 'Item 3', value: 30, date: '2023-09-15' },
-  // Add more data as needed
-];
 
-const Table = () => {
+const Table = ({navigation}) => {
   const [isModalVisible, setModalVisible] = useState(false);
-  const [expenses, setExpenses] = useState(data);
+  const [expenses, setExpenses] = useState([]);
   const {sessionCookie, setSessionCookie} = React.useContext(SessionContext);
+  const [loading, setLoading] = useState(true);
+
+
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
 
-  const handleSaveExpense = (newExpense) => {
-    setExpenses([...expenses, newExpense]);
-    toggleModal(); // Close the modal after saving
+  const fetchExpensesList = async () => {
+    setLoading(true);
+    let response = await fetch("http://localhost:8080/getMyExpenses", {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      }
+    }).then(res => res.json());
+
+    if(!response.error){
+      setExpenses(response);
+    }
+    setLoading(false);
   };
 
-  console.log("HomeScreen, Cookie: \"" + sessionCookie + "\"");
+  const postExpenseToApi = async (newExpense) => {
+    let response = await fetch("http://localhost:8080/addExpense", {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type':'application/json'
+      },
+      body: JSON.stringify(newExpense)
+    }).then(res => res.json());
+
+    console.log(response);
+
+    if(response.error){
+      console.error("Error posting new expense to api");
+    }
+  };
+
+  const handleSaveExpense = async (newExpense) => {
+    toggleModal(); // Close the modal after saving
+    await postExpenseToApi(newExpense);
+    await fetchExpensesList();
+  };
+
+  // fetch expenses on screen change
+  React.useEffect(() => {fetchExpensesList()},[navigation]);
 
   return (
     <View style={styles.appContainer}>
@@ -49,8 +81,8 @@ const Table = () => {
           {expenses.map((item) => (
             <View key={item.id} style={styles.row}>
               <Text style={styles.cellId}>{item.id}</Text>
-              <Text style={styles.cell}>{item.title}</Text>
-              <Text style={styles.cell}>{item.value}</Text>
+              <Text style={styles.cell}>{item.concept}</Text>
+              <Text style={styles.cell}>{item.amount}</Text>
               <Text style={styles.cell}>{item.date}</Text>
             </View>
           ))}
