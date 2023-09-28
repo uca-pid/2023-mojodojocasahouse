@@ -20,7 +20,7 @@ const Login = ({ navigation, route }) => { // Add navigation prop
   const postLoginFormToApi = async () => {
     let response = await fetch("http://localhost:8080/login", {
       method: 'POST',
-      credentials: 'include',
+      credentials: 'cross-origin',
       headers: {
         Accept: 'application/json',
         'Content-Type':'application/json',
@@ -31,8 +31,7 @@ const Login = ({ navigation, route }) => { // Add navigation prop
       })
     });
 
-    if (cookie != null){
-      setSessionCookie(cookie);
+    if (response.ok){
       navigateToHomeScreen();
     }
   };

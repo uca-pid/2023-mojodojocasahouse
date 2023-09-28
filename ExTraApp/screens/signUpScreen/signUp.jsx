@@ -26,8 +26,11 @@ const SignUp = (props) => {
         'Content-Type':'application/json',
       },
       body: JSON.stringify({
+        firstName: firstName,
+        lastName: lastName,
         email: email,
         password: password,
+        passwordRepeat: repeatPassword
       })
     });
 
