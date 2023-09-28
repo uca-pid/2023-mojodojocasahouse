@@ -2,13 +2,38 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { styles } from './style';
 import { TextInput } from 'react-native-paper';
+import SessionContext from '../../context/SessionContext';
 
-const Login = ({ loginFunction, navigation }) => { // Add navigation prop
+const Login = ({ navigation, route }) => { // Add navigation prop
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const {sessionCookie, setSessionCookie} = React.useContext(SessionContext);
 
   const navigateToSignUp = () => {
     navigation.navigate('SignUp'); // Navigate to the 'SignUp' screen
+  };
+
+  const navigateToHomeScreen = () => {
+    navigation.navigate('Table');
+  };
+
+  const postLoginFormToApi = async () => {
+    let response = await fetch("http://localhost:8080/login", {
+      method: 'POST',
+      credentials: 'cross-origin',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type':'application/json',
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password
+      })
+    });
+
+    if (response.ok){
+      navigateToHomeScreen();
+    }
   };
 
   return (
@@ -17,7 +42,9 @@ const Login = ({ loginFunction, navigation }) => { // Add navigation prop
         <View style={styles.logoContainer}>
           <Image style={styles.logo} source={require('./../../img/logo.png')} />
         </View>
+
         <View style={styles.bottomContainer}></View>
+
         <View>
           <TextInput
             style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
@@ -33,7 +60,7 @@ const Login = ({ loginFunction, navigation }) => { // Add navigation prop
             onChangeText={password => setPassword(password)}
           />
 
-          <TouchableOpacity style={styles.button} onPress={() => loginFunction(true)}>
+          <TouchableOpacity style={styles.button} onPress={postLoginFormToApi}>
             <Text style={styles.buttonText}>Log in</Text>
           </TouchableOpacity>
 
