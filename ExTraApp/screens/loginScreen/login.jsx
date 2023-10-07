@@ -53,7 +53,10 @@ const Login = ({ navigation, route }) => { // Add navigation prop
             onChangeText={email => setEmail(email)}
           />
 
+          
+
           <TextInput
+            secureTextEntry={true}
             style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
             label="Password"
             value={password}

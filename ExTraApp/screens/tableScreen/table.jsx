@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, Modal } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, Modal, ImageBackground } from 'react-native';
 import { styles } from './style';
 import ExpenseModal from './ExpenseModal'; // Import the ExpenseModal component
+import SettingModal from './settingModal'; // Import the ExpenseModal component
 import SessionContext from '../../context/SessionContext';
+import { useNavigation } from '@react-navigation/native';
 
 
-const Table = ({navigation}) => {
+const Table = () => {
   const [isModalVisible, setModalVisible] = useState(false);
+  const [isModalSettingVisible, setModalSettingVisible] = useState(false);
   const [expenses, setExpenses] = useState([]);
   const {sessionCookie, setSessionCookie} = React.useContext(SessionContext);
   const [loading, setLoading] = useState(true);
@@ -16,6 +19,12 @@ const Table = ({navigation}) => {
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
+
+  const toggleSettingModal = () => {
+    setModalSettingVisible(!isModalSettingVisible);
+  };
+
+  const navigation = useNavigation();
 
   const fetchExpensesList = async () => {
     setLoading(true);
@@ -65,6 +74,9 @@ const Table = ({navigation}) => {
       <View style={styles.container}>
         <View style={styles.logoContainer}>
           <Image style={styles.logo} source={require('./../../img/logo.png')} />
+          <TouchableOpacity onPress={toggleSettingModal}>
+            <ImageBackground style={styles.Settinglogo} source={require('./../../img/gearLogo.png')} />
+          </TouchableOpacity>
         </View>
         <View style={styles.bottomContainer}>
           <TouchableOpacity style={styles.button} onPress={toggleModal}>
@@ -89,6 +101,7 @@ const Table = ({navigation}) => {
         </View>
       </View>
       <ExpenseModal isVisible={isModalVisible} onClose={toggleModal} onSave={handleSaveExpense} />
+      <SettingModal isVisible={isModalSettingVisible} onSettingClose={toggleSettingModal} navigation={navigation} /> 
     </View>
   );
 };
