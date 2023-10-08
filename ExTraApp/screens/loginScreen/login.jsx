@@ -17,6 +17,10 @@ const Login = ({ navigation, route }) => { // Add navigation prop
     navigation.navigate('Table');
   };
 
+  const navigateToForgottenPasswordScreen = () => {
+    navigation.navigate('forgotten-password');
+  };
+
   const postLoginFormToApi = async () => {
     let response = await fetch("http://localhost:8080/login", {
       method: 'POST',
@@ -68,6 +72,10 @@ const Login = ({ navigation, route }) => { // Add navigation prop
           {/* Wrap the text with TouchableOpacity to navigate to SignUp */}
           <TouchableOpacity onPress={navigateToSignUp}>
             <Text style={{ textAlign: 'center' }}>Don't have an account? Sign up</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={navigateToForgottenPasswordScreen}>
+            <Text style={{ textAlign: 'center' }}>Forgot your password?</Text>
           </TouchableOpacity>
         </View>
       </View>
