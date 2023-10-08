@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
 import { styles } from './style';
 import { TextInput } from 'react-native-paper';
 import SessionContext from '../../context/SessionContext';
@@ -24,14 +24,14 @@ const ChangePassScreen = ({ navigation, route }) => { // Add navigation prop
         </View>
 
         <View style={styles.bottomContainer}></View>
+        <ScrollView contentContainerStyle={styles.contentContainer}>
 
-        <View>
             <Text>Change password:</Text>
             <Text>Write your current password:</Text>
           <TextInput
           secureTextEntry={true}
             style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
-            label="Password"
+            label="Current Password"
             value={password}
             onChangeText={password => setPassword(password)}
           />
@@ -39,7 +39,7 @@ const ChangePassScreen = ({ navigation, route }) => { // Add navigation prop
           <TextInput
             secureTextEntry={true}
             style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
-            label="Password"
+            label="New Password"
             value={newPassword}
             onChangeText={newPassword => setNewPassword(newPassword)}
 
@@ -48,7 +48,7 @@ const ChangePassScreen = ({ navigation, route }) => { // Add navigation prop
           <TextInput
             secureTextEntry={true}
             style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
-            label="Password"
+            label="New Password"
             value={newPasswordRepeat}
             onChangeText={newPasswordRepeat => setNewPasswordRepeat(newPasswordRepeat)}
           />
@@ -61,7 +61,7 @@ const ChangePassScreen = ({ navigation, route }) => { // Add navigation prop
           <TouchableOpacity onPress={navigateToHomeScreen}>
             <Text style={{ textAlign: 'center' }}>I don't want to change my password. Send me back.</Text>
           </TouchableOpacity>
-        </View>
+          </ScrollView>
       </View>
     </View>
   );

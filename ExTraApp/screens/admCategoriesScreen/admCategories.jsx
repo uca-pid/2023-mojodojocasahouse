@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
 import { styles, selectButtons } from './style';
 import { TextInput } from 'react-native-paper';
 import SessionContext from '../../context/SessionContext';
@@ -25,7 +25,7 @@ const AdmCategories = ({ navigation, route }) => { // Add navigation prop
 
         <View style={styles.bottomContainer}></View>
 
-        <View>
+        <ScrollView contentContainerStyle={styles.contentContainer}>
             <Text>Add New Category:</Text>
             <Text>Name:</Text>
           <TextInput
@@ -61,7 +61,7 @@ const AdmCategories = ({ navigation, route }) => { // Add navigation prop
           <TouchableOpacity onPress={navigateToHomeScreen}>
             <Text style={{ textAlign: 'center' }}>I don't want to change my password. Send me back.</Text>
           </TouchableOpacity>
-        </View>
+          </ScrollView>
       </View>
     </View>
   );

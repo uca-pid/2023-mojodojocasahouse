@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, Modal, ImageBackground } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, Modal, ImageBackground, ScrollView } from 'react-native';
 import { styles } from './style';
 import ExpenseModal from './ExpenseModal'; // Import the ExpenseModal component
 import SettingModal from './settingModal'; // Import the ExpenseModal component
@@ -83,6 +83,8 @@ const Table = () => {
             <Text style={styles.buttonText}>Add Expense</Text>
           </TouchableOpacity>
         </View>
+
+        <ScrollView contentContainerStyle={styles.contentContainer}>
         <View style={styles.tableContainer}>
           <View style={styles.tableHeader}>
             <Text style={styles.headerCellId}>ID</Text>
@@ -99,6 +101,7 @@ const Table = () => {
             </View>
           ))}
         </View>
+        </ScrollView>
       </View>
       <ExpenseModal isVisible={isModalVisible} onClose={toggleModal} onSave={handleSaveExpense} />
       <SettingModal isVisible={isModalSettingVisible} onSettingClose={toggleSettingModal} navigation={navigation} /> 

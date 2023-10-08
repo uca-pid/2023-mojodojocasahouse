@@ -1,6 +1,7 @@
 // ExpenseModal.js
 import React, { useState } from 'react';
-import { View, Text, TextInput, Modal, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native';
+import { TextInput, HelperText } from 'react-native-paper';
 
 const ExpenseModal = ({ isVisible, onClose, onSave }) => {
   const [concept, setConcept] = useState('');
@@ -29,20 +30,22 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
           <Text style={styles.modalTitle}>Add Expense</Text>
           <TextInput
             style={styles.input}
-            placeholder="Title"
+          
+            label="Title"
             value={concept}
             onChangeText={(text) => setConcept(text)}
           />
           <TextInput
             style={styles.input}
-            placeholder="Value"
+   
             value={amount}
+            label="Expense"
             onChangeText={(text) => setAmount(text)}
             keyboardType="numeric"
           />
           <TextInput
             style={styles.input}
-            placeholder="Date"
+            label="Date"
             value={date}
             onChangeText={(text) => setDate(text)}
           />
@@ -79,8 +82,8 @@ const styles = StyleSheet.create({
   input: {
     backgroundColor: 'white',
     borderRadius: 5,
-    padding: 10,
     marginBottom: 10,
+
   },
   saveButton: {
     backgroundColor: 'blue',

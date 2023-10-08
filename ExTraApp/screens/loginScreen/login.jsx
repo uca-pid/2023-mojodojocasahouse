@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, Alert, ScrollView } from 'react-native'; // Import Alert
 import { styles } from './style';
 import { TextInput } from 'react-native-paper';
 import SessionContext from '../../context/SessionContext';
@@ -7,7 +7,7 @@ import SessionContext from '../../context/SessionContext';
 const Login = ({ navigation, route }) => { // Add navigation prop
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const {sessionCookie, setSessionCookie} = React.useContext(SessionContext);
+  const { sessionCookie, setSessionCookie } = React.useContext(SessionContext);
 
   const navigateToSignUp = () => {
     navigation.navigate('SignUp'); // Navigate to the 'SignUp' screen
@@ -31,8 +31,18 @@ const Login = ({ navigation, route }) => { // Add navigation prop
       })
     });
 
-    if (response.ok){
+    if (response.ok) {
       navigateToHomeScreen();
+    } else {
+      // If login fails, show an alert
+      Alert.alert('Login Failed', 'Please check your credentials and try again.', [
+        {
+          text: 'OK',
+          onPress: () => {
+            // Do something when the user presses OK (if needed)
+          },
+        },
+      ]);
     }
   };
 
@@ -45,15 +55,14 @@ const Login = ({ navigation, route }) => { // Add navigation prop
 
         <View style={styles.bottomContainer}></View>
 
-        <View>
+        <ScrollView contentContainerStyle={styles.contentContainer}>
+        
           <TextInput
             style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
             label="Email"
             value={email}
             onChangeText={email => setEmail(email)}
           />
-
-          
 
           <TextInput
             secureTextEntry={true}
@@ -71,7 +80,7 @@ const Login = ({ navigation, route }) => { // Add navigation prop
           <TouchableOpacity onPress={navigateToSignUp}>
             <Text style={{ textAlign: 'center' }}>Don't have an account? Sign up</Text>
           </TouchableOpacity>
-        </View>
+          </ScrollView>
       </View>
     </View>
   );

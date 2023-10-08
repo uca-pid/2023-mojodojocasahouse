@@ -41,10 +41,15 @@ export const styles = StyleSheet.create({
     flex: 1,
     margin: 10,
     borderRadius: 20,
-    //padding: 16,
+    backgroundColor: '#AEB4E8', // Background color
+    height: '100%',
+  },
+  contentContainer: {
+    paddingBottom: 20,
+    borderRadius: 20,
     backgroundColor: '#AEB4E8', // Background color
   },
-
+  
   Settinglogo: {
     marginLeft: 55,
     marginTop: 12,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView  } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Alert } from 'react-native'; // Import Alert
 import { styles } from './style';
 import { TextInput, HelperText } from 'react-native-paper';
 
@@ -53,20 +53,45 @@ const SignUp = (props) => {
         }),
       });
 
-      console.log(await response.json());
+      const responseData = await response.json();
+
+      if (response.ok) {
+        // If the response is okay (status code 200), show a success alert
+        Alert.alert('Success', 'New account created successfully', [
+          {
+            text: 'OK',
+            onPress: () => {
+              // Do something when the user presses OK (if needed)
+            },
+          },
+        ]);
+      } else {
+        // If the response is not okay, show a failure alert
+        Alert.alert('Failure', 'Registration failed. Try again.', [
+          {
+            text: 'OK',
+            onPress: () => {
+              // Do something when the user presses OK (if needed)
+            },
+          },
+        ]);
+        console.log('Registration failed:', responseData);
+      }
     }
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.appContainer}>
-      <View style={styles.container}>
+    
+      <View style={styles.appContainer}>
+        <View style={styles.container}>
         <View style={styles.logoContainer}>
           <Image style={styles.logo} source={require('./../../img/logo.png')} />
         </View>
 
         <View style={styles.bottomContainer} />
 
-        <View>
+        <ScrollView contentContainerStyle={styles.contentContainer}>
+
           <TextInput
             style={{ marginLeft: '10%', width: '80%', marginBottom: '9%' }}
             label="First Name"
@@ -123,9 +148,9 @@ const SignUp = (props) => {
           <TouchableOpacity onPress={navigateToLogin}>
             <Text style={{ textAlign: 'center' }}>Have an account already? Log in</Text>
           </TouchableOpacity>
+        </ScrollView>
         </View>
       </View>
-    </ScrollView>
   );
 };
 
