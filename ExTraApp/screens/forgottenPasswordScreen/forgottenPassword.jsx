@@ -1,8 +1,10 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TouchableOpacity, Image, Alert } from 'react-native';
 import { styles } from './style';
-import { TextInput } from 'react-native-paper';
+import { TextInput, HelperText } from 'react-native-paper';
 import LoadingOverlay from '../../components/loading/loading';
+import * as EmailValidator from 'email-validator';
+import ValidatedTextInput from '../../components/validatedTextInput/validatedTextInput';
 
 const ForgottenPassword = ({ navigation, route }) => {
   const [email, setEmail] = React.useState("");
@@ -17,29 +19,45 @@ const ForgottenPassword = ({ navigation, route }) => {
   };
 
   const postForgottenPasswordFormToApi = async () => {
+    if(formHasErrors()){
+      Alert.alert('Invalid Fields', "One or more required fields are invalid. Please correct these errors and try again.");
+      return;
+    }
 
     setLoading(true);
     let response = await fetch("http://localhost:8080/auth/forgotten", {
-    method: 'POST',
-    credentials: 'include',
-    headers: {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
         Accept: 'application/json',
         'Content-Type':'application/json',
-    },
-    body: JSON.stringify({
+      },
+      body: JSON.stringify({
         email: email
-    })
+      })
     });
     setLoading(false);
 
     if(response.ok){
-        navigateToLogin();
+      navigateToLogin();
     }
+  };
+
+  const formHasErrors = () => {
+    return emailHasErrors(email);
+  }
+
+  const emailHasErrors = (emailInput) => {
+    return !EmailValidator.validate(emailInput);
   };
 
   return (
     <View style={styles.appContainer}>
       <View style={styles.container}>
+        <LoadingOverlay 
+          shown={loading}
+        />
+
         <View style={styles.logoContainer}>
           <Image style={styles.logo} source={require('./../../img/logo.png')} />
         </View>
@@ -47,11 +65,12 @@ const ForgottenPassword = ({ navigation, route }) => {
         <View style={styles.bottomContainer}></View>
 
         <View>
-          <TextInput
-            style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
+          <ValidatedTextInput 
             label="Email"
             value={email}
-            onChangeText={email => setEmail(email)}
+            onChangeText={setEmail}
+            hasError={emailHasErrors}
+            validationErrorMessage="Email address is invalid"
           />
 
           <TouchableOpacity style={styles.button} onPress={postForgottenPasswordFormToApi}>
@@ -66,10 +85,6 @@ const ForgottenPassword = ({ navigation, route }) => {
             <Text style={{ textAlign: 'center' }}>Don't have an account? Sign up</Text>
           </TouchableOpacity>
         </View>
-
-        <LoadingOverlay 
-            shown={loading}
-        />
       </View>
     </View>
   );

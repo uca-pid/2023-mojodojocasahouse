@@ -6,7 +6,7 @@ export default styles = StyleSheet.create({
     height: '100%',
     position: 'relative',
     left: 0,
-    top: "-50%",
+    top: 0,
     opacity: 0.8,
     backgroundColor: "#DDDDDD",
     display: 'flex',
