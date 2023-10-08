@@ -6,6 +6,7 @@ import Login from './screens/loginScreen/login';
 import Table from './screens/tableScreen/table';
 import SignUp from './screens/signUpScreen/signUp';
 import SessionContext from './context/SessionContext';
+import ForgottenPassword from './screens/forgottenPasswordScreen/forgottenPassword';
 
 const Stack = createNativeStackNavigator();
 
@@ -30,6 +31,11 @@ const App = () => {
           <Stack.Screen
             name="Table"
             component={Table} // Use a separate component for the screen
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="forgotten-password"
+            component={ForgottenPassword}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>
