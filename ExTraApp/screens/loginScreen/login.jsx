@@ -1,13 +1,11 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { styles } from './style';
 import { TextInput } from 'react-native-paper';
-import SessionContext from '../../context/SessionContext';
 
 const Login = ({ navigation, route }) => { // Add navigation prop
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const {sessionCookie, setSessionCookie} = React.useContext(SessionContext);
 
   const navigateToSignUp = () => {
     navigation.navigate('SignUp'); // Navigate to the 'SignUp' screen
@@ -35,8 +33,7 @@ const Login = ({ navigation, route }) => { // Add navigation prop
       })
     });
 
-    if (cookie != null){
-      setSessionCookie(cookie);
+    if (response.ok){
       navigateToHomeScreen();
     }
   };
