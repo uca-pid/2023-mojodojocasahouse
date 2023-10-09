@@ -1,7 +1,6 @@
 import React from 'react';
 import { View } from 'react-native';
 import { TextInput, HelperText } from 'react-native-paper';
-import styles from './style';
 
 /** 
  * Takes three props: ```label```, ```value```, ```onChangeText```, ```hasErrorCallback```, ```validationErrorMessage```.
@@ -20,7 +19,6 @@ const ValidatedTextInput = props => {
 
   const onEndEditing = () => {
     let hasError = props.hasError(props.value);
-    console.log(hasError);
     setError(hasError);
   }
 
