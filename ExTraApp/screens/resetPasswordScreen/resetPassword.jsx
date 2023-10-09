@@ -47,6 +47,7 @@ const ResetPassword = ({ navigation, route }) => {
         "Password reset successfully!",
         [{text: 'OK', onPress: navigateToLogin}],
       );
+      return;
     }
     Alert.alert(
       "Reset Failed", 

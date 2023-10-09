@@ -36,11 +36,23 @@ const ForgottenPassword = ({ navigation, route }) => {
         email: email
       })
     });
+    let responseBody = await response.json();
     setLoading(false);
 
+    console.log(responseBody);
+
     if(response.ok){
-      navigateToLogin();
+      Alert.alert(
+        "Request Sent", 
+        "Please check your inbox",
+        [{text: 'OK', onPress: navigateToLogin}],
+      );
+      return;
     }
+    Alert.alert(
+      "Request Failed", 
+      "API says: " + responseBody.message
+    );
   };
 
   const formHasErrors = () => {
