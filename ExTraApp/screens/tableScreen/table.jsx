@@ -4,6 +4,41 @@ import { fetchWithTimeout } from '../../utils/fetchingUtils';
 import { styles } from './style';
 import ExpenseModal from './ExpenseModal'; // Import the ExpenseModal component
 import LoadingOverlay from '../../components/loading/loading';
+const address = require("../../img/address.png");
+const aircraft = require("../../img/aircraft.png");
+const baidu = require("../../img/baidu.png");
+const clapperboard = require("../../img/clapperboard.png");
+const credit = require("../../img/credit.png");
+const drink = require("../../img/drink.png");
+const man = require("../../img/man.png");
+const shoppingCart = require("../../img/shopping-cart.png");
+const tree = require("../../img/tree.png");
+
+const Icon = (props) => {
+  switch(props.id){
+    case 1: 
+      return <Image source={aircraft} />
+    case 2:
+      return <Image source={address} />
+    case 3:
+      return <Image source={baidu} />
+    case 4:
+      return <Image source={clapperboard} />
+    case 5:
+      return <Image source={tree} />
+    case 6:
+      return <Image source={shoppingCart} />
+    case 7:
+      return <Image source={credit} />
+    case 8:
+      return <Image source={drink} />
+    case 9:
+      return <Image source={man} />
+    default:
+      return null
+  }
+
+};
 
 const ExampleData = [
   {id: 1,  concept: 'Example 1',  amount: 10000.00, date: '2023-09-20', category: 'travel', iconId: 1},
@@ -177,6 +212,7 @@ const Table = ({navigation}) => {
                   <Text style={styles.cell}>{item.concept}</Text>
                 </View>
                 <View style={styles.cellContainer}>
+                  <Icon id={item.iconId} />
                   <Text style={styles.cell}>{item.category}</Text>
                 </View>
                 <View style={styles.cellContainer}>
