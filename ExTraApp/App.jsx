@@ -5,8 +5,11 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './screens/loginScreen/login';
 import Table from './screens/tableScreen/table';
 import SignUp from './screens/signUpScreen/signUp';
+import ChangePassScreen from './screens/changePassScreen/changePassScreen';
+import AdmCategories from './screens/admCategoriesScreen/admCategories';
 import ForgottenPassword from './screens/forgottenPasswordScreen/forgottenPassword';
 import ResetPassword from './screens/resetPasswordScreen/resetPassword';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -41,6 +44,16 @@ const App = () => {
         <Stack.Screen
           name="Table"
           component={Table} // Use a separate component for the screen
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ChangePassScreen"
+          component={ChangePassScreen} // Use a separate component for the screen
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="AdmCategories"
+          component={AdmCategories} // Use a separate component for the screen
           options={{ headerShown: false }}
         />
         <Stack.Screen

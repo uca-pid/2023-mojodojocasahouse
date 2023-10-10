@@ -54,6 +54,7 @@ export const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: '#AEB4E8', // Background color
   },
+  
   logo: {
     width: '70%',
     aspectRatio: 4,

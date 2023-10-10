@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TouchableOpacity, Image, Alert, ScrollView } from 'react-native';
 import { styles } from './style';
 import { TextInput } from 'react-native-paper';
+import { Buffer } from 'buffer';
 
 const Login = ({ navigation, route }) => { // Add navigation prop
   const [email, setEmail] = React.useState("");
@@ -22,19 +23,26 @@ const Login = ({ navigation, route }) => { // Add navigation prop
   const postLoginFormToApi = async () => {
     let response = await fetch("http://localhost:8080/login", {
       method: 'POST',
-      credentials: 'include',
+      credentials: 'cross-origin',
       headers: {
         Accept: 'application/json',
-        'Content-Type':'application/json',
+        Authorization: "Basic " + Buffer.from(email + ':' + password).toString('base64')
       },
-      body: JSON.stringify({
-        email: email,
-        password: password
-      })
+      body: new FormData().append('remember-me', true)
     });
 
-    if (response.ok){
+    if (response.ok) {
       navigateToHomeScreen();
+    } else {
+      // If login fails, show an alert
+      Alert.alert('Login Failed', 'Please check your credentials and try again.', [
+        {
+          text: 'OK',
+          onPress: () => {
+            // Do something when the user presses OK (if needed)
+          },
+        },
+      ]);
     }
   };
 
@@ -47,7 +55,8 @@ const Login = ({ navigation, route }) => { // Add navigation prop
 
         <View style={styles.bottomContainer}></View>
 
-        <View>
+        <ScrollView contentContainerStyle={styles.contentContainer}>
+        
           <TextInput
             style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
             label="Email"
@@ -56,6 +65,7 @@ const Login = ({ navigation, route }) => { // Add navigation prop
           />
 
           <TextInput
+            secureTextEntry={true}
             style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
             label="Password"
             value={password}
@@ -74,7 +84,8 @@ const Login = ({ navigation, route }) => { // Add navigation prop
           <TouchableOpacity onPress={navigateToForgottenPasswordScreen}>
             <Text style={{ textAlign: 'center' }}>Forgot your password?</Text>
           </TouchableOpacity>
-        </View>
+        
+        </ScrollView>
       </View>
     </View>
   );
