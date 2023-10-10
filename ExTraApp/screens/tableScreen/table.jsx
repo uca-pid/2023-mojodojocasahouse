@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Image, Alert, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, Modal, ImageBackground, ScrollView, Alert } from 'react-native';
 import { fetchWithTimeout } from '../../utils/fetchingUtils';
 import { styles } from './style';
 import ExpenseModal from './ExpenseModal'; // Import the ExpenseModal component
+import SettingModal from './settingModal'; // Import the ExpenseModal component
+import { useNavigation } from '@react-navigation/native';
 import LoadingOverlay from '../../components/loading/loading';
 const address = require("../../img/address.png");
 const aircraft = require("../../img/aircraft.png");
@@ -72,14 +74,21 @@ const ExampleData = [
 ];
 
 
-const Table = ({navigation}) => {
+const Table = () => {
   const [isModalVisible, setModalVisible] = useState(false);
+  const [isModalSettingVisible, setModalSettingVisible] = useState(false);
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
+
+  const toggleSettingModal = () => {
+    setModalSettingVisible(!isModalSettingVisible);
+  };
+
+  const navigation = useNavigation();
 
   const fetchExpensesList = async () => {
     let response = await fetchWithTimeout("http://localhost:8080/getMyExpenses", {
@@ -181,30 +190,33 @@ const Table = ({navigation}) => {
         />
         <View style={styles.logoContainer}>
           <Image style={styles.logo} source={require('./../../img/logo.png')} />
+          <TouchableOpacity onPress={toggleSettingModal}>
+            <ImageBackground style={styles.Settinglogo} source={require('./../../img/gearLogo.png')} />
+          </TouchableOpacity>
         </View>
         <View style={styles.bottomContainer}>
           <TouchableOpacity style={styles.button} onPress={toggleModal}>
             <Text style={styles.buttonText}>Add Expense</Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.tableContainer}>
 
-          <View style={styles.tableHeader}>
-            <View style={styles.headerCellContainer}>
-              <Text style={styles.headerCell}>Concept</Text>
-            </View>
-            <View style={styles.headerCellContainer}>
-              <Text style={styles.headerCell}>Category</Text>
-            </View>
-            <View style={styles.headerCellContainer}>
-              <Text style={styles.headerCell}>Amount</Text>
-            </View>
-            <View style={styles.headerCellContainer}>
-              <Text style={styles.headerCell}>Date</Text>
-            </View>
-          </View>
+        <ScrollView contentContainerStyle={styles.contentContainer}>
+          <View style={styles.tableContainer}>
 
-          <ScrollView contentContainerStyle={styles.tableBody}>
+            <View style={styles.tableHeader}>
+              <View style={styles.headerCellContainer}>
+                <Text style={styles.headerCell}>Concept</Text>
+              </View>
+              <View style={styles.headerCellContainer}>
+                <Text style={styles.headerCell}>Category</Text>
+              </View>
+              <View style={styles.headerCellContainer}>
+                <Text style={styles.headerCell}>Amount</Text>
+              </View>
+              <View style={styles.headerCellContainer}>
+                <Text style={styles.headerCell}>Date</Text>
+              </View>
+            </View>
             {/* { ! expenses ? expenses.map((item) => ( */}
             { ExampleData? ExampleData.map((item) => (
               <View key={item.id} style={styles.row}>
@@ -223,11 +235,11 @@ const Table = ({navigation}) => {
                 </View>
               </View>
             )) : null}
-          </ScrollView>
-          
-        </View>
+          </View>
+        </ScrollView>
       </View>
       <ExpenseModal isVisible={isModalVisible} onClose={toggleModal} onSave={handleSaveExpense} />
+      <SettingModal isVisible={isModalSettingVisible} onSettingClose={toggleSettingModal} navigation={navigation} /> 
     </View>
   );
 };

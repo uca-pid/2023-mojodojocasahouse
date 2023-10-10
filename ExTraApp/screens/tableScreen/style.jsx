@@ -8,7 +8,8 @@ export const styles = StyleSheet.create({
   },
 
   button: {
-    backgroundColor: 'lightgray',
+    backgroundColor: '#e8c02e',
+
     paddingBottom: '2.5%',
     paddingTop: '2.5%',
     alignItems: 'center',
@@ -37,12 +38,27 @@ export const styles = StyleSheet.create({
   },
 
   container: {
+    flex: 1,
     margin: 10,
-    marginTop: 20,
     borderRadius: 20,
-    //padding: 16,
+    backgroundColor: '#AEB4E8', // Background color
+    height: '100%',
+  },
+  contentContainer: {
+    paddingBottom: 20,
+    borderRadius: 20,
     backgroundColor: '#AEB4E8', // Background color
   },
+  
+  Settinglogo: {
+    marginLeft: 55,
+    marginTop: 12,
+    width: '45%',
+    aspectRatio: 4,
+    resizeMode: 'contain'
+
+  },
+
 
   logo: {
     //height: '65%',

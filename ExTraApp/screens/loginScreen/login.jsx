@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Image, Alert, ScrollView } from 'react-native';
 import { styles } from './style';
 import { TextInput } from 'react-native-paper';
 import { Buffer } from 'buffer'; 
@@ -65,7 +65,8 @@ const Login = ({ navigation, route }) => {
 
         <View style={styles.bottomContainer}></View>
 
-        <View>
+        <ScrollView contentContainerStyle={styles.contentContainer}>
+        
           <TextInput
             style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
             label="Email"
@@ -74,6 +75,7 @@ const Login = ({ navigation, route }) => {
           />
 
           <TextInput
+            secureTextEntry={true}
             style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
             label="Password"
             value={password}
@@ -91,7 +93,8 @@ const Login = ({ navigation, route }) => {
           <TouchableOpacity onPress={navigateToForgottenPasswordScreen}>
             <Text style={{ textAlign: 'center' }}>Forgot your password?</Text>
           </TouchableOpacity>
-        </View>
+        
+        </ScrollView>
       </View>
     </View>
   );
