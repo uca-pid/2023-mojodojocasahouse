@@ -2,13 +2,11 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
 import { styles } from './style';
 import { TextInput } from 'react-native-paper';
-import SessionContext from '../../context/SessionContext';
 
 const ChangePassScreen = ({ navigation, route }) => { // Add navigation prop
   const [newPassword, setNewPassword] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [newPasswordRepeat, setNewPasswordRepeat] = React.useState("");
-  const {sessionCookie, setSessionCookie} = React.useContext(SessionContext);
 
 
   const navigateToHomeScreen = () => {

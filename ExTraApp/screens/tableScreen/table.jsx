@@ -3,7 +3,6 @@ import { View, Text, TouchableOpacity, StyleSheet, Image, Modal, ImageBackground
 import { styles } from './style';
 import ExpenseModal from './ExpenseModal'; // Import the ExpenseModal component
 import SettingModal from './settingModal'; // Import the ExpenseModal component
-import SessionContext from '../../context/SessionContext';
 import { useNavigation } from '@react-navigation/native';
 
 
@@ -11,7 +10,6 @@ const Table = () => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [isModalSettingVisible, setModalSettingVisible] = useState(false);
   const [expenses, setExpenses] = useState([]);
-  const {sessionCookie, setSessionCookie} = React.useContext(SessionContext);
   const [loading, setLoading] = useState(true);
 
 

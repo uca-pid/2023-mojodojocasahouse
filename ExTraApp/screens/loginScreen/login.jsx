@@ -1,13 +1,12 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, Alert, ScrollView } from 'react-native'; // Import Alert
+import { View, Text, TouchableOpacity, Image, Alert, ScrollView } from 'react-native';
 import { styles } from './style';
 import { TextInput } from 'react-native-paper';
-import SessionContext from '../../context/SessionContext';
+import { Buffer } from 'buffer';
 
 const Login = ({ navigation, route }) => { // Add navigation prop
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const { sessionCookie, setSessionCookie } = React.useContext(SessionContext);
 
   const navigateToSignUp = () => {
     navigation.navigate('SignUp'); // Navigate to the 'SignUp' screen
@@ -17,18 +16,19 @@ const Login = ({ navigation, route }) => { // Add navigation prop
     navigation.navigate('Table');
   };
 
+  const navigateToForgottenPasswordScreen = () => {
+    navigation.navigate('forgotten-password');
+  };
+
   const postLoginFormToApi = async () => {
     let response = await fetch("http://localhost:8080/login", {
       method: 'POST',
       credentials: 'cross-origin',
       headers: {
         Accept: 'application/json',
-        'Content-Type':'application/json',
+        Authorization: "Basic " + Buffer.from(email + ':' + password).toString('base64')
       },
-      body: JSON.stringify({
-        email: email,
-        password: password
-      })
+      body: new FormData().append('remember-me', true)
     });
 
     if (response.ok) {
@@ -80,7 +80,12 @@ const Login = ({ navigation, route }) => { // Add navigation prop
           <TouchableOpacity onPress={navigateToSignUp}>
             <Text style={{ textAlign: 'center' }}>Don't have an account? Sign up</Text>
           </TouchableOpacity>
-          </ScrollView>
+
+          <TouchableOpacity onPress={navigateToForgottenPasswordScreen}>
+            <Text style={{ textAlign: 'center' }}>Forgot your password?</Text>
+          </TouchableOpacity>
+        
+        </ScrollView>
       </View>
     </View>
   );
