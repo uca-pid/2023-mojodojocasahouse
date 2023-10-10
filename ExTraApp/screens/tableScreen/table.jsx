@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, Modal } from 'react-native';
+import { View, Text, TouchableOpacity, Image, Alert } from 'react-native';
+import { fetchWithTimeout } from '../../utils/fetchingUtils';
 import { styles } from './style';
 import ExpenseModal from './ExpenseModal'; // Import the ExpenseModal component
+import LoadingOverlay from '../../components/loading/loading';
 
 
 const Table = ({navigation}) => {
@@ -9,30 +11,42 @@ const Table = ({navigation}) => {
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
 
-
-
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
 
   const fetchExpensesList = async () => {
-    setLoading(true);
-    let response = await fetch("http://localhost:8080/getMyExpenses", {
+    let response = await fetchWithTimeout("http://localhost:8080/getMyExpenses", {
       method: "GET",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
       }
-    }).then(res => res.json());
+    });
+    let responseBody = await response.json();
 
-    if(!response.error){
+    // OK
+    if(response.ok){
       setExpenses(response);
+      return;
     }
-    setLoading(false);
+    
+    // UNAUTHORIZED
+    if(response.status == 401){
+      Alert.alert(
+        "Session Expired", 
+        "Please log in again to continue",
+        [{text: 'OK', onPress: () => navigation.navigate('Login')}]
+      );
+      return;
+    }
+
+    // OTHER ERROR
+    Alert.alert("API Error", responseBody.message);
   };
 
   const postExpenseToApi = async (newExpense) => {
-    let response = await fetch("http://localhost:8080/addExpense", {
+    let response = await fetchWithTimeout("http://localhost:8080/addExpense", {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -40,27 +54,65 @@ const Table = ({navigation}) => {
         'Content-Type':'application/json'
       },
       body: JSON.stringify(newExpense)
-    }).then(res => res.json());
+    });
+    let responseBody = await response.json();
 
-    console.log(response);
-
-    if(response.error){
-      console.error("Error posting new expense to api");
+    // OK
+    if(response.ok){
+      Alert.alert("Success", "Expense added successfully!");
+      return;
     }
+
+    // UNAUTHORIZED
+    if(response.status == 401){
+      Alert.alert(
+        "Session Expired", 
+        "Please log in again to continue",
+        () => navigation.navigate('Login')
+      );
+      return;
+    }
+
+    // OTHER ERROR
+    Alert.alert("API Error", responseBody.message);
   };
 
   const handleSaveExpense = async (newExpense) => {
     toggleModal(); // Close the modal after saving
-    await postExpenseToApi(newExpense);
-    await fetchExpensesList();
+    try {
+      setLoading(true);
+      await postExpenseToApi(newExpense);
+      await fetchExpensesList();
+      setLoading(false);
+
+    } catch (error) {
+      setLoading(false);
+      Alert.alert("Connection Error", "There was an error connecting to API");
+    }
   };
 
-  // fetch expenses on screen change
-  React.useEffect(() => {fetchExpensesList()},[navigation]);
+  const handleFocusScreen = async () => {
+    await fetchExpensesList();
+    setLoading(false);
+  };
+
+
+  React.useEffect(() => {
+    try{
+      setLoading(true);
+      handleFocusScreen();
+    } catch (error) {
+      setLoading(false);
+      Alert.alert("Connection Error", "There was an error connecting to API");
+    }
+  },[navigation]);
 
   return (
     <View style={styles.appContainer}>
       <View style={styles.container}>
+        <LoadingOverlay 
+          shown={loading}
+        />
         <View style={styles.logoContainer}>
           <Image style={styles.logo} source={require('./../../img/logo.png')} />
         </View>
@@ -71,19 +123,19 @@ const Table = ({navigation}) => {
         </View>
         <View style={styles.tableContainer}>
           <View style={styles.tableHeader}>
-            <Text style={styles.headerCellId}>ID</Text>
-            <Text style={styles.headerCell}>Title</Text>
+            <Text style={styles.headerCell}>Concept</Text>
+            <Text style={styles.headerCell}>Category</Text>
             <Text style={styles.headerCell}>Value</Text>
             <Text style={styles.headerCell}>Date</Text>
           </View>
-          {expenses.map((item) => (
+          {! expenses ? expenses.map((item) => (
             <View key={item.id} style={styles.row}>
-              <Text style={styles.cellId}>{item.id}</Text>
               <Text style={styles.cell}>{item.concept}</Text>
+              <Text style={styles.cell}>{item.category}</Text>
               <Text style={styles.cell}>{item.amount}</Text>
               <Text style={styles.cell}>{item.date}</Text>
             </View>
-          ))}
+          )) : null}
         </View>
       </View>
       <ExpenseModal isVisible={isModalVisible} onClose={toggleModal} onSave={handleSaveExpense} />

@@ -5,6 +5,7 @@ import { TextInput, HelperText } from 'react-native-paper';
 import LoadingOverlay from '../../components/loading/loading';
 import * as EmailValidator from 'email-validator';
 import ValidatedTextInput from '../../components/validatedTextInput/validatedTextInput';
+import { fetchWithTimeout } from '../../utils/fetchingUtils';
 
 const ForgottenPassword = ({ navigation, route }) => {
   const [email, setEmail] = React.useState("");
@@ -25,34 +26,45 @@ const ForgottenPassword = ({ navigation, route }) => {
     }
 
     setLoading(true);
-    let response = await fetch("http://localhost:8080/auth/forgotten", {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type':'application/json',
-      },
-      body: JSON.stringify({
-        email: email
-      })
-    });
-    let responseBody = await response.json();
-    setLoading(false);
+    try{
+      let response = await fetchWithTimeout("http://localhost:8080/auth/forgotten", {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type':'application/json',
+        },
+        body: JSON.stringify({
+          email: email
+        })
+      });
+      let responseBody = await response.json();
+      setLoading(false);
 
-    console.log(responseBody);
+      console.log(responseBody);
 
-    if(response.ok){
+      // OK
+      if(response.ok){
+        Alert.alert(
+          "Request Sent", 
+          "Please check your inbox",
+          [{text: 'OK', onPress: navigateToLogin}],
+        );
+        return;
+      }
+
+      // OTHER ERROR
       Alert.alert(
-        "Request Sent", 
-        "Please check your inbox",
-        [{text: 'OK', onPress: navigateToLogin}],
+        "Request Failed", 
+        "API says: " + responseBody.message
       );
-      return;
+
+    } catch (error) {
+      Alert.alert(
+        "Connection Error", 
+        "There was an error connecting to API"
+      );
     }
-    Alert.alert(
-      "Request Failed", 
-      "API says: " + responseBody.message
-    );
   };
 
   const formHasErrors = () => {

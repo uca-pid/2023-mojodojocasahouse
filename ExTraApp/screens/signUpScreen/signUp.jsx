@@ -1,13 +1,13 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
 import { styles } from './style';
 import { TextInput } from 'react-native-paper';
-
-
+import LoadingOverlay from '../../components/loading/loading';
 
 
 //1 solo punto, carpeta actual, 2 puntos es un directorio para arriba
 const SignUp = (props) => {
+  const [loading, setLoading] = React.useState(false);
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [firstName, setFirstName] = React.useState("");
@@ -19,25 +19,50 @@ const SignUp = (props) => {
   };
 
   const postRegistrationToApi = async () => {
-    let response = await fetch("http://localhost:8080/register", {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type':'application/json',
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      })
-    });
+    setLoading(true);
+    try {
+      let response = await fetch("http://localhost:8080/register", {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type':'application/json',
+        },
+        body: JSON.stringify({
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          password: password,
+          passwordRepeat: repeatPassword
+        })
+      });
+      let responseBody = await response.json();
+      setLoading(false);
 
-    console.log(await response.json());
+      // OK
+      if(response.ok){
+        Alert.alert("User Creation Success", "User was created successfully", [{text: 'OK', onPress: navigateToLogin}]);
+        return;
+      }
 
-  }
+      // OTHER ERROR
+      Alert.alert("API Error", responseBody.message);
+
+    } catch (error) {
+      Alert.alert(
+        "Connection Error", 
+        "There was an error connecting to API"
+      );
+    }
+  };
 
   return (
     <View style={styles.appContainer}>
       <View style={styles.container}>
+
+        <LoadingOverlay 
+          shown={loading}
+        />
+
         <View style={styles.logoContainer}>
           <Image style={styles.logo} source={require('./../../img/logo.png')} /> 
         </View>
