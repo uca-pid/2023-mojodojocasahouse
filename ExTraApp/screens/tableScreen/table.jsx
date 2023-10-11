@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, Modal, ImageBackground, ScrollView, Alert, Pressable } from 'react-native';
+import { View, Text, TouchableOpacity, Image, ScrollView, Alert, Pressable } from 'react-native';
 import { fetchWithTimeout } from '../../utils/fetchingUtils';
 import { styles } from './style';
 import ExpenseModal from './ExpenseModal'; // Import the ExpenseModal component
@@ -7,6 +7,7 @@ import SettingModal from './settingModal'; // Import the ExpenseModal component
 import { useNavigation } from '@react-navigation/native';
 import LoadingOverlay from '../../components/loading/loading';
 import Icon from 'react-native-vector-icons/Entypo';
+import FeatherIcon from 'react-native-vector-icons/Feather';
 
 const IconFactory = (props) => {
   switch(props.id){
@@ -29,7 +30,7 @@ const IconFactory = (props) => {
     case 9:
       return <Icon name="man" style={props.style}/>
     default:
-      return null
+      return <Icon name="help" style={props.style}/>
   }
 
 };
@@ -44,7 +45,7 @@ const ExampleData = [
   {id: 7,  concept: 'Example 7',  amount: 10000.00, date: '2023-09-20', category: 'travel', iconId: 7},
   {id: 8,  concept: 'Example 8',  amount: 10000.00, date: '2023-09-20', category: 'travel', iconId: 8},
   {id: 9,  concept: 'Example 9',  amount: 10000.00, date: '2023-09-20', category: 'travel', iconId: 9},
-  {id: 10, concept: 'Example 10', amount: 10000.00, date: '2023-09-20', category: 'travel', iconId: 1},
+  {id: 10, concept: 'Example 10', amount: 10000.00, date: '2023-09-20', category: 'travel', iconId: 10},
   {id: 11, concept: 'Example 11', amount: 10000.00, date: '2023-09-20', category: 'travel', iconId: 1},
   {id: 12, concept: 'Example 12', amount: 10000.00, date: '2023-09-20', category: 'travel', iconId: 1},
   {id: 13, concept: 'Example 13', amount: 10000.00, date: '2023-09-20', category: 'travel', iconId: 1},
@@ -186,19 +187,14 @@ const Table = () => {
           <View style={styles.logoContainer}>
             <Image style={styles.logo} source={require('./../../img/logo.png')} />
           </View>
-          <View style={styles.logoutButtonContainer}>
-            <Pressable style={styles.logoutButton}>
-              <Icon name="log-out" style={styles.logoutButtonIcon} />
-            </Pressable>
-          </View>
         </View>
 
         <View style={styles.menuContainer}>
           <View style={styles.menuItemContainer}>
-            <Icon.Button name="plus">Add new Category</Icon.Button>
+            <FeatherIcon.Button backgroundColor="#D9D9d9" color="black" name="settings">Settings</FeatherIcon.Button>
           </View>
           <View style={styles.menuItemContainer}>
-            <Icon.Button name="lock">Change password</Icon.Button>
+            <Icon.Button backgroundColor="#FF3641" name="log-out">Logout</Icon.Button>
           </View>
         </View>
 

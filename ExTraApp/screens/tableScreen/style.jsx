@@ -116,7 +116,7 @@ export const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
 
-    width: 120,
+    width: 100,
   },
 
 
