@@ -21,19 +21,21 @@ const ValidatedTextInput = props => {
     let hasError = props.hasError(props.value);
     setError(hasError);
   }
-
+  
   return (
-    <View>
+    <View style={props.style?.container? props.style.container : null}>
 
       <TextInput
-        style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
+        style={props.style?.input ? props.style.input : { marginLeft: '10%', width: '80%', marginBottom: '5%' }}
         label={props.label}
         value={props.value}
         onChangeText={props.onChangeText}
         onEndEditing={onEndEditing}
+        maxLength={props.maxLength}
+        keyboardType={props.keyboardType}
       />
 
-      <HelperText type="error" visible={error}>
+      <HelperText type="error" style={props.style?.helperText ? props.style.helperText : null} visible={error}>
         {props.validationErrorMessage? props.validationErrorMessage : "Input validation error"}
       </HelperText>
 

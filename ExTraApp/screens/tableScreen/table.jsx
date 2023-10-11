@@ -1,9 +1,39 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, Modal, ImageBackground, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, Image, ScrollView, Alert, Pressable } from 'react-native';
+import { fetchWithTimeout } from '../../utils/fetchingUtils';
 import { styles } from './style';
-import ExpenseModal from './ExpenseModal'; // Import the ExpenseModal component
-import SettingModal from './settingModal'; // Import the ExpenseModal component
+import ExpenseModal from '../../components/expenseModal/ExpenseModal'; // Import the ExpenseModal component
+import SettingModal from '../../components/settingsModal/settingsModal'; // Import the ExpenseModal component
 import { useNavigation } from '@react-navigation/native';
+import LoadingOverlay from '../../components/loading/loading';
+import Icon from 'react-native-vector-icons/Entypo';
+import FeatherIcon from 'react-native-vector-icons/Feather';
+import RNPickerSelect from 'react-native-picker-select';
+
+const IconFactory = (props) => {
+  switch(props.id){
+    case 1: 
+      return <Icon name="aircraft" style={props.style}/>
+    case 2:
+      return <Icon name="drink" style={props.style}/>
+    case 3:
+      return <Icon name="key" style={props.style}/>
+    case 4:
+      return <Icon name="shopping-cart" style={props.style}/>
+    case 5:
+      return <Icon name="clapperboard" style={props.style}/>
+    case 6:
+      return <Icon name="squared-cross" style={props.style}/>
+    case 7:
+      return <Icon name="man" style={props.style}/>
+    case 8:
+      return <Icon name="open-book" style={props.style}/>
+    default:
+      return <Icon name="help" style={props.style}/>
+  }
+
+};
+
 
 
 const Table = () => {
@@ -11,8 +41,8 @@ const Table = () => {
   const [isModalSettingVisible, setModalSettingVisible] = useState(false);
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
-
-
+  const [categories, setCategories] = useState([]);
+  const [categoryFilter, setCategoryFilter] = useState(null);
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -24,24 +54,159 @@ const Table = () => {
 
   const navigation = useNavigation();
 
-  const fetchExpensesList = async () => {
+  const postLogout = async () => {
     setLoading(true);
-    let response = await fetch("http://localhost:8080/getMyExpenses", {
+      try {
+      let response = await fetchWithTimeout("http://localhost:8080/logout", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        }
+      });
+
+      // OK
+      if(response.ok){
+        setLoading(false);
+        Alert.alert(
+          "Logout Success", 
+          "Logged out successfully",
+          [{text: 'OK', onPress: () => navigation.navigate('Login')}]
+        );
+        return;
+      }
+      
+      // UNAUTHORIZED
+      if(response.status == 401){
+        setLoading(false);
+        Alert.alert(
+          "Session Expired", 
+          "Please log in again to continue",
+          [{text: 'OK', onPress: () => navigation.navigate('Login')}]
+        );
+        return;
+      }
+
+      // OTHER ERROR
+      let responseBody = await response.json();
+      setLoading(false);
+      Alert.alert("API Error", responseBody.message);
+
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+      Alert.alert("Connection Error", "There was an error connecting to API");
+    }
+  };
+
+  const fetchUserCategories = async () => {
+    let response = await fetchWithTimeout("http://localhost:8080/getAllCategories", {
+      method: "GET",
+      credentials: "include",
+    });
+    let responseBody = await response.json();
+
+    // OK
+    if(response.ok){
+      setCategories(responseBody);
+      return;
+    }
+    
+    // UNAUTHORIZED
+    if(response.status == 401){
+      Alert.alert(
+        "Session Expired", 
+        "Please log in again to continue",
+        [{text: 'OK', onPress: () => navigation.navigate('Login')}]
+      );
+      return;
+    }
+
+    // OTHER ERROR
+    Alert.alert("API Error", responseBody.message);
+  };
+
+  const fetchExpensesByCategory = async () => {
+    setLoading(true);
+    try{
+
+      if(categoryFilter == null){
+        await fetchExpensesList();
+        setLoading(false);
+        return;
+      }
+
+      let response = await fetchWithTimeout("http://localhost:8080/getMyExpensesByCategory", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          category: categoryFilter
+        })
+      });
+      let responseBody = await response.json();
+      setLoading(false);
+
+      // OK
+      if(response.ok){
+        setExpenses(responseBody);
+        return;
+      }
+      
+      // UNAUTHORIZED
+      if(response.status == 401){
+        Alert.alert(
+          "Session Expired", 
+          "Please log in again to continue",
+          [{text: 'OK', onPress: () => navigation.navigate('Login')}]
+        );
+        return;
+      }
+
+      // OTHER ERROR
+      Alert.alert("API Error", responseBody.message);
+
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+      Alert.alert("Connection Error", "There was an error connecting to API");
+    }
+  };
+
+  const fetchExpensesList = async () => {
+    let response = await fetchWithTimeout("http://localhost:8080/getMyExpenses", {
       method: "GET",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
       }
-    }).then(res => res.json());
+    });
+    let responseBody = await response.json();
 
-    if(!response.error){
-      setExpenses(response);
+    // OK
+    if(response.ok){
+      setExpenses(responseBody);
+      return;
     }
-    setLoading(false);
+    
+    // UNAUTHORIZED
+    if(response.status == 401){
+      Alert.alert(
+        "Session Expired", 
+        "Please log in again to continue",
+        [{text: 'OK', onPress: () => navigation.navigate('Login')}]
+      );
+      return;
+    }
+
+    // OTHER ERROR
+    Alert.alert("API Error", responseBody.message);
   };
 
   const postExpenseToApi = async (newExpense) => {
-    let response = await fetch("http://localhost:8080/addExpense", {
+    let response = await fetchWithTimeout("http://localhost:8080/addExpense", {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -49,56 +214,134 @@ const Table = () => {
         'Content-Type':'application/json'
       },
       body: JSON.stringify(newExpense)
-    }).then(res => res.json());
+    });
+    let responseBody = await response.json();
 
-    console.log(response);
-
-    if(response.error){
-      console.error("Error posting new expense to api");
+    // OK
+    if(response.ok){
+      Alert.alert("Success", "Expense added successfully!");
+      return;
     }
+
+    // UNAUTHORIZED
+    if(response.status == 401){
+      Alert.alert(
+        "Session Expired", 
+        "Please log in again to continue",
+        () => navigation.navigate('Login')
+      );
+      return;
+    }
+
+    // OTHER ERROR
+    Alert.alert("API Error", responseBody.message);
+  };
+
+  const formatCategoryItem = (item) => {
+    let formattedItemLabel = item.replaceAll("-", " ");
+    formattedItemLabel = [...formattedItemLabel][0].toUpperCase() + [...formattedItemLabel].slice(1).join('');
+    return {
+      label: formattedItemLabel,
+      value: item,
+      inputLabel: "Category: " + formattedItemLabel
+    };
   };
 
   const handleSaveExpense = async (newExpense) => {
     toggleModal(); // Close the modal after saving
-    await postExpenseToApi(newExpense);
-    await fetchExpensesList();
+    try {
+      setLoading(true);
+      await postExpenseToApi(newExpense);
+      await fetchExpensesList();
+      setLoading(false);
+
+    } catch (error) {
+      setLoading(false);
+      Alert.alert("Connection Error", "There was an error connecting to API");
+    }
   };
 
-  // fetch expenses on screen change
-  React.useEffect(() => {fetchExpensesList()},[navigation]);
+  const handleFocusScreen = async () => {
+    await fetchUserCategories();
+    await fetchExpensesList();
+    setLoading(false);
+  };
+
+
+  React.useEffect(() => {
+    try{
+      setLoading(true);
+      handleFocusScreen();
+    } catch (error) {
+      setLoading(false);
+      Alert.alert("Connection Error", "There was an error connecting to API");
+    }
+  },[navigation]);
 
   return (
     <View style={styles.appContainer}>
-      <View style={styles.container}>
-        <View style={styles.logoContainer}>
-          <Image style={styles.logo} source={require('./../../img/logo.png')} />
-          <TouchableOpacity onPress={toggleSettingModal}>
-            <ImageBackground style={styles.Settinglogo} source={require('./../../img/gearLogo.png')} />
-          </TouchableOpacity>
+      <View style={styles.contentContainer}>
+        <LoadingOverlay 
+          shown={loading}
+        />
+
+        <View style={styles.headerContainer}>
+          <View style={styles.logoContainer}>
+            <Image style={styles.logo} source={require('./../../img/logo.png')} />
+          </View>
         </View>
-        <View style={styles.bottomContainer}>
+
+        <View style={styles.menuContainer}>
+          <View style={styles.menuItemContainer}>
+            <FeatherIcon.Button onPress={toggleSettingModal} backgroundColor="#D9D9d9" color="black" name="settings">Settings</FeatherIcon.Button>
+          </View>
+          <View style={styles.menuItemContainer}>
+            <Icon.Button onPress={postLogout} backgroundColor="#FF3641" name="log-out">Logout</Icon.Button>
+          </View>
+        </View>
+
+        <RNPickerSelect 
+          style={styles.rnPickerSelect}
+          onValueChange={setCategoryFilter}
+          placeholder={{ label: 'Any', value: null, inputLabel: 'Category: Any' }}
+          items={categories.map(item => formatCategoryItem(item))}
+          pickerProps={{ onBlur: fetchExpensesByCategory}}
+          onClose={fetchExpensesByCategory}
+        />
+
+        <View style={styles.addExpenseButtonContainer}>
           <TouchableOpacity style={styles.button} onPress={toggleModal}>
             <Text style={styles.buttonText}>Add Expense</Text>
           </TouchableOpacity>
         </View>
 
-        <ScrollView contentContainerStyle={styles.contentContainer}>
-        <View style={styles.tableContainer}>
-          <View style={styles.tableHeader}>
-            <Text style={styles.headerCellId}>ID</Text>
-            <Text style={styles.headerCell}>Title</Text>
-            <Text style={styles.headerCell}>Value</Text>
-            <Text style={styles.headerCell}>Date</Text>
+        <ScrollView contentContainerStyle={styles.scrollviewContentContainer}>
+          <View style={styles.tableContainer}>
+
+            { expenses.map((item) => (
+              <View key={item.id} style={styles.row}>
+                <View style={styles.iconContainer}>
+                  <IconFactory id={item.iconId} style={styles.icon} />
+                </View>
+                <View style={styles.rowMiddleContainer} >
+                  <View style={styles.conceptContainer}>
+                    <Text style={styles.concept}>{item.concept}</Text>
+                  </View>
+                  <View style={styles.categoryContainer}>
+                    <Text style={styles.category}>{item.category}</Text>
+                  </View>
+                </View>
+                <View style={styles.rowLeftContainer}>
+                  <View style={styles.amountContainer}>
+                    <Text style={styles.amount}>{item.amount}</Text>
+                  </View>
+                  <View style={styles.dateContainer}>
+                    <Text style={styles.date}>{item.date}</Text>
+                  </View>
+                </View>
+              </View>
+            ))}
           </View>
-          {expenses.map((item) => (
-            <View key={item.id} style={styles.row}>
-              <Text style={styles.cellId}>{item.id}</Text>
-              <Text style={styles.cell}>{item.concept}</Text>
-              <Text style={styles.cell}>{item.amount}</Text>
-              <Text style={styles.cell}>{item.date}</Text>
-            </View>
-          ))}
-        </View>
         </ScrollView>
       </View>
       <ExpenseModal isVisible={isModalVisible} onClose={toggleModal} onSave={handleSaveExpense} />
