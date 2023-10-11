@@ -1,41 +1,33 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, Modal, ImageBackground, ScrollView, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, Modal, ImageBackground, ScrollView, Alert, Pressable } from 'react-native';
 import { fetchWithTimeout } from '../../utils/fetchingUtils';
 import { styles } from './style';
 import ExpenseModal from './ExpenseModal'; // Import the ExpenseModal component
 import SettingModal from './settingModal'; // Import the ExpenseModal component
 import { useNavigation } from '@react-navigation/native';
 import LoadingOverlay from '../../components/loading/loading';
-const address = require("../../img/address.png");
-const aircraft = require("../../img/aircraft.png");
-const baidu = require("../../img/baidu.png");
-const clapperboard = require("../../img/clapperboard.png");
-const credit = require("../../img/credit.png");
-const drink = require("../../img/drink.png");
-const man = require("../../img/man.png");
-const shoppingCart = require("../../img/shopping-cart.png");
-const tree = require("../../img/tree.png");
+import Icon from 'react-native-vector-icons/Entypo';
 
-const Icon = (props) => {
+const IconFactory = (props) => {
   switch(props.id){
     case 1: 
-      return <Image source={aircraft} />
+      return <Icon name="aircraft" style={props.style}/>
     case 2:
-      return <Image source={address} />
+      return <Icon name="address" style={props.style}/>
     case 3:
-      return <Image source={baidu} />
+      return <Icon name="baidu" style={props.style}/>
     case 4:
-      return <Image source={clapperboard} />
+      return <Icon name="clapperboard" style={props.style}/>
     case 5:
-      return <Image source={tree} />
+      return <Icon name="tree" style={props.style}/>
     case 6:
-      return <Image source={shoppingCart} />
+      return <Icon name="shopping-cart" style={props.style}/>
     case 7:
-      return <Image source={credit} />
+      return <Icon name="credit" style={props.style}/>
     case 8:
-      return <Image source={drink} />
+      return <Icon name="drink" style={props.style}/>
     case 9:
-      return <Image source={man} />
+      return <Icon name="man" style={props.style}/>
     default:
       return null
   }
@@ -44,14 +36,14 @@ const Icon = (props) => {
 
 const ExampleData = [
   {id: 1,  concept: 'Example 1',  amount: 10000.00, date: '2023-09-20', category: 'travel', iconId: 1},
-  {id: 2,  concept: 'Example 2',  amount: 10000.00, date: '2023-09-20', category: 'travel', iconId: 1},
-  {id: 3,  concept: 'Example 3',  amount: 10000.00, date: '2023-09-20', category: 'travel', iconId: 1},
-  {id: 4,  concept: 'Example 4',  amount: 10000.00, date: '2023-09-20', category: 'travel', iconId: 1},
-  {id: 5,  concept: 'Example 5',  amount: 10000.00, date: '2023-09-20', category: 'travel', iconId: 1},
-  {id: 6,  concept: 'Example 6',  amount: 10000.00, date: '2023-09-20', category: 'travel', iconId: 1},
-  {id: 7,  concept: 'Example 7',  amount: 10000.00, date: '2023-09-20', category: 'travel', iconId: 1},
-  {id: 8,  concept: 'Example 8',  amount: 10000.00, date: '2023-09-20', category: 'travel', iconId: 1},
-  {id: 9,  concept: 'Example 9',  amount: 10000.00, date: '2023-09-20', category: 'travel', iconId: 1},
+  {id: 2,  concept: 'Example 2',  amount: 10000.00, date: '2023-09-20', category: 'travel', iconId: 2},
+  {id: 3,  concept: 'Example 3',  amount: 10000.00, date: '2023-09-20', category: 'travel', iconId: 3},
+  {id: 4,  concept: 'Example 4',  amount: 10000.00, date: '2023-09-20', category: 'travel', iconId: 4},
+  {id: 5,  concept: 'Example 5',  amount: 10000.00, date: '2023-09-20', category: 'travel', iconId: 5},
+  {id: 6,  concept: 'Example 6',  amount: 10000.00, date: '2023-09-20', category: 'travel', iconId: 6},
+  {id: 7,  concept: 'Example 7',  amount: 10000.00, date: '2023-09-20', category: 'travel', iconId: 7},
+  {id: 8,  concept: 'Example 8',  amount: 10000.00, date: '2023-09-20', category: 'travel', iconId: 8},
+  {id: 9,  concept: 'Example 9',  amount: 10000.00, date: '2023-09-20', category: 'travel', iconId: 9},
   {id: 10, concept: 'Example 10', amount: 10000.00, date: '2023-09-20', category: 'travel', iconId: 1},
   {id: 11, concept: 'Example 11', amount: 10000.00, date: '2023-09-20', category: 'travel', iconId: 1},
   {id: 12, concept: 'Example 12', amount: 10000.00, date: '2023-09-20', category: 'travel', iconId: 1},
@@ -79,6 +71,7 @@ const Table = () => {
   const [isModalSettingVisible, setModalSettingVisible] = useState(false);
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [categoryFilter, setCategoryFilter] = useState(null);
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -184,54 +177,67 @@ const Table = () => {
 
   return (
     <View style={styles.appContainer}>
-      <View style={styles.container}>
+      <View style={styles.contentContainer}>
         <LoadingOverlay 
           shown={loading}
         />
-        <View style={styles.logoContainer}>
-          <Image style={styles.logo} source={require('./../../img/logo.png')} />
-          <TouchableOpacity onPress={toggleSettingModal}>
-            <ImageBackground style={styles.Settinglogo} source={require('./../../img/gearLogo.png')} />
+
+        <View style={styles.headerContainer}>
+          <View style={styles.logoContainer}>
+            <Image style={styles.logo} source={require('./../../img/logo.png')} />
+          </View>
+          <View style={styles.logoutButtonContainer}>
+            <Pressable style={styles.logoutButton}>
+              <Icon name="log-out" style={styles.logoutButtonIcon} />
+            </Pressable>
+          </View>
+        </View>
+
+        <View style={styles.menuContainer}>
+          <View style={styles.menuItemContainer}>
+            <Icon.Button name="plus">Add new Category</Icon.Button>
+          </View>
+          <View style={styles.menuItemContainer}>
+            <Icon.Button name="lock">Change password</Icon.Button>
+          </View>
+        </View>
+
+        <View style={styles.categoryFilterContainer}>
+          <TouchableOpacity style={styles.categoryButton} onPress={toggleModal}>
+            <Text style={styles.buttonText}>Category: {categoryFilter? categoryFilter : "Any"}</Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.bottomContainer}>
+
+        <View style={styles.addExpenseButtonContainer}>
           <TouchableOpacity style={styles.button} onPress={toggleModal}>
             <Text style={styles.buttonText}>Add Expense</Text>
           </TouchableOpacity>
         </View>
 
-        <ScrollView contentContainerStyle={styles.contentContainer}>
+        <ScrollView contentContainerStyle={styles.scrollviewContentContainer}>
           <View style={styles.tableContainer}>
 
-            <View style={styles.tableHeader}>
-              <View style={styles.headerCellContainer}>
-                <Text style={styles.headerCell}>Concept</Text>
-              </View>
-              <View style={styles.headerCellContainer}>
-                <Text style={styles.headerCell}>Category</Text>
-              </View>
-              <View style={styles.headerCellContainer}>
-                <Text style={styles.headerCell}>Amount</Text>
-              </View>
-              <View style={styles.headerCellContainer}>
-                <Text style={styles.headerCell}>Date</Text>
-              </View>
-            </View>
             {/* { ! expenses ? expenses.map((item) => ( */}
             { ExampleData? ExampleData.map((item) => (
               <View key={item.id} style={styles.row}>
-                <View style={styles.cellContainer}>
-                  <Text style={styles.cell}>{item.concept}</Text>
+                <View style={styles.iconContainer}>
+                  <IconFactory id={item.iconId} style={styles.icon} />
                 </View>
-                <View style={styles.cellContainer}>
-                  <Icon id={item.iconId} />
-                  <Text style={styles.cell}>{item.category}</Text>
+                <View style={styles.rowMiddleContainer} >
+                  <View style={styles.conceptContainer}>
+                    <Text style={styles.concept}>{item.concept}</Text>
+                  </View>
+                  <View style={styles.categoryContainer}>
+                    <Text style={styles.category}>{item.category}</Text>
+                  </View>
                 </View>
-                <View style={styles.cellContainer}>
-                  <Text style={styles.cell}>{item.amount}</Text>
-                </View>
-                <View style={styles.cellContainer}>
-                  <Text style={styles.cell}>{item.date}</Text>
+                <View style={styles.rowLeftContainer}>
+                  <View style={styles.amountContainer}>
+                    <Text style={styles.amount}>{item.amount}</Text>
+                  </View>
+                  <View style={styles.dateContainer}>
+                    <Text style={styles.date}>{item.date}</Text>
+                  </View>
                 </View>
               </View>
             )) : null}
