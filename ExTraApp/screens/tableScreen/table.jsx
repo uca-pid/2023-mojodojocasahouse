@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Image, ScrollView, Alert, Pressable } from 'react-native';
 import { fetchWithTimeout } from '../../utils/fetchingUtils';
 import { styles } from './style';
-import ExpenseModal from './ExpenseModal'; // Import the ExpenseModal component
-import SettingModal from './settingModal'; // Import the ExpenseModal component
+import ExpenseModal from '../../components/expenseModal/ExpenseModal'; // Import the ExpenseModal component
+import SettingModal from '../../components/settingsModal/settingsModal'; // Import the ExpenseModal component
 import { useNavigation } from '@react-navigation/native';
 import LoadingOverlay from '../../components/loading/loading';
 import Icon from 'react-native-vector-icons/Entypo';
@@ -15,21 +15,19 @@ const IconFactory = (props) => {
     case 1: 
       return <Icon name="aircraft" style={props.style}/>
     case 2:
-      return <Icon name="address" style={props.style}/>
-    case 3:
-      return <Icon name="baidu" style={props.style}/>
-    case 4:
-      return <Icon name="clapperboard" style={props.style}/>
-    case 5:
-      return <Icon name="tree" style={props.style}/>
-    case 6:
-      return <Icon name="shopping-cart" style={props.style}/>
-    case 7:
-      return <Icon name="credit" style={props.style}/>
-    case 8:
       return <Icon name="drink" style={props.style}/>
-    case 9:
+    case 3:
+      return <Icon name="key" style={props.style}/>
+    case 4:
+      return <Icon name="shopping-cart" style={props.style}/>
+    case 5:
+      return <Icon name="clapperboard" style={props.style}/>
+    case 6:
+      return <Icon name="squared-cross" style={props.style}/>
+    case 7:
       return <Icon name="man" style={props.style}/>
+    case 8:
+      return <Icon name="open-book" style={props.style}/>
     default:
       return <Icon name="help" style={props.style}/>
   }
