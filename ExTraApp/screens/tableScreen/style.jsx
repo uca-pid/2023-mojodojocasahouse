@@ -123,11 +123,64 @@ export const styles = StyleSheet.create({
 
   // Bottom container
 
-  categoryFilterContainer: {
-    height: '5%',
-    width: '100%',
-    marginTop: 20,
-    backgroundColor: '#433FF4',
+  // categoryFilterContainer: {
+  //   height: '5%',
+  //   width: '100%',
+  //   marginTop: 20,
+  //   backgroundColor: '#433FF4',
+  // },
+
+  // categoryButton: {
+  //   backgroundColor: '#a0d406',
+
+  //   paddingBottom: '2.5%',
+  //   paddingTop: '2.5%',
+  //   alignItems: 'center',
+  // },
+
+  rnPickerSelect: {
+    inputIOS: {
+      display: 'flex',
+      flexDirection: 'row',
+
+      // width: '100%',
+      height: '100%',
+      backgroundColor: '#a0d406',
+
+      color: 'black',
+      fontSize: 14,
+      fontWeight: 'bold',
+
+    },
+    placeholder: {
+      color: 'black',
+      fontSize: 14,
+      fontWeight: 'bold',
+    },
+    inputAndroid: {
+      display: 'flex',
+      flexDirection: 'row',
+
+      // width: '100%',
+      height: '100%',
+      backgroundColor: '#a0d406',
+
+      color: 'black',
+      fontSize: 14,
+      fontWeight: 'bold',
+    },
+    viewContainer: {
+      display: 'flex',
+      flexDirection: 'row',
+
+      height: '5%',
+      width: '100%',
+      marginTop: 20,
+      backgroundColor: '#a0d406',
+
+      justifyContent: 'center',
+      alignItems: 'stretch'
+    }
   },
 
   addExpenseButtonContainer: {
@@ -135,14 +188,6 @@ export const styles = StyleSheet.create({
     width: '100%',
     marginTop: '1%',
     backgroundColor: '#433FF4',
-  },
-
-  categoryButton: {
-    backgroundColor: '#a0d406',
-
-    paddingBottom: '2.5%',
-    paddingTop: '2.5%',
-    alignItems: 'center',
   },
 
   button: {

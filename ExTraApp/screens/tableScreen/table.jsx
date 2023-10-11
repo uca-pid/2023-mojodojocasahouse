@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import LoadingOverlay from '../../components/loading/loading';
 import Icon from 'react-native-vector-icons/Entypo';
 import FeatherIcon from 'react-native-vector-icons/Feather';
+import RNPickerSelect from 'react-native-picker-select';
 
 const IconFactory = (props) => {
   switch(props.id){
@@ -72,6 +73,7 @@ const Table = () => {
   const [isModalSettingVisible, setModalSettingVisible] = useState(false);
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState([]);
   const [categoryFilter, setCategoryFilter] = useState(null);
 
   const toggleModal = () => {
@@ -120,6 +122,82 @@ const Table = () => {
       // OTHER ERROR
       let responseBody = await response.json();
       setLoading(false);
+      Alert.alert("API Error", responseBody.message);
+
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+      Alert.alert("Connection Error", "There was an error connecting to API");
+    }
+  };
+
+  const fetchUserCategories = async () => {
+    let response = await fetchWithTimeout("http://localhost:8080/getAllCategories", {
+      method: "GET",
+      credentials: "include",
+    });
+    let responseBody = await response.json();
+
+    // OK
+    if(response.ok){
+      setCategories(responseBody);
+      return;
+    }
+    
+    // UNAUTHORIZED
+    if(response.status == 401){
+      Alert.alert(
+        "Session Expired", 
+        "Please log in again to continue",
+        [{text: 'OK', onPress: () => navigation.navigate('Login')}]
+      );
+      return;
+    }
+
+    // OTHER ERROR
+    Alert.alert("API Error", responseBody.message);
+  };
+
+  const fetchExpensesByCategory = async () => {
+    setLoading(true);
+    try{
+
+      if(categoryFilter == null){
+        await fetchExpensesList();
+        setLoading(false);
+        return;
+      }
+
+      let response = await fetchWithTimeout("http://localhost:8080/getMyExpensesByCategory", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          category: categoryFilter
+        })
+      });
+      let responseBody = await response.json();
+      setLoading(false);
+
+      // OK
+      if(response.ok){
+        setExpenses(responseBody);
+        return;
+      }
+      
+      // UNAUTHORIZED
+      if(response.status == 401){
+        Alert.alert(
+          "Session Expired", 
+          "Please log in again to continue",
+          [{text: 'OK', onPress: () => navigation.navigate('Login')}]
+        );
+        return;
+      }
+
+      // OTHER ERROR
       Alert.alert("API Error", responseBody.message);
 
     } catch (error) {
@@ -191,6 +269,16 @@ const Table = () => {
     Alert.alert("API Error", responseBody.message);
   };
 
+  const formatCategoryItem = (item) => {
+    let formattedItemLabel = item.replaceAll("-", " ");
+    formattedItemLabel = [...formattedItemLabel][0].toUpperCase() + [...formattedItemLabel].slice(1).join('');
+    return {
+      label: formattedItemLabel,
+      value: item,
+      inputLabel: "Category: " + formattedItemLabel
+    };
+  };
+
   const handleSaveExpense = async (newExpense) => {
     toggleModal(); // Close the modal after saving
     try {
@@ -206,6 +294,7 @@ const Table = () => {
   };
 
   const handleFocusScreen = async () => {
+    await fetchUserCategories();
     await fetchExpensesList();
     setLoading(false);
   };
@@ -243,11 +332,20 @@ const Table = () => {
           </View>
         </View>
 
-        <View style={styles.categoryFilterContainer}>
+        {/* <View style={styles.categoryFilterContainer}>
           <TouchableOpacity style={styles.categoryButton} onPress={toggleModal}>
             <Text style={styles.buttonText}>Category: {categoryFilter? categoryFilter : "Any"}</Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
+
+        <RNPickerSelect 
+          style={styles.rnPickerSelect}
+          onValueChange={setCategoryFilter}
+          placeholder={{ label: 'Any', value: null, inputLabel: 'Category: Any' }}
+          items={categories.map(item => formatCategoryItem(item))}
+          pickerProps={{ onBlur: fetchExpensesByCategory}}
+          onClose={fetchExpensesByCategory}
+        />
 
         <View style={styles.addExpenseButtonContainer}>
           <TouchableOpacity style={styles.button} onPress={toggleModal}>
