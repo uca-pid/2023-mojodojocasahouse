@@ -1,6 +1,6 @@
 // ExpenseModal.js
 import React, { useState } from 'react';
-import { View, Text, Modal, TouchableOpacity } from 'react-native';
+import { View, Text, Modal, TouchableOpacity, Alert } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import ValidatedTextInput from '../validatedTextInput/validatedTextInput';
 import styles from './style';
@@ -39,14 +39,19 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
   const [open, setOpen] = useState(false);
 
   const checkErrors = () => {
-    if (checkConceptError() || checkCategoryError()){
+    if (checkConceptError() || checkAmountError() || checkCategoryError()){
       throw new Error();
     }
   };
 
   const checkConceptError = () => {
     let regex = /^[A-Za-z\d\s]+$/;
-    return !regex.test();
+    return !regex.test(concept);
+  };
+
+  const checkAmountError = () => {
+    let regex = /^[\d]{1,12}((\.)(\d){1,2})?$/;
+    return !regex.test(amount);
   };
 
   const checkCategoryError = () => {
@@ -62,7 +67,7 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
       setDate(new Date());
       onClose();
     } catch (e) {
-      Alert.Alert("Validation error", "Please check fields and try again");
+      Alert.alert("Validation error", "Please check fields and try again");
     }
   };
 
@@ -98,7 +103,7 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
             onChangeText={(text) => setConcept(text)}
             validationErrorMessage="Concept may only contain letters or numbers"
             maxLength={100}
-            hasError={() => true}
+            hasError={checkConceptError}
             style={styles.validatedTextInput}
           />
 
@@ -108,7 +113,7 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
             onChangeText={(text) => setAmount(text)}
             keyboardType="numeric"
             validationErrorMessage="Amount must be positive and limited to cent precision"
-            hasError={() => true}
+            hasError={checkAmountError}
             style={styles.validatedTextInput}
           />
 
