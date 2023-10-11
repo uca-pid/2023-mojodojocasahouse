@@ -32,7 +32,6 @@ export const styles = StyleSheet.create({
 
     height: 80,
     width: '100%',
-    // backgroundColor: '#0000FF',
 
     justifyContent: 'space-around',
     alignItems: 'center'
@@ -44,7 +43,6 @@ export const styles = StyleSheet.create({
 
     aspectRatio: 3.55,
     width: '65%',
-    // backgroundColor: '#00FF00',
 
     justifyContent: 'center',
     alignItems: 'center',
@@ -61,7 +59,6 @@ export const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
 
-    // backgroundColor: '#FF00FF',
     height: '100%',
     aspectRatio: 0.7,
 
@@ -164,37 +161,10 @@ export const styles = StyleSheet.create({
 
 
 
-  // tableHeader: {
-  //   display: 'flex',
-  //   flexDirection: 'row',
-  //   // justifyContent: 'space-evenly',
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  //   backgroundColor: '#AEB4E8', // Header background color
-  //   // paddingVertical: 8,
-  //   // backgroundColor: '#00FF00',
-  //   height: 50,
-  //   width: '100%',
-  //   paddingLeft: '5%',
-  //   paddingRight: '5%',
-  // },
 
-  // headerCellContainer: {
-  //   display: 'flex',
-  //   flexDirection: 'row',
-  //   width: '25%',
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  //   backgroundColor: '#00FFFF',
-  // },
 
-  // headerCell: {
-  //   fontWeight: 'bold',
-  //   textAlign: 'center',
-  //   color: '#000000',
-  //   fontSize: 14,
-  //   backgroundColor: '#FFFF00',
-  // },
+
+  // Scrollview
 
   scrollviewContentContainer: {
     paddingBottom: 20,
@@ -208,9 +178,6 @@ export const styles = StyleSheet.create({
     backgroundColor: 'white', // Table background color
     borderWidth: 1,
     borderColor: '#AEB4E7', // Border color
-    // borderRadius: 10,
-    // overflow: 'hidden',
-    // backgroundColor: '#FF0000'
   },
 
   

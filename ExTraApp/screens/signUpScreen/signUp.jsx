@@ -109,7 +109,7 @@ const SignUp = (props) => {
             onChangeText={firstName => setFirstName(firstName)}
             onBlur={validateFirstName}
           />
-          <HelperText type="error" style={{display: 'none'}} visible={emailError}>
+          <HelperText type="error" style={{display: 'none'}} visible={firstNameError}>
             First Name can only contain letters or spaces.
           </HelperText>
 
@@ -120,7 +120,7 @@ const SignUp = (props) => {
             onChangeText={lastName => setLastName(lastName)}
             onBlur={validateLastName}
           />
-          <HelperText type="error" style={{display: 'none'}} visible={emailError}>
+          <HelperText type="error" style={{display: 'none'}} visible={lastNameError}>
             Last name can only contain letters or spaces.
           </HelperText>
 
