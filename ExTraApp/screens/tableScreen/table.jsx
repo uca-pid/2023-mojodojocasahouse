@@ -141,7 +141,7 @@ const Table = () => {
 
     // OK
     if(response.ok){
-      setExpenses(response);
+      setExpenses(responseBody);
       return;
     }
     
@@ -258,8 +258,7 @@ const Table = () => {
         <ScrollView contentContainerStyle={styles.scrollviewContentContainer}>
           <View style={styles.tableContainer}>
 
-            {/* { ! expenses ? expenses.map((item) => ( */}
-            { ExampleData? ExampleData.map((item) => (
+            { expenses.map((item) => (
               <View key={item.id} style={styles.row}>
                 <View style={styles.iconContainer}>
                   <IconFactory id={item.iconId} style={styles.icon} />
@@ -281,7 +280,7 @@ const Table = () => {
                   </View>
                 </View>
               </View>
-            )) : null}
+            ))}
           </View>
         </ScrollView>
       </View>

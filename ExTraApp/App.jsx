@@ -9,7 +9,7 @@ import ChangePassScreen from './screens/changePassScreen/changePassScreen';
 import AdmCategories from './screens/admCategoriesScreen/admCategories';
 import ForgottenPassword from './screens/forgottenPasswordScreen/forgottenPassword';
 import ResetPassword from './screens/resetPasswordScreen/resetPassword';
-
+import RedirectScreen from './screens/redirectScreen/redirect';
 
 const Stack = createNativeStackNavigator();
 
@@ -30,7 +30,12 @@ const App = () => {
 
   return (
     <NavigationContainer linking={linking}>
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator initialRouteName="redirect">
+        <Stack.Screen 
+          name="redirect"
+          component={RedirectScreen}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="Login" // Define a new screen called "Login"
           component={Login} // Use the Login component
