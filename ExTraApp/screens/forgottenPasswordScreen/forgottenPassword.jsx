@@ -95,6 +95,7 @@ const ForgottenPassword = ({ navigation, route }) => {
             onChangeText={setEmail}
             hasError={emailHasErrors}
             validationErrorMessage="Email address is invalid"
+            maxLength={321}
           />
 
           <TouchableOpacity style={styles.button} onPress={postForgottenPasswordFormToApi}>

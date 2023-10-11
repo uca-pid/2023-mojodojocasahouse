@@ -72,6 +72,7 @@ const Login = ({ navigation, route }) => {
             label="Email"
             value={email}
             onChangeText={email => setEmail(email)}
+            maxLength={321}
           />
 
           <TextInput
@@ -80,6 +81,7 @@ const Login = ({ navigation, route }) => {
             label="Password"
             value={password}
             onChangeText={password => setPassword(password)}
+            maxLength={100}
           />
 
           <TouchableOpacity style={styles.button} onPress={postLoginFormToApi}>

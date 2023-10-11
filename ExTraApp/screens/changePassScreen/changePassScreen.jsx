@@ -40,7 +40,7 @@ const ChangePassScreen = ({ navigation, route }) => { // Add navigation prop
             label="New Password"
             value={newPassword}
             onChangeText={newPassword => setNewPassword(newPassword)}
-
+            maxLength={100}
           />
           <Text>Write your new password again:</Text>
           <TextInput
@@ -49,6 +49,7 @@ const ChangePassScreen = ({ navigation, route }) => { // Add navigation prop
             label="New Password"
             value={newPasswordRepeat}
             onChangeText={newPasswordRepeat => setNewPasswordRepeat(newPasswordRepeat)}
+            maxLength={100}
           />
 
           <TouchableOpacity style={styles.button}>

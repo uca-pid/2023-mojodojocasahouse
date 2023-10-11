@@ -108,6 +108,7 @@ const SignUp = (props) => {
             value={firstName}
             onChangeText={firstName => setFirstName(firstName)}
             onBlur={validateFirstName}
+            maxLength={100}
           />
           <HelperText type="error" style={{display: 'none'}} visible={firstNameError}>
             First Name can only contain letters or spaces.
@@ -119,6 +120,7 @@ const SignUp = (props) => {
             value={lastName}
             onChangeText={lastName => setLastName(lastName)}
             onBlur={validateLastName}
+            maxLength={100}
           />
           <HelperText type="error" style={{display: 'none'}} visible={lastNameError}>
             Last name can only contain letters or spaces.
@@ -130,6 +132,7 @@ const SignUp = (props) => {
             value={email}
             onChangeText={email => setEmail(email)}
             onBlur={validateEmail}
+            maxLength={321}
           />
           <HelperText type="error" visible={emailError}>
             Email must be valid.
@@ -142,6 +145,7 @@ const SignUp = (props) => {
             value={password}
             onChangeText={password => setPassword(password)}
             onBlur={validatePassword}
+            maxLength={100}
           />
           <HelperText type="error" visible={passwordError}>
             Must contain: 8 letters, 1 number, 1 capital, and 1 symbol.
@@ -154,6 +158,7 @@ const SignUp = (props) => {
             value={repeatPassword}
             onChangeText={repeatPassword => setRepeatPassword(repeatPassword)}
             onBlur={validateRepeatPassword}
+            maxLength={100}
           />
           <HelperText type="error" visible={repeatPasswordError}>
             Passwords do not match.

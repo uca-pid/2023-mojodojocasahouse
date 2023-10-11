@@ -115,6 +115,7 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
             validationErrorMessage="Amount must be positive and limited to cent precision"
             hasError={checkAmountError}
             style={styles.validatedTextInput}
+            maxLength={12}
           />
 
           <Icon.Button 
