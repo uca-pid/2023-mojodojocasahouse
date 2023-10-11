@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Alert } fr
 import { styles } from './style';
 import { TextInput, HelperText } from 'react-native-paper';
 import LoadingOverlay from '../../components/loading/loading';
+import EmailValidator from 'email-validator';
 
 
 
@@ -14,6 +15,8 @@ const SignUp = (props) => {
   const [firstName, setFirstName] = React.useState("");
   const [lastName, setLastName] = React.useState("");
   const [repeatPassword, setRepeatPassword] = React.useState("");
+  const [firstNameError, setFirstNameError] = React.useState(false);
+  const [lastNameError, setLastNameError] = React.useState(false);
   const [emailError, setEmailError] = React.useState(false);
   const [passwordError, setPasswordError] = React.useState(false);
   const [repeatPasswordError, setRepeatPasswordError] = React.useState(false);
@@ -23,7 +26,17 @@ const SignUp = (props) => {
   };
 
   const validateEmail = () => {
-    setEmailError(!email.includes('@'));
+    setEmailError(!EmailValidator.validate(email));
+  };
+
+  const validateFirstName = () => {
+    const regex = /^[a-zA-Z ,.'-]+$/;
+    setFirstNameError(!regex.test(firstName));
+  };
+
+  const validateLastName = () => {
+    const regex = /^[a-zA-Z ,.'-]+$/;
+    setLastNameError(!regex.test(lastName));
   };
 
   const validatePassword = () => {
@@ -33,7 +46,7 @@ const SignUp = (props) => {
   };
 
   const validateRepeatPassword = () => {
-    setRepeatPasswordError(password !== repeatPassword);
+    setRepeatPasswordError(password != repeatPassword);
   };
 
   const postRegistrationToApi = async () => {
@@ -94,14 +107,22 @@ const SignUp = (props) => {
             label="First Name"
             value={firstName}
             onChangeText={firstName => setFirstName(firstName)}
+            onBlur={validateFirstName}
           />
+          <HelperText type="error" style={{display: 'none'}} visible={emailError}>
+            First Name can only contain letters or spaces.
+          </HelperText>
 
           <TextInput
             style={{ marginLeft: '10%', width: '80%', marginBottom: '9%' }}
             label="Last Name"
             value={lastName}
             onChangeText={lastName => setLastName(lastName)}
+            onBlur={validateLastName}
           />
+          <HelperText type="error" style={{display: 'none'}} visible={emailError}>
+            Last name can only contain letters or spaces.
+          </HelperText>
 
           <TextInput
             style={{ marginLeft: '10%', width: '80%', marginBottom: '2%' }}
@@ -111,7 +132,7 @@ const SignUp = (props) => {
             onBlur={validateEmail}
           />
           <HelperText type="error" visible={emailError}>
-            Invalid email. Type another.
+            Email must be valid.
           </HelperText>
 
           <TextInput
@@ -135,7 +156,7 @@ const SignUp = (props) => {
             onBlur={validateRepeatPassword}
           />
           <HelperText type="error" visible={repeatPasswordError}>
-            The passwords do not match.
+            Passwords do not match.
           </HelperText>
 
           <TouchableOpacity style={styles.button} onPress={postRegistrationToApi}>

@@ -84,6 +84,51 @@ const Table = () => {
 
   const navigation = useNavigation();
 
+  const postLogout = async () => {
+    setLoading(true);
+      try {
+      let response = await fetchWithTimeout("http://localhost:8080/logout", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        }
+      });
+
+      // OK
+      if(response.ok){
+        setLoading(false);
+        Alert.alert(
+          "Logout Success", 
+          "Logged out successfully",
+          [{text: 'OK', onPress: () => navigation.navigate('Login')}]
+        );
+        return;
+      }
+      
+      // UNAUTHORIZED
+      if(response.status == 401){
+        setLoading(false);
+        Alert.alert(
+          "Session Expired", 
+          "Please log in again to continue",
+          [{text: 'OK', onPress: () => navigation.navigate('Login')}]
+        );
+        return;
+      }
+
+      // OTHER ERROR
+      let responseBody = await response.json();
+      setLoading(false);
+      Alert.alert("API Error", responseBody.message);
+
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+      Alert.alert("Connection Error", "There was an error connecting to API");
+    }
+  };
+
   const fetchExpensesList = async () => {
     let response = await fetchWithTimeout("http://localhost:8080/getMyExpenses", {
       method: "GET",
@@ -191,10 +236,10 @@ const Table = () => {
 
         <View style={styles.menuContainer}>
           <View style={styles.menuItemContainer}>
-            <FeatherIcon.Button backgroundColor="#D9D9d9" color="black" name="settings">Settings</FeatherIcon.Button>
+            <FeatherIcon.Button onPress={toggleSettingModal} backgroundColor="#D9D9d9" color="black" name="settings">Settings</FeatherIcon.Button>
           </View>
           <View style={styles.menuItemContainer}>
-            <Icon.Button backgroundColor="#FF3641" name="log-out">Logout</Icon.Button>
+            <Icon.Button onPress={postLogout} backgroundColor="#FF3641" name="log-out">Logout</Icon.Button>
           </View>
         </View>
 
