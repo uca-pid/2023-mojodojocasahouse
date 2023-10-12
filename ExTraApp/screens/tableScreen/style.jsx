@@ -197,7 +197,10 @@ export const styles = StyleSheet.create({
     paddingTop: '2.5%',
     alignItems: 'center',
   },
-
+  categorySelectionPicker: {
+    marginTop: '2%',
+    color: 'black',
+  },
   buttonText: {
     color: 'black',
     fontSize: 14,

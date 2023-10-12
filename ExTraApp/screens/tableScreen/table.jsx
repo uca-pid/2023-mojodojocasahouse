@@ -1,13 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-  Alert,
-  Modal,
-} from 'react-native';
+import {View, Text, TouchableOpacity, Image, ScrollView, Alert, Modal, } from 'react-native';
 import { fetchWithTimeout } from '../../utils/fetchingUtils';
 import { styles } from './style';
 import ExpenseModal from '../../components/expenseModal/ExpenseModal';
@@ -47,7 +39,7 @@ const Table = () => {
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState([]);
-  // const [categoryFilter, setCategoryFilter] = useState(null);
+
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -333,14 +325,15 @@ const Table = () => {
           <View style={styles.categoryModalContainer}>
             <ScrollView>
               <TouchableOpacity onPress={() => handleCategorySelection(null)}>
-                <Text>All</Text>
+                <Text style={styles.categorySelectionPicker} >All</Text>
               </TouchableOpacity>
               {categories.map((item) => (
                 <TouchableOpacity
+               
                   key={item}
                   onPress={() => handleCategorySelection(item)}
                 >
-                  <Text>{formatCategoryItem(item).label}</Text>
+                  <Text  style={styles.categorySelectionPicker}>{formatCategoryItem(item).label}</Text>
                 </TouchableOpacity>
               ))}
             </ScrollView>

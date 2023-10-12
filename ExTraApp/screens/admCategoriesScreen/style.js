@@ -54,7 +54,14 @@ export const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: '#AEB4E8', // Background color
   },
-  
+  icon: {
+    display: 'flex',
+    flexDirection: 'row',
+    color: 'black',
+
+    fontSize: 60,
+  },
+
 
   textStyle: {
     marginLeft: '5%',
@@ -74,7 +81,8 @@ export const styles = StyleSheet.create({
     width: '70%',
     aspectRatio: 4,
     resizeMode: 'contain',
-
+    
+  
   },
 
 
