@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image, Alert, ScrollView } from 'react-native';
 import { styles } from './style';
-import { TextInput } from 'react-native-paper';
+import { TextInput, Switch } from 'react-native-paper';
 import { Buffer } from 'buffer'; 
 import { fetchWithTimeout } from '../../utils/fetchingUtils';
 import LoadingOverlay from '../../components/loading/loading';
@@ -11,6 +11,9 @@ const Login = ({ navigation, route }) => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [loading, setLoading] = React.useState(false);
+  const [isSwitchOn, setIsSwitchOn] = React.useState(false);
+
+  const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
 
   const navigateToSignUp = () => {
     navigation.navigate('SignUp'); // Navigate to the 'SignUp' screen
@@ -34,7 +37,7 @@ const Login = ({ navigation, route }) => {
           Accept: 'application/json',
           Authorization: "Basic " + Buffer.from(email + ":" + password, 'utf8').toString('base64')
         },
-        body: new FormData().append('remember-me', false)
+        body: new FormData().append('remember-me', isSwitchOn)
       });
       let responseBody = await response.json();
       setLoading(false);
@@ -83,6 +86,8 @@ const Login = ({ navigation, route }) => {
             onChangeText={password => setPassword(password)}
             maxLength={100}
           />
+          <Text style={styles.rememberMeText} >Remember me:</Text>
+          <Text style={styles.rememberMeBox}><Switch value={isSwitchOn} onValueChange={onToggleSwitch} /></Text>
 
           <TouchableOpacity style={styles.button} onPress={postLoginFormToApi}>
             <Text style={styles.buttonText}>Log in</Text>

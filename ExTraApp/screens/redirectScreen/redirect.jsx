@@ -23,6 +23,7 @@ const RedirectScreen = ({ navigation, route }) => {
       // IS LOGGED IN
       if(response.ok){
         navigateToHomeScreen();
+        console.log(navigation)
         return;
       }
 

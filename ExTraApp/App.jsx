@@ -9,6 +9,7 @@ import ChangePassScreen from './screens/changePassScreen/changePassScreen';
 import ForgottenPassword from './screens/forgottenPasswordScreen/forgottenPassword';
 import ResetPassword from './screens/resetPasswordScreen/resetPassword';
 import RedirectScreen from './screens/redirectScreen/redirect';
+import AdmCategories from './screens/admCategoriesScreen/admCategories';
 
 const Stack = createNativeStackNavigator();
 
@@ -23,7 +24,7 @@ const linking = {
     "extra://"
   ],
   config: config
-};
+}; 
 
 const App = () => {
 
@@ -48,6 +49,11 @@ const App = () => {
         <Stack.Screen
           name="Table"
           component={Table} // Use a separate component for the screen
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen 
+          name="AdmCategoriesScreen"
+          component={AdmCategories}
           options={{ headerShown: false }}
         />
         <Stack.Screen

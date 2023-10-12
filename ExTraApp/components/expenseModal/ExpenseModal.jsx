@@ -1,31 +1,30 @@
 // ExpenseModal.js
 import React, { useState } from 'react';
-import { View, Text, Modal, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, Modal, TouchableOpacity, Alert, ScrollView  } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import ValidatedTextInput from '../validatedTextInput/validatedTextInput';
 import styles from './style';
 import Icon from 'react-native-vector-icons/Entypo';
-import RNPickerSelect from 'react-native-picker-select';
 
 const getIcon = (category) => {
   switch(category){
-    case "travel":
+    case "Travel":
       return 1;
-    case "food":
+    case "Food":
       return 2;
-    case "housing":
+    case "Housing":
       return 3;
-    case "shopping":
+    case "Shopping":
       return 4;
-    case "entertainment":
+    case "Entertainment":
       return 5;
-    case "health":
+    case "Health":
       return 6;
-    case "clothes":
+    case "Clothes":
       return 7;
-    case "education":
+    case "Education":
       return 8;
-    case "various":
+    case "Various":
       return 9;
   }
 };
@@ -37,9 +36,10 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
   const [category, setCategory] = useState(null);
   const [iconId, setIconId] = useState(null);
   const [open, setOpen] = useState(false);
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
 
   const checkErrors = () => {
-    if (checkConceptError() || checkAmountError() || checkCategoryError()){
+    if (checkConceptError() || checkAmountError() || checkCategoryError()) {
       throw new Error();
     }
   };
@@ -59,7 +59,8 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
   };
 
   const handleSave = () => {
-    try{
+    try {
+      console.log({ concept, amount, date, category, iconId })
       checkErrors();
       onSave({ concept, amount, date, category, iconId });
       setConcept('');
@@ -67,7 +68,7 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
       setDate(new Date());
       onClose();
     } catch (e) {
-      Alert.alert("Validation error", "Please check fields and try again");
+      Alert.alert('Validation error', 'Please check fields and try again');
     }
   };
 
@@ -79,22 +80,27 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
   };
 
   const categoryList = [
-    { label: 'Travel', value: 'travel', inputLabel: 'Category: Travel'},
-    { label: 'Food', value: 'food', inputLabel: 'Category: Food'},
-    { label: 'Housing', value: 'housing', inputLabel: 'Category: Housing'},
-    { label: 'Shopping', value: 'shopping', inputLabel: 'Category: Shopping'},
-    { label: 'Entertainment', value: 'entertainment', inputLabel: 'Category: Entertainment'},
-    { label: 'Health', value: 'health', inputLabel: 'Category: Health'},
-    { label: 'Clothes', value: 'clothes', inputLabel: 'Category: Clothes'},
-    { label: 'Education', value: 'education', inputLabel: 'Category: Education'},
-    { label: 'Various', value: 'various', inputLabel: 'Category: Various'},
+    'Travel',
+    'Food',
+    'Housing',
+    'Shopping',
+    'Entertainment',
+    'Health',
+    'Clothes',
+    'Education',
+    'Various',
   ];
 
+  const selectCategory = (selectedCategory) => {
+    setCategory(selectedCategory);
+    setIconId(getIcon(selectedCategory));
+    setShowCategoryModal(false);
+  };
+
   return (
-    <Modal visible={isVisible} onRequestClose={onClose} transparent >
+    <Modal visible={isVisible} onRequestClose={onClose} transparent>
       <View style={styles.modalBackground}>
         <View style={styles.modalContainer}>
-          
           <Text style={styles.modalTitle}>Add Expense</Text>
 
           <ValidatedTextInput
@@ -118,8 +124,10 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
             maxLength={12}
           />
 
-          <Icon.Button 
-            onPress={() => {setOpen(true)}} 
+          <Icon.Button
+            onPress={() => {
+              setOpen(true);
+            }}
             backgroundColor="#ffffff"
             color="black"
             name="calendar"
@@ -129,23 +137,53 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
           </Icon.Button>
 
           <DatePicker
-            modal={true}
-            mode='date'
+            modal
+            mode="date"
             open={open}
             date={date}
-            onConfirm={(date) => {
+            onConfirm={(selectedDate) => {
               setOpen(false);
-              setDate(date);
+              setDate(selectedDate);
             }}
-            onCancel={() => {setOpen(false)}}
+            onCancel={() => {
+              setOpen(false);
+            }}
           />
 
-          <RNPickerSelect 
-            style={styles.rnPickerSelect}
-            onValueChange={(cat) => {setCategory(cat);setIconId(getIcon(cat))}}
-            placeholder={{ label: 'Pick a category', value: null }}
-            items={categoryList}
-          />
+          <TouchableOpacity
+            style={styles.saveButton}
+            onPress={() => setShowCategoryModal(true)}
+          >
+            <Text style={styles.categoryButtonText}>
+              {category ? category : 'Select a category'}
+            </Text>
+          </TouchableOpacity>
+
+          <Modal
+            transparent={true}
+            animationType="slide"
+            visible={showCategoryModal}
+          >
+            <View style={styles.categoryModal}>
+              <Text style={styles.modalTitle}>Select a Category</Text>
+              <ScrollView style={styles.categoryList}>
+                {categoryList.map((cat, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    onPress={() => selectCategory(cat)}
+                  >
+                    <Text style={styles.categoryListItem}>{cat}</Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+              <TouchableOpacity
+                style={styles.categoryCancelButton}
+                onPress={() => setShowCategoryModal(false)}
+              >
+                <Text style={styles.categoryCancelText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </Modal>
 
           <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
             <Text style={styles.saveButtonText}>Save</Text>
@@ -154,7 +192,6 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
           <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
             <Text style={styles.cancelButtonText}>Cancel</Text>
           </TouchableOpacity>
-
         </View>
       </View>
     </Modal>

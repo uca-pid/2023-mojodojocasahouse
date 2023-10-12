@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     },
   
     saveButton: {
-      backgroundColor: 'blue',
+      backgroundColor: '#ADC4C0',
       borderRadius: 5,
       padding: 10,
       alignItems: 'center',
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
     },
     cancelButton: {
-      backgroundColor: 'red',
+      backgroundColor: '#d15c54',
       borderRadius: 5,
       padding: 10,
       alignItems: 'center',

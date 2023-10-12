@@ -55,12 +55,26 @@ export const styles = StyleSheet.create({
     backgroundColor: '#AEB4E8', // Background color
   },
   
+
+  textStyle: {
+    marginLeft: '5%',
+    color: 'black',
+    marginBottom: '2%',
+  },
+
+  textTitle: {
+    textAlign: 'center',
+    marginBottom: '2%',
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+
   logo: {
     width: '70%',
     aspectRatio: 4,
     resizeMode: 'contain',
-    
-  
+
   },
 
 
