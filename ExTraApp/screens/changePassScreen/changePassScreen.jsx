@@ -37,7 +37,7 @@ const ChangePassScreen = ({ navigation, route }) => { // Add navigation prop
 
       // OK
       if(response.ok){
-        Alert.alert("User Creation Success", "User was created successfully", [{text: 'OK', onPress: navigateToHomeScreen}]);
+        Alert.alert("Password Change Success", "Your password was changed successfully", [{text: 'OK', onPress: navigateToHomeScreen}]);
         return;
       }
 

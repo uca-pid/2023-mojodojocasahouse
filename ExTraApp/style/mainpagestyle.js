@@ -43,11 +43,10 @@ const mainpagestyle = StyleSheet.create({
       },
       logo: {
         //height: '65%',
-        width: '70%',
+        width: '10%',
         aspectRatio: 4,
         resizeMode: 'contain',
         
-      
       },
     
       //title: {

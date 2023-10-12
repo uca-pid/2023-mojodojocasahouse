@@ -49,9 +49,8 @@ export const styles = StyleSheet.create({
   },
 
   logo: {
-    height: '100%',
-    width: null,
-    aspectRatio: 3.55,
+    width: '100%',
+    aspectRatio: 2,
     resizeMode: 'contain',
   },
 
@@ -71,11 +70,11 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
 
     borderRadius: 10,
-    backgroundColor: '#FF3641',
+    backgroundColor: '#d15c54',
     height: '70%',
     aspectRatio: 0.7,
     borderWidth: 1.5,
-    borderColor: "#FF5961",
+    borderColor: "#d15c54",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -191,7 +190,7 @@ export const styles = StyleSheet.create({
   },
 
   button: {
-    backgroundColor: '#e8c02e',
+    backgroundColor: '#433FF4',
 
     paddingBottom: '2.5%',
     paddingTop: '2.5%',
@@ -202,7 +201,7 @@ export const styles = StyleSheet.create({
     color: 'black',
   },
   buttonText: {
-    color: 'black',
+    color: 'white',
     fontSize: 14,
     fontWeight: 'bold',
   },
@@ -223,9 +222,10 @@ export const styles = StyleSheet.create({
   tableContainer: {
     display: 'flex',
     margin: 16,
-    backgroundColor: 'white', // Table background color
+    backgroundColor: '#e1e1e8', // Table background color
     borderWidth: 1,
     borderColor: '#AEB4E7', // Border color
+    borderRadius: 5,
   },
 
   
