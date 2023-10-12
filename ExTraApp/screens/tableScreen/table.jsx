@@ -47,7 +47,7 @@ const Table = () => {
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState([]);
-  const [categoryFilter, setCategoryFilter] = useState(null);
+  // const [categoryFilter, setCategoryFilter] = useState(null);
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -135,7 +135,7 @@ const Table = () => {
     Alert.alert("API Error", responseBody.message);
   };
 
-  const fetchExpensesByCategory = async () => {
+  const fetchExpensesByCategory = async (categoryFilter) => {
     setLoading(true);
     try{
 
@@ -262,6 +262,7 @@ const Table = () => {
       setLoading(true);
       await postExpenseToApi(newExpense);
       await fetchExpensesList();
+      await fetchUserCategories();
       setLoading(false);
 
     } catch (error) {
@@ -288,9 +289,9 @@ const Table = () => {
   },[navigation]);
 
   const handleCategorySelection = (selectedCategory) => {
-    setCategoryFilter(selectedCategory);
+    // setCategoryFilter(selectedCategory);
     toggleCategoryModal();
-    fetchExpensesByCategory();
+    fetchExpensesByCategory(selectedCategory);
   };
 
   return (
@@ -315,6 +316,12 @@ const Table = () => {
           </View>
         </View>
 
+
+        <View style={styles.addExpenseButtonContainer}>
+          <TouchableOpacity style={styles.button} onPress={toggleModal}>
+            <Text style={styles.buttonText}>Add Expense</Text>
+          </TouchableOpacity>
+        </View>
         <TouchableOpacity style={styles.button} onPress={toggleCategoryModal}>
           <Text style={styles.buttonText}>Select Category</Text>
         </TouchableOpacity>
@@ -322,11 +329,9 @@ const Table = () => {
           visible={isCategoryModalVisible}
           animationType="slide"
           transparent={true}
-          onRequestClose={toggleCategoryModal}
-        >
+          onRequestClose={toggleCategoryModal}>
           <View style={styles.categoryModalContainer}>
             <ScrollView>
-              {/* Add an "ALL" option to the list of categories */}
               <TouchableOpacity onPress={() => handleCategorySelection(null)}>
                 <Text>All</Text>
               </TouchableOpacity>
@@ -341,12 +346,6 @@ const Table = () => {
             </ScrollView>
           </View>
         </Modal>
-
-        <View style={styles.addExpenseButtonContainer}>
-          <TouchableOpacity style={styles.button} onPress={toggleModal}>
-            <Text style={styles.buttonText}>Add Expense</Text>
-          </TouchableOpacity>
-        </View>
 
         <ScrollView contentContainerStyle={styles.scrollviewContentContainer}>
           <View style={styles.tableContainer}>
