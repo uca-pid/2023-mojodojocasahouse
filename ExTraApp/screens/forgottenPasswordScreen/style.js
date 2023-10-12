@@ -30,16 +30,14 @@ export const styles = StyleSheet.create({
     display: 'flex',
     height: '10%',
     margin: 5,
-
-
   },
 
   bottomContainer: {
     height: '4.5%',
     width: '100%',
-    marginTop: '4%',
+    marginTop: '10%',
+    marginBottom: '5%',
     backgroundColor: '#433FF4',
-    marginBottom: '10%',
   },
 
   container: {
@@ -48,12 +46,11 @@ export const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: '#AEB4E8', // Background color
   },
+
   logo: {
-    width: '70%',
+    width: '100%',
     aspectRatio: 4,
     resizeMode: 'contain',
-    
-  
   },
 
 

@@ -304,7 +304,7 @@ const Table = () => {
             <FeatherIcon.Button onPress={toggleSettingModal} backgroundColor="#D9D9d9" color="black" name="settings">Settings</FeatherIcon.Button>
           </View>
           <View style={styles.menuItemContainer}>
-            <Icon.Button onPress={postLogout} backgroundColor="#FF3641" name="log-out">Logout</Icon.Button>
+            <Icon.Button onPress={postLogout} backgroundColor="#d15c54" name="log-out">Logout</Icon.Button>
           </View>
         </View>
 

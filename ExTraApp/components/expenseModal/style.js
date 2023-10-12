@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   
     },
     saveButton: {
-      backgroundColor: 'blue',
+      backgroundColor: '#ADC4C0',
       borderRadius: 5,
       padding: 10,
       alignItems: 'center',
@@ -131,12 +131,12 @@ const styles = StyleSheet.create({
       marginTop: 20,
     },
     saveButtonText: {
-      color: 'white',
+      color: 'black',
       fontSize: 16,
       fontWeight: 'bold',
     },
     cancelButton: {
-      backgroundColor: 'red',
+      backgroundColor: '#d15c54',
       borderRadius: 5,
       padding: 10,
       alignItems: 'center',
