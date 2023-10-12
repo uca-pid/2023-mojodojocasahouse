@@ -1,44 +1,49 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Image, ScrollView, Alert, Pressable } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+  Alert,
+  Modal,
+} from 'react-native';
 import { fetchWithTimeout } from '../../utils/fetchingUtils';
 import { styles } from './style';
-import ExpenseModal from '../../components/expenseModal/ExpenseModal'; // Import the ExpenseModal component
-import SettingModal from '../../components/settingsModal/settingsModal'; // Import the ExpenseModal component
+import ExpenseModal from '../../components/expenseModal/ExpenseModal';
+import SettingModal from '../../components/settingsModal/settingsModal';
 import { useNavigation } from '@react-navigation/native';
 import LoadingOverlay from '../../components/loading/loading';
 import Icon from 'react-native-vector-icons/Entypo';
 import FeatherIcon from 'react-native-vector-icons/Feather';
-import RNPickerSelect from 'react-native-picker-select';
 
 const IconFactory = (props) => {
-  switch(props.id){
-    case 1: 
-      return <Icon name="aircraft" style={props.style}/>
+  switch (props.id) {
+    case 1:
+      return <Icon name="aircraft" style={props.style} />;
     case 2:
-      return <Icon name="drink" style={props.style}/>
+      return <Icon name="drink" style={props.style} />;
     case 3:
-      return <Icon name="key" style={props.style}/>
+      return <Icon name="key" style={props.style} />;
     case 4:
-      return <Icon name="shopping-cart" style={props.style}/>
+      return <Icon name="shopping-cart" style={props.style} />;
     case 5:
-      return <Icon name="clapperboard" style={props.style}/>
+      return <Icon name="clapperboard" style={props.style} />;
     case 6:
-      return <Icon name="squared-cross" style={props.style}/>
+      return <Icon name="squared-cross" style={props.style} />;
     case 7:
-      return <Icon name="man" style={props.style}/>
+      return <Icon name="man" style={props.style} />;
     case 8:
-      return <Icon name="open-book" style={props.style}/>
+      return <Icon name="open-book" style={props.style} />;
     default:
-      return <Icon name="help" style={props.style}/>
+      return <Icon name="help" style={props.style} />;
   }
-
 };
-
-
 
 const Table = () => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [isModalSettingVisible, setModalSettingVisible] = useState(false);
+  const [isCategoryModalVisible, setCategoryModalVisible] = useState(false);
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState([]);
@@ -50,6 +55,10 @@ const Table = () => {
 
   const toggleSettingModal = () => {
     setModalSettingVisible(!isModalSettingVisible);
+  };
+
+  const toggleCategoryModal = () => {
+    setCategoryModalVisible(!isCategoryModalVisible);
   };
 
   const navigation = useNavigation();
@@ -278,6 +287,12 @@ const Table = () => {
     }
   },[navigation]);
 
+  const handleCategorySelection = (selectedCategory) => {
+    setCategoryFilter(selectedCategory);
+    toggleCategoryModal();
+    fetchExpensesByCategory();
+  };
+
   return (
     <View style={styles.appContainer}>
       <View style={styles.contentContainer}>
@@ -300,14 +315,32 @@ const Table = () => {
           </View>
         </View>
 
-        <RNPickerSelect 
-          style={styles.rnPickerSelect}
-          onValueChange={setCategoryFilter}
-          placeholder={{ label: 'Any', value: null, inputLabel: 'Category: Any' }}
-          items={categories.map(item => formatCategoryItem(item))}
-          pickerProps={{ onBlur: fetchExpensesByCategory}}
-          onClose={fetchExpensesByCategory}
-        />
+        <TouchableOpacity style={styles.button} onPress={toggleCategoryModal}>
+          <Text style={styles.buttonText}>Select Category</Text>
+        </TouchableOpacity>
+        <Modal
+          visible={isCategoryModalVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={toggleCategoryModal}
+        >
+          <View style={styles.categoryModalContainer}>
+            <ScrollView>
+              {/* Add an "ALL" option to the list of categories */}
+              <TouchableOpacity onPress={() => handleCategorySelection(null)}>
+                <Text>All</Text>
+              </TouchableOpacity>
+              {categories.map((item) => (
+                <TouchableOpacity
+                  key={item}
+                  onPress={() => handleCategorySelection(item)}
+                >
+                  <Text>{formatCategoryItem(item).label}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+        </Modal>
 
         <View style={styles.addExpenseButtonContainer}>
           <TouchableOpacity style={styles.button} onPress={toggleModal}>

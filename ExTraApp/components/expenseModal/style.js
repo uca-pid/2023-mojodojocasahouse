@@ -25,6 +25,27 @@ const styles = StyleSheet.create({
       padding: 20,
     },
 
+    categoryModal: {
+      display: 'flex',
+      flexDirection: 'column',
+      marginTop: '50%',
+      marginLeft: '10%',
+      marginRight: '10%',
+      backgroundColor: '#ADC4C0',
+      borderRadius: 10,
+      padding: 20,
+
+    },
+
+    categoryListItem: {
+      marginTop: '2%',
+      color: 'black',
+    },
+    
+    categoryCancelButton: {
+      alignSelf: 'center',
+    },
+
     modalTitle: {
       fontSize: 20,
       fontWeight: 'bold',

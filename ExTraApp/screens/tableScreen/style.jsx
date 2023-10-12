@@ -249,6 +249,7 @@ export const styles = StyleSheet.create({
   icon: {
     display: 'flex',
     flexDirection: 'row',
+    color: 'black',
 
     fontSize: 25,
   },
@@ -294,6 +295,17 @@ export const styles = StyleSheet.create({
 
     justifyContent: 'flex-start',
     alignItems: 'center',
+  },
+
+  categoryModalContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    marginTop: '50%',
+    marginLeft: '10%',
+    marginRight: '10%',
+    backgroundColor: '#ADC4C0',
+    borderRadius: 10,
+    padding: 20,
   },
 
   category: {
