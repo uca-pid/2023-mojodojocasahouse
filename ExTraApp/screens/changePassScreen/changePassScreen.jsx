@@ -20,13 +20,14 @@ const ChangePassScreen = ({ navigation, route }) => { // Add navigation prop
     try {
       let response = await fetch("http://localhost:8080/auth/password/change", {
         method: 'POST',
+        credentials: 'include',
         headers: {
           Accept: 'application/json',
           'Content-Type':'application/json',
         },
         body: JSON.stringify({
-          password: password,
-          passwordRepeat: newPasswordRepeat,
+          currentPassword: password,
+          newPasswordRepeat: newPasswordRepeat,
           newPassword: newPassword
 
         })
