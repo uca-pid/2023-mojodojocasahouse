@@ -28,7 +28,7 @@ const IconFactory = (props) => {
     case 8:
       return <Icon name="open-book" style={props.style} />;
     default:
-      return <Icon name="help" style={props.style} />;
+      return <Icon name="credit" style={props.style} />;
   }
 };
 
@@ -235,8 +235,15 @@ const Table = () => {
     }
 
     // OTHER ERROR
+    console.log(responseBody);
     Alert.alert("API Error", responseBody.message);
   };
+
+  const formatCategoryName = (catName) => {
+    let formattedItemLabel = catName.replaceAll("-", " ");
+    formattedItemLabel = [...formattedItemLabel][0].toUpperCase() + [...formattedItemLabel].slice(1).join('');
+    return formattedItemLabel;
+  }
 
   const formatCategoryItem = (item) => {
     let formattedItemLabel = item.replaceAll("-", " ");
@@ -353,7 +360,7 @@ const Table = () => {
                     <Text style={styles.concept}>{item.concept}</Text>
                   </View>
                   <View style={styles.categoryContainer}>
-                    <Text style={styles.category}>{item.category}</Text>
+                    <Text style={styles.category}>{formatCategoryName(item.category)}</Text>
                   </View>
                 </View>
                 <View style={styles.rowLeftContainer}>

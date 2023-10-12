@@ -26,6 +26,8 @@ const getIcon = (category) => {
       return 8;
     case "Various":
       return 9;
+    case "Set custom category":
+      return 10;
   }
 };
 
@@ -34,12 +36,17 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
   const [amount, setAmount] = useState('');
   const [date, setDate] = useState(new Date());
   const [category, setCategory] = useState(null);
+  const [customCategory, setCustomCategory]= useState('');
   const [iconId, setIconId] = useState(null);
   const [open, setOpen] = useState(false);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
 
   const checkErrors = () => {
     if (checkConceptError() || checkAmountError() || checkCategoryError()) {
+      throw new Error();
+    }
+
+    if(category == "Set custom category" && checkCustomCategoryError()){
       throw new Error();
     }
   };
@@ -58,14 +65,38 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
     return category == null;
   };
 
+  const checkCustomCategoryError = () => {
+    let regex = /^[A-Za-z\d\s]+$/;
+    return !regex.test(customCategory);
+  };
+
+  const formatCustomCategory = (custCat) => {
+    if(custCat != null){
+      var resp = custCat.toLowerCase().replaceAll(' ', '-')
+    }
+    else{
+      return custCat;
+    }
+    return resp;
+  };
+
   const handleSave = () => {
     try {
       console.log({ concept, amount, date, category, iconId })
       checkErrors();
-      onSave({ concept, amount, date, category, iconId });
+      onSave({ 
+        concept, 
+        amount, 
+        date, 
+        category: (category=='Set custom category'? formatCustomCategory(customCategory): category), 
+        iconId
+      });
       setConcept('');
       setAmount(null);
       setDate(new Date());
+      setCategory(null);
+      setIconId(null);
+      setCustomCategory(null);
       onClose();
     } catch (e) {
       Alert.alert('Validation error', 'Please check fields and try again');
@@ -76,6 +107,9 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
     setConcept('');
     setAmount(null);
     setDate(new Date());
+    setCategory(null);
+    setIconId(null);
+    setCustomCategory(null);
     onClose();
   };
 
@@ -89,6 +123,7 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
     'Clothes',
     'Education',
     'Various',
+    'Set custom category'
   ];
 
   const selectCategory = (selectedCategory) => {
@@ -184,6 +219,20 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
               </TouchableOpacity>
             </View>
           </Modal>
+
+          { category == 'Set custom category' ? 
+            <>
+              <ValidatedTextInput
+                label="New Category Name"
+                value={customCategory}
+                onChangeText={setCustomCategory}
+                maxLength={49}
+                validationErrorMessage="Category can contain letters or numbers"
+                hasError={checkCustomCategoryError}
+                style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
+              />
+            </>
+          : null}
 
           <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
             <Text style={styles.saveButtonText}>Save</Text>
