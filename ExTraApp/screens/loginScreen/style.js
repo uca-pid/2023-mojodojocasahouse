@@ -58,6 +58,15 @@ export const styles = StyleSheet.create({
     aspectRatio: 4,
     resizeMode: 'contain',
   },
+  rememberMeText: {
+    marginLeft: '10%',
+    //marginTop: '47%',
+    position: 'absolute',
+    marginTop: '47%',
+  },
 
+  rememberMeBox: {
+    marginLeft: '36%',
+  },
 
 });
