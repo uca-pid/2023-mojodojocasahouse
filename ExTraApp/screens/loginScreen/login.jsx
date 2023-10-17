@@ -1,9 +1,8 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image, Alert, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { styles } from './style';
 import { TextInput, Switch } from 'react-native-paper';
-import { Buffer } from 'buffer'; 
-import { fetchWithTimeout } from '../../utils/fetchingUtils';
+import { postLoginFormToApi } from '../../utils/apiFetch';
 import LoadingOverlay from '../../components/loading/loading';
 
 
@@ -11,47 +10,22 @@ const Login = ({ navigation, route }) => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [loading, setLoading] = React.useState(false);
-  const [isSwitchOn, setIsSwitchOn] = React.useState(false);
+  const [rememberMe, setRememberMe] = React.useState(false);
 
-  const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
+  const onToggleSwitch = () => setRememberMe(!rememberMe);
 
   const navigateToSignUp = () => {
     navigation.navigate('SignUp'); // Navigate to the 'SignUp' screen
-  };
-
-  const navigateToHomeScreen = () => {
-    navigation.navigate('Table');
   };
 
   const navigateToForgottenPasswordScreen = () => {
     navigation.navigate('forgotten-password');
   };
 
-  const postLoginFormToApi = async () => {
+  const handleSubmitLogin = async () => {
     setLoading(true);
-    try {
-      let response = await fetchWithTimeout("http://localhost:8080/login", {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          Accept: 'application/json',
-          Authorization: "Basic " + Buffer.from(email + ":" + password, 'utf8').toString('base64')
-        },
-        body: new FormData().append('remember-me', isSwitchOn)
-      });
-      let responseBody = await response.json();
-      setLoading(false);
-
-      if (response.ok) {
-        navigateToHomeScreen();
-        return;
-      }
-      Alert.alert("API Error", responseBody.message);
-
-    } catch (error) {
-      setLoading(false);
-      Alert.alert("Connection Error", "There was an error connecting to API");
-    }
+    await postLoginFormToApi(navigation, {email, password, rememberMe});
+    setLoading(false);
   };
 
   return (
@@ -87,9 +61,9 @@ const Login = ({ navigation, route }) => {
             maxLength={100}
           />
           <Text style={styles.rememberMeText} >Remember me:</Text>
-          <Text style={styles.rememberMeBox}><Switch value={isSwitchOn} onValueChange={onToggleSwitch} /></Text>
+          <Text style={styles.rememberMeBox}><Switch value={rememberMe} onValueChange={onToggleSwitch} /></Text>
 
-          <TouchableOpacity style={styles.button} onPress={postLoginFormToApi}>
+          <TouchableOpacity style={styles.button} onPress={handleSubmitLogin}>
             <Text style={styles.buttonText}>Log in</Text>
           </TouchableOpacity>
 

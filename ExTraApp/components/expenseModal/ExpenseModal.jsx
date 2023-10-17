@@ -1,32 +1,33 @@
 // ExpenseModal.js
 import React, { useState } from 'react';
-import { View, Text, Modal, TouchableOpacity, Alert, ScrollView  } from 'react-native';
+import { View, Text, Modal, TouchableOpacity, Alert  } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import ValidatedTextInput from '../validatedTextInput/validatedTextInput';
 import styles from './style';
 import Icon from 'react-native-vector-icons/Entypo';
+import { Picker } from '../picker/picker';
 
 const getIcon = (category) => {
   switch(category){
-    case "Travel":
+    case "travel":
       return 1;
-    case "Food":
+    case "food":
       return 2;
-    case "Housing":
+    case "housing":
       return 3;
-    case "Shopping":
+    case "shopping":
       return 4;
-    case "Entertainment":
+    case "entertainment":
       return 5;
-    case "Health":
+    case "health":
       return 6;
-    case "Clothes":
+    case "clothes":
       return 7;
-    case "Education":
+    case "education":
       return 8;
-    case "Various":
+    case "various":
       return 9;
-    case "Set custom category":
+    case "custom":
       return 10;
   }
 };
@@ -39,14 +40,13 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
   const [customCategory, setCustomCategory]= useState('');
   const [iconId, setIconId] = useState(null);
   const [open, setOpen] = useState(false);
-  const [showCategoryModal, setShowCategoryModal] = useState(false);
 
   const checkErrors = () => {
     if (checkConceptError() || checkAmountError() || checkCategoryError()) {
       throw new Error();
     }
 
-    if(category == "Set custom category" && checkCustomCategoryError()){
+    if(category == "custom" && checkCustomCategoryError()){
       throw new Error();
     }
   };
@@ -88,15 +88,10 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
         concept, 
         amount, 
         date, 
-        category: (category=='Set custom category'? formatCustomCategory(customCategory): category), 
+        category: (category=='custom'? formatCustomCategory(customCategory): category), 
         iconId
       });
-      setConcept('');
-      setAmount(null);
-      setDate(new Date());
-      setCategory(null);
-      setIconId(null);
-      setCustomCategory(null);
+      resetFields();
       onClose();
     } catch (e) {
       Alert.alert('Validation error', 'Please check fields and try again');
@@ -104,32 +99,37 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
   };
 
   const handleCancel = () => {
+    // Resets form fields
+    resetFields();
+
+    // Calls onClose callback
+    onClose();
+  };
+
+  const resetFields = () => {
     setConcept('');
     setAmount(null);
     setDate(new Date());
     setCategory(null);
     setIconId(null);
     setCustomCategory(null);
-    onClose();
   };
 
-  const categoryList = [
-    'Travel',
-    'Food',
-    'Housing',
-    'Shopping',
-    'Entertainment',
-    'Health',
-    'Clothes',
-    'Education',
-    'Various',
-    'Set custom category'
+  const categories = [
+    {value: 'travel', label: 'Travel', inputLabel: 'Category: Travel'},
+    {value: 'food', label: 'Food', inputLabel: 'Category: Food'},
+    {value: 'housing', label: 'Housing', inputLabel: 'Category: Housing'},
+    {value: 'shopping', label: 'Shopping', inputLabel: 'Category: Shopping'},
+    {value: 'entertainment', label: 'Entertainment', inputLabel: 'Category: Entertainment'},
+    {value: 'health', label: 'Health', inputLabel: 'Category: Health'},
+    {value: 'clothes', label: 'Clothes', inputLabel: 'Category: Clothes'},
+    {value: 'education', label: 'Education', inputLabel: 'Category: Education'},
+    {value: 'various', label: 'Various', inputLabel: 'Category: Various'},
+    {value: 'custom', label: 'Custom', inputLabel: 'Custom category'},
   ];
 
-  const selectCategory = (selectedCategory) => {
-    setCategory(selectedCategory);
-    setIconId(getIcon(selectedCategory));
-    setShowCategoryModal(false);
+  const setIcon = () => {
+    setIconId(getIcon(category));
   };
 
   return (
@@ -185,42 +185,15 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
             }}
           />
 
-          <TouchableOpacity
-            style={styles.saveButton}
-            onPress={() => setShowCategoryModal(true)}
-          >
-            <Text style={styles.categoryButtonText}>
-              {category ? category : 'Select a category'}
-            </Text>
-          </TouchableOpacity>
+          <Picker.Single 
+            value={category}
+            onChange={setCategory}
+            placeholder={{value: null, label: 'Choose a category...'}}
+            data={categories}
+            onClose={setIcon}
+          />
 
-          <Modal
-            transparent={true}
-            animationType="slide"
-            visible={showCategoryModal}
-          >
-            <View style={styles.categoryModal}>
-              <Text style={styles.modalTitle}>Select a Category</Text>
-              <ScrollView style={styles.categoryList}>
-                {categoryList.map((cat, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    onPress={() => selectCategory(cat)}
-                  >
-                    <Text style={styles.categoryListItem}>{cat}</Text>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-              <TouchableOpacity
-                style={styles.categoryCancelButton}
-                onPress={() => setShowCategoryModal(false)}
-              >
-                <Text style={styles.categoryCancelText}>Cancel</Text>
-              </TouchableOpacity>
-            </View>
-          </Modal>
-
-          { category == 'Set custom category' ? 
+          { category == 'custom' ? 
             <>
               <ValidatedTextInput
                 label="New Category Name"
