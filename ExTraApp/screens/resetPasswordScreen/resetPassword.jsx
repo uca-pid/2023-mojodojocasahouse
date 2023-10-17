@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, Image, Alert } from 'react-native';
 import { styles } from './style';
 import { TextInput, HelperText } from 'react-native-paper';
 import LoadingOverlay from '../../components/loading/loading';
-import { fetchWithTimeout } from '../../utils/fetchingUtils';
+import { postResetPasswordFormToApi } from '../../utils/apiFetch';
 
 const ResetPassword = ({ navigation, route }) => {
   const [newPassword, setNewPassword] = React.useState("");
@@ -17,50 +17,13 @@ const ResetPassword = ({ navigation, route }) => {
     navigation.navigate('Login');
   };
 
-  const postResetPasswordFormToApi = async () => {
-    if(formHasErrors()){
-      Alert.alert('Invalid Fields', "One or more required fields are invalid. Please correct these errors and try again.");
-      return;
-    }
-
+  const handleSubmit = async () => {
     setLoading(true);
-    try {
-
-      let response = await fetchWithTimeout("http://localhost:8080/auth/forgotten/reset", {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type':'application/json',
-        },
-        body: JSON.stringify({
-          newPassword: newPassword,
-          newPasswordRepeat: newPasswordRepeat,
-          token: route.params.token
-        })
-      });
-      let responseBody = await response.json();
-      setLoading(false);
-
-      // OK
-      if(response.ok){
-        Alert.alert(
-          "Reset Successful", 
-          "Password reset successfully!",
-          [{text: 'OK', onPress: navigateToLogin}],
-        );
-        return;
-      }
-      
-      // OTHER ERROR
-      Alert.alert("API Error", responseBody.message);
-
-    } catch (error) {
-      Alert.alert(
-        "Connection Error", 
-        "There was an error connecting to API"
-      );
-    }
+    await postResetPasswordFormToApi(formHasErrors, {newPassword, newPasswordRepeat, token: route.params.token})
+    setLoading(false);
   };
+
+
 
   const formHasErrors = () => {
     return (checkNewPasswordHasErrors() || checkRepeatedPasswordDoesNotMatch());
@@ -119,7 +82,7 @@ const ResetPassword = ({ navigation, route }) => {
             Passwords must match
           </HelperText>
 
-          <TouchableOpacity style={styles.button} onPress={postResetPasswordFormToApi}>
+          <TouchableOpacity style={styles.button} onPress={handleSubmit}>
             <Text style={styles.buttonText}>Confirm</Text>
           </TouchableOpacity>
 
