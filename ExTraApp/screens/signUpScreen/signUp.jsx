@@ -1,20 +1,22 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Alert } from 'react-native';
-import { styles } from './style';
+import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { TextInput, HelperText } from 'react-native-paper';
-import LoadingOverlay from '../../components/loading/loading';
 import EmailValidator from 'email-validator';
 
+import { styles } from './style';
+import LoadingOverlay from '../../components/loading/loading';
+import { postRegistrationToApi } from '../../utils/apiFetch';
 
 
 
-const SignUp = (props) => {
+
+const SignUp = ({navigation, route}) => {
   const [loading, setLoading] = React.useState(false);
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [firstName, setFirstName] = React.useState("");
   const [lastName, setLastName] = React.useState("");
-  const [repeatPassword, setRepeatPassword] = React.useState("");
+  const [passwordRepeat, setRepeatPassword] = React.useState("");
   const [firstNameError, setFirstNameError] = React.useState(false);
   const [lastNameError, setLastNameError] = React.useState(false);
   const [emailError, setEmailError] = React.useState(false);
@@ -22,7 +24,7 @@ const SignUp = (props) => {
   const [repeatPasswordError, setRepeatPasswordError] = React.useState(false);
 
   const navigateToLogin = () => {
-    props.navigation.navigate('Login'); // Navigate back to the 'Login' screen
+    navigation.navigate('Login'); // Navigate back to the 'Login' screen
   };
 
   const validateEmail = () => {
@@ -46,44 +48,19 @@ const SignUp = (props) => {
   };
 
   const validateRepeatPassword = () => {
-    setRepeatPasswordError(password != repeatPassword);
+    setRepeatPasswordError(password != passwordRepeat);
   };
 
-  const postRegistrationToApi = async () => {
+  const handleSubmit = async () => {
     setLoading(true);
-    try {
-      let response = await fetch("http://localhost:8080/register", {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type':'application/json',
-        },
-        body: JSON.stringify({
-          firstName: firstName,
-          lastName: lastName,
-          email: email,
-          password: password,
-          passwordRepeat: repeatPassword
-        })
-      });
-      let responseBody = await response.json();
-      setLoading(false);
-
-      // OK
-      if(response.ok){
-        Alert.alert("User Creation Success", "User was created successfully", [{text: 'OK', onPress: navigateToLogin}]);
-        return;
-      }
-
-      // OTHER ERROR
-      Alert.alert("API Error", responseBody.message);
-
-    } catch (error) {
-      Alert.alert(
-        "Connection Error", 
-        "There was an error connecting to API"
-      );
-    }
+    await postRegistrationToApi({
+      firstName,
+      lastName,
+      email,
+      password,
+      passwordRepeat
+    }, navigation);
+    setLoading(false);
   };
 
   return (
@@ -106,7 +83,7 @@ const SignUp = (props) => {
             style={{ marginLeft: '10%', width: '80%', marginBottom: '9%' }}
             label="First Name"
             value={firstName}
-            onChangeText={firstName => setFirstName(firstName)}
+            onChangeText={setFirstName}
             onBlur={validateFirstName}
             maxLength={100}
           />
@@ -118,7 +95,7 @@ const SignUp = (props) => {
             style={{ marginLeft: '10%', width: '80%', marginBottom: '9%' }}
             label="Last Name"
             value={lastName}
-            onChangeText={lastName => setLastName(lastName)}
+            onChangeText={setLastName}
             onBlur={validateLastName}
             maxLength={100}
           />
@@ -130,7 +107,7 @@ const SignUp = (props) => {
             style={{ marginLeft: '10%', width: '80%', marginBottom: '2%' }}
             label="Email"
             value={email}
-            onChangeText={email => setEmail(email)}
+            onChangeText={setEmail}
             onBlur={validateEmail}
             maxLength={321}
           />
@@ -143,7 +120,7 @@ const SignUp = (props) => {
             style={{ marginLeft: '10%', width: '80%', marginBottom: '2%' }}
             label="Password"
             value={password}
-            onChangeText={password => setPassword(password)}
+            onChangeText={setPassword}
             onBlur={validatePassword}
             maxLength={100}
           />
@@ -155,8 +132,8 @@ const SignUp = (props) => {
             secureTextEntry={true}
             style={{ marginLeft: '10%', width: '80%' }}
             label="Password"
-            value={repeatPassword}
-            onChangeText={repeatPassword => setRepeatPassword(repeatPassword)}
+            value={passwordRepeat}
+            onChangeText={setRepeatPassword}
             onBlur={validateRepeatPassword}
             maxLength={100}
           />
@@ -164,7 +141,7 @@ const SignUp = (props) => {
             Passwords do not match.
           </HelperText>
 
-          <TouchableOpacity style={styles.button} onPress={postRegistrationToApi}>
+          <TouchableOpacity style={styles.button} onPress={handleSubmit}>
             <Text style={styles.buttonText}>Create Account</Text>
           </TouchableOpacity>
 
