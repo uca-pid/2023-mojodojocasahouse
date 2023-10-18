@@ -1,5 +1,6 @@
 import { Alert } from "react-native";
 import { Buffer } from 'buffer';
+import { API_URL } from "@env";
 
 const formatCategories = (categoriesResponse) => {
   return categoriesResponse.map(formatCategoryItem);
@@ -48,7 +49,7 @@ async function fetchWithTimeout(resource, options = {}) {
 }
 
 const postExpenseToApi = async (newExpense, navigation) => {
-  let response = await fetchWithTimeout("http://localhost:8080/addExpense", {
+  let response = await fetchWithTimeout( API_URL + "/addExpense", {
     method: 'POST',
     credentials: 'include',
     headers: {
@@ -75,13 +76,19 @@ const postExpenseToApi = async (newExpense, navigation) => {
     return;
   }
 
+  // INTERNAL ERROR
+  if(response.status >= 500){
+    Alert.alert("Server Error", "Oops! An unknown error happened");
+    return;
+  }
+
   // OTHER ERROR
   Alert.alert("API Error", responseBody.message);
 };
 
 const postLogout = async (navigation) => {
     try {
-    let response = await fetchWithTimeout("http://localhost:8080/logout", {
+    let response = await fetchWithTimeout( API_URL + "/logout", {
       method: "POST",
       credentials: "include",
       headers: {
@@ -109,6 +116,12 @@ const postLogout = async (navigation) => {
       return;
     }
 
+    // INTERNAL ERROR
+    if(response.status >= 500){
+      Alert.alert("Server Error", "Oops! An unknown error happened");
+      return;
+    }
+
     // OTHER ERROR
     let responseBody = await response.json();
     Alert.alert("API Error", responseBody.message);
@@ -119,7 +132,7 @@ const postLogout = async (navigation) => {
 };
 
 const fetchUserCategories = async (setCategories, navigation) => {
-  let response = await fetchWithTimeout("http://localhost:8080/getAllCategories", {
+  let response = await fetchWithTimeout(API_URL + "/getAllCategories", {
     method: "GET",
     credentials: "include",
   });
@@ -141,6 +154,12 @@ const fetchUserCategories = async (setCategories, navigation) => {
     return;
   }
 
+  // INTERNAL ERROR
+  if(response.status >= 500){
+    Alert.alert("Server Error", "Oops! An unknown error happened");
+    return;
+  }
+
   // OTHER ERROR
   Alert.alert("API Error", responseBody.message);
 };
@@ -153,7 +172,7 @@ const fetchExpensesByCategory = async (categoryFilter, setExpenses, navigation) 
       return;
     }
 
-    let response = await fetchWithTimeout("http://localhost:8080/getMyExpensesByCategory", {
+    let response = await fetchWithTimeout(API_URL + "/getMyExpensesByCategory", {
       method: "POST",
       credentials: "include",
       headers: {
@@ -181,6 +200,12 @@ const fetchExpensesByCategory = async (categoryFilter, setExpenses, navigation) 
       return;
     }
 
+    // INTERNAL ERROR
+    if(response.status >= 500){
+      Alert.alert("Server Error", "Oops! An unknown error happened");
+      return;
+    }
+
     // OTHER ERROR
     Alert.alert("API Error", responseBody.message);
 
@@ -191,7 +216,7 @@ const fetchExpensesByCategory = async (categoryFilter, setExpenses, navigation) 
 };
 
 const fetchExpensesList = async (setExpenses, navigation) => {
-  let response = await fetchWithTimeout("http://localhost:8080/getMyExpenses", {
+  let response = await fetchWithTimeout(API_URL + "/getMyExpenses", {
     method: "GET",
     credentials: "include",
     headers: {
@@ -216,13 +241,19 @@ const fetchExpensesList = async (setExpenses, navigation) => {
     return;
   }
 
+  // INTERNAL ERROR
+  if(response.status >= 500){
+    Alert.alert("Server Error", "Oops! An unknown error happened");
+    return;
+  }
+
   // OTHER ERROR
   Alert.alert("API Error", responseBody.message);
 };
 
 const checkIsLoggedIn = async (navigation) => {
   try{
-    let response = await fetchWithTimeout("http://localhost:8080/protected", {
+    let response = await fetchWithTimeout(API_URL + "/protected", {
       method: "GET",
       credentials: 'include',
     });
@@ -233,19 +264,25 @@ const checkIsLoggedIn = async (navigation) => {
       return;
     }
 
+    // ERROR
+    if(response.status >= 500){
+      Alert.alert("Server Error", "Oops! An unknown error happened");
+      return;
+    }
+
     // NOT LOGGED IN
     navigation.navigate('Login');
     return;
 
   } catch (error) {
-    navigation.navigate('Login');
-    return;
+    console.log(error);
+    Alert.alert("Connection Error", "There was an error connecting to API");
   }
 };
 
 const postLoginFormToApi = async (navigation, request) => {
   try {
-    let response = await fetchWithTimeout("http://localhost:8080/login", {
+    let response = await fetchWithTimeout(API_URL + "/login", {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -256,10 +293,19 @@ const postLoginFormToApi = async (navigation, request) => {
     });
     let responseBody = await response.json();
 
+    // OK
     if (response.ok) {
       navigation.navigate('Table');
       return;
     }
+
+    // INTERNAL ERROR
+    if(response.status >= 500){
+      Alert.alert("Server Error", "Oops! An unknown error happened");
+      return;
+    }
+
+    // OTHER ERROR
     Alert.alert("API Error", responseBody.message);
 
   } catch (error) {
@@ -275,7 +321,7 @@ const postForgottenPasswordFormToApi = async (formHasErrors, email, navigation) 
   }
 
   try{
-    let response = await fetchWithTimeout("http://localhost:8080/auth/forgotten", {
+    let response = await fetchWithTimeout(API_URL + "/auth/forgotten", {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -295,6 +341,12 @@ const postForgottenPasswordFormToApi = async (formHasErrors, email, navigation) 
         "Please check your inbox",
         [{text: 'OK', onPress: navigation.navigate("Login")}],
       );
+      return;
+    }
+
+    // INTERNAL ERROR
+    if(response.status >= 500){
+      Alert.alert("Server Error", "Oops! An unknown error happened");
       return;
     }
 
@@ -321,7 +373,7 @@ const postResetPasswordFormToApi = async (formHasErrors, request, navigation) =>
 
   try {
 
-    let response = await fetchWithTimeout("http://localhost:8080/auth/forgotten/reset", {
+    let response = await fetchWithTimeout(API_URL + "/auth/forgotten/reset", {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -341,6 +393,91 @@ const postResetPasswordFormToApi = async (formHasErrors, request, navigation) =>
       return;
     }
     
+    // INTERNAL ERROR
+    if(response.status >= 500){
+      Alert.alert("Server Error", "Oops! An unknown error happened");
+      return;
+    }
+
+    // OTHER ERROR
+    Alert.alert("API Error", responseBody.message);
+
+  } catch (error) {
+    Alert.alert(
+      "Connection Error", 
+      "There was an error connecting to API"
+    );
+  }
+};
+
+const postRegistrationToApi = async (request, navigation) => {
+  try {
+    let response = await fetch(API_URL + "/register", {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type':'application/json',
+      },
+      body: JSON.stringify(request)
+    });
+    let responseBody = await response.json();
+
+    // OK
+    if(response.ok){
+      Alert.alert(
+        "User Creation Success", 
+        "User was created successfully", 
+        [{text: 'OK', onPress: navigation.navigate("Login")}]
+      );
+      return;
+    }
+
+    // INTERNAL ERROR
+    if(response.status >= 500){
+      Alert.alert("Server Error", "Oops! An unknown error happened");
+      return;
+    }
+
+    // OTHER ERROR
+    Alert.alert("API Error", responseBody.message);
+
+  } catch (error) {
+    Alert.alert(
+      "Connection Error", 
+      "There was an error connecting to API"
+    );
+  }
+};
+
+const postChangePassToApi = async (request, navigation) => {
+  try {
+    let response = await fetch(API_URL + "/auth/password/change", {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type':'application/json',
+      },
+      body: JSON.stringify(request)
+    });
+    let responseBody = await response.json();
+
+    // OK
+    if(response.ok){
+      Alert.alert(
+        "Password Change Success", 
+        "Your password was changed successfully", 
+        [{text: 'OK', onPress: navigation.navigate("Table")}]
+      );
+      return;
+    }
+
+    // INTERNAL ERROR
+    if(response.status >= 500){
+      Alert.alert("Server Error", "Oops! An unknown error happened");
+      return;
+    }
+
     // OTHER ERROR
     Alert.alert("API Error", responseBody.message);
 
@@ -362,5 +499,7 @@ export {
   checkIsLoggedIn,
   postLoginFormToApi,
   postForgottenPasswordFormToApi,
-  postResetPasswordFormToApi
+  postResetPasswordFormToApi,
+  postRegistrationToApi,
+  postChangePassToApi
 };
