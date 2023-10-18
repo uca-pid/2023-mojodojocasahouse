@@ -1,3 +1,4 @@
+
 import { StyleSheet } from "react-native";
 
 
@@ -32,11 +33,11 @@ export const styles = StyleSheet.create({
   },
 
   bottomContainer: {
-    height: '3.5%',
+    height: '4.5%',
     width: '100%',
+    marginTop: '10%',
+    marginBottom: '5%',
     backgroundColor: '#433FF4',
-    position: 'absolute',
-    marginTop: 95,
   },
 
   container: {
@@ -44,29 +45,13 @@ export const styles = StyleSheet.create({
     margin: 10,
     borderRadius: 20,
     backgroundColor: '#AEB4E8', // Background color
-    height: '100%',
   },
-  contentContainer: {
-    marginTop:80,
-    paddingTop: 20,
-    paddingBottom: 20,
-    borderRadius: 20,
-    backgroundColor: '#AEB4E8', // Background color
-  },
+
   logo: {
     width: '100%',
     aspectRatio: 4,
     resizeMode: 'contain',
   },
-  rememberMeText: {
-    marginLeft: '10%',
-    //marginTop: '47%',
-    position: 'absolute',
-    marginTop: '47%',
-  },
 
-  rememberMeBox: {
-    marginLeft: '36%',
-  },
 
 });

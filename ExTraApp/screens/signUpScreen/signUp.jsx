@@ -1,103 +1,180 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Alert } from 'react-native';
 import { styles } from './style';
-import { TextInput } from 'react-native-paper';
+import { TextInput, HelperText } from 'react-native-paper';
+import LoadingOverlay from '../../components/loading/loading';
+import EmailValidator from 'email-validator';
 
 
 
 
-//1 solo punto, carpeta actual, 2 puntos es un directorio para arriba
 const SignUp = (props) => {
+  const [loading, setLoading] = React.useState(false);
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [firstName, setFirstName] = React.useState("");
   const [lastName, setLastName] = React.useState("");
   const [repeatPassword, setRepeatPassword] = React.useState("");
-  
+  const [firstNameError, setFirstNameError] = React.useState(false);
+  const [lastNameError, setLastNameError] = React.useState(false);
+  const [emailError, setEmailError] = React.useState(false);
+  const [passwordError, setPasswordError] = React.useState(false);
+  const [repeatPasswordError, setRepeatPasswordError] = React.useState(false);
+
   const navigateToLogin = () => {
     props.navigation.navigate('Login'); // Navigate back to the 'Login' screen
   };
 
+  const validateEmail = () => {
+    setEmailError(!EmailValidator.validate(email));
+  };
+
+  const validateFirstName = () => {
+    const regex = /^[a-zA-Z ,.'-]+$/;
+    setFirstNameError(!regex.test(firstName));
+  };
+
+  const validateLastName = () => {
+    const regex = /^[a-zA-Z ,.'-]+$/;
+    setLastNameError(!regex.test(lastName));
+  };
+
+  const validatePassword = () => {
+    // Password validation criteria: at least 8 letters, 1 number, 1 capital, and 1 symbol
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
+    setPasswordError(!passwordRegex.test(password));
+  };
+
+  const validateRepeatPassword = () => {
+    setRepeatPasswordError(password != repeatPassword);
+  };
+
   const postRegistrationToApi = async () => {
-    let response = await fetch("http://localhost:8080/register", {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type':'application/json',
-      },
-      body: JSON.stringify({
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        password: password,
-        passwordRepeat: repeatPassword
-      })
-    });
+    setLoading(true);
+    try {
+      let response = await fetch("http://localhost:8080/register", {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type':'application/json',
+        },
+        body: JSON.stringify({
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          password: password,
+          passwordRepeat: repeatPassword
+        })
+      });
+      let responseBody = await response.json();
+      setLoading(false);
 
-    console.log(await response.json());
+      // OK
+      if(response.ok){
+        Alert.alert("User Creation Success", "User was created successfully", [{text: 'OK', onPress: navigateToLogin}]);
+        return;
+      }
 
-  }
+      // OTHER ERROR
+      Alert.alert("API Error", responseBody.message);
+
+    } catch (error) {
+      Alert.alert(
+        "Connection Error", 
+        "There was an error connecting to API"
+      );
+    }
+  };
 
   return (
     <View style={styles.appContainer}>
       <View style={styles.container}>
+
+        <LoadingOverlay 
+          shown={loading}
+        />
+
         <View style={styles.logoContainer}>
-          <Image style={styles.logo} source={require('./../../img/logo.png')} /> 
+          <Image style={styles.logo} source={require('./../../img/logo.png')} />
         </View>
 
         <View style={styles.bottomContainer} />
 
-        <View>
-          
-          <TextInput 
-            style={{marginLeft: '10%', width: '80%', marginBottom: '5%' }}
+        <ScrollView contentContainerStyle={styles.contentContainer}>
+
+          <TextInput
+            style={{ marginLeft: '10%', width: '80%', marginBottom: '9%' }}
             label="First Name"
             value={firstName}
             onChangeText={firstName => setFirstName(firstName)}
+            onBlur={validateFirstName}
+            maxLength={100}
           />
+          <HelperText type="error" style={{display: 'none'}} visible={firstNameError}>
+            First Name can only contain letters or spaces.
+          </HelperText>
 
-          <TextInput 
-            style={{marginLeft: '10%', width: '80%', marginBottom: '5%' }}
+          <TextInput
+            style={{ marginLeft: '10%', width: '80%', marginBottom: '9%' }}
             label="Last Name"
             value={lastName}
             onChangeText={lastName => setLastName(lastName)}
+            onBlur={validateLastName}
+            maxLength={100}
           />
+          <HelperText type="error" style={{display: 'none'}} visible={lastNameError}>
+            Last name can only contain letters or spaces.
+          </HelperText>
 
-          <TextInput 
-            style={{marginLeft: '10%', width: '80%', marginBottom: '5%' }}
+          <TextInput
+            style={{ marginLeft: '10%', width: '80%', marginBottom: '2%' }}
             label="Email"
             value={email}
             onChangeText={email => setEmail(email)}
+            onBlur={validateEmail}
+            maxLength={321}
           />
+          <HelperText type="error" visible={emailError}>
+            Email must be valid.
+          </HelperText>
 
-          <TextInput 
-            style={{marginLeft: '10%', width: '80%', marginBottom: '5%' }}
+          <TextInput
+            secureTextEntry={true}
+            style={{ marginLeft: '10%', width: '80%', marginBottom: '2%' }}
             label="Password"
             value={password}
             onChangeText={password => setPassword(password)}
+            onBlur={validatePassword}
+            maxLength={100}
           />
+          <HelperText type="error" visible={passwordError}>
+            Must contain: 8 letters, 1 number, 1 capital, and 1 symbol.
+          </HelperText>
 
-          <TextInput 
-            style={{marginLeft: '10%', width: '80%', marginBottom: '5%' }}
+          <TextInput
+            secureTextEntry={true}
+            style={{ marginLeft: '10%', width: '80%' }}
             label="Password"
             value={repeatPassword}
             onChangeText={repeatPassword => setRepeatPassword(repeatPassword)}
+            onBlur={validateRepeatPassword}
+            maxLength={100}
           />
+          <HelperText type="error" visible={repeatPasswordError}>
+            Passwords do not match.
+          </HelperText>
 
           <TouchableOpacity style={styles.button} onPress={postRegistrationToApi}>
             <Text style={styles.buttonText}>Create Account</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={navigateToLogin}> 
-            <Text style={{textAlign: 'center', }}>
-              Have an account already? Log in
-            </Text>
+          <TouchableOpacity onPress={navigateToLogin}>
+            <Text style={{ textAlign: 'center' }}>Have an account already? Log in</Text>
           </TouchableOpacity>
-
-        </View>
+        </ScrollView>
       </View>
-    </View>  
+    </View>
   );
 };
 
-export default SignUp
+export default SignUp;

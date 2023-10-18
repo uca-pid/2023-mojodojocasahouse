@@ -1,3 +1,4 @@
+
 import { StyleSheet } from "react-native";
 
 
@@ -29,14 +30,16 @@ export const styles = StyleSheet.create({
     display: 'flex',
     height: '10%',
     margin: 5,
+
+
   },
 
   bottomContainer: {
-    height: '3.5%',
+    height: '4.5%',
     width: '100%',
+    marginTop: '4%',
     backgroundColor: '#433FF4',
-    position: 'absolute',
-    marginTop: 95,
+    marginBottom: '10%',
   },
 
   container: {
@@ -47,26 +50,32 @@ export const styles = StyleSheet.create({
     height: '100%',
   },
   contentContainer: {
-    marginTop:80,
-    paddingTop: 20,
     paddingBottom: 20,
     borderRadius: 20,
     backgroundColor: '#AEB4E8', // Background color
   },
-  logo: {
-    width: '100%',
-    aspectRatio: 4,
-    resizeMode: 'contain',
-  },
-  rememberMeText: {
-    marginLeft: '10%',
-    //marginTop: '47%',
-    position: 'absolute',
-    marginTop: '47%',
+  
+
+  textStyle: {
+    marginLeft: '5%',
+    color: 'black',
+    marginBottom: '2%',
   },
 
-  rememberMeBox: {
-    marginLeft: '36%',
+  textTitle: {
+    textAlign: 'center',
+    marginBottom: '2%',
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
   },
+
+  logo: {
+    width: '70%',
+    aspectRatio: 4,
+    resizeMode: 'contain',
+
+  },
+
 
 });

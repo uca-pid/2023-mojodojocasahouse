@@ -1,13 +1,19 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TouchableOpacity, Image, Alert, ScrollView } from 'react-native';
 import { styles } from './style';
-import { TextInput } from 'react-native-paper';
-import SessionContext from '../../context/SessionContext';
+import { TextInput, Switch } from 'react-native-paper';
+import { Buffer } from 'buffer'; 
+import { fetchWithTimeout } from '../../utils/fetchingUtils';
+import LoadingOverlay from '../../components/loading/loading';
 
-const Login = ({ navigation, route }) => { // Add navigation prop
+
+const Login = ({ navigation, route }) => { 
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const {sessionCookie, setSessionCookie} = React.useContext(SessionContext);
+  const [loading, setLoading] = React.useState(false);
+  const [isSwitchOn, setIsSwitchOn] = React.useState(false);
+
+  const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
 
   const navigateToSignUp = () => {
     navigation.navigate('SignUp'); // Navigate to the 'SignUp' screen
@@ -17,58 +23,85 @@ const Login = ({ navigation, route }) => { // Add navigation prop
     navigation.navigate('Table');
   };
 
-  const postLoginFormToApi = async () => {
-    let response = await fetch("http://localhost:8080/login", {
-      method: 'POST',
-      credentials: 'cross-origin',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type':'application/json',
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password
-      })
-    });
+  const navigateToForgottenPasswordScreen = () => {
+    navigation.navigate('forgotten-password');
+  };
 
-    if (response.ok){
-      navigateToHomeScreen();
+  const postLoginFormToApi = async () => {
+    setLoading(true);
+    try {
+      let response = await fetchWithTimeout("http://localhost:8080/login", {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          Accept: 'application/json',
+          Authorization: "Basic " + Buffer.from(email + ":" + password, 'utf8').toString('base64')
+        },
+        body: new FormData().append('remember-me', isSwitchOn)
+      });
+      let responseBody = await response.json();
+      setLoading(false);
+
+      if (response.ok) {
+        navigateToHomeScreen();
+        return;
+      }
+      Alert.alert("API Error", responseBody.message);
+
+    } catch (error) {
+      setLoading(false);
+      Alert.alert("Connection Error", "There was an error connecting to API");
     }
   };
 
   return (
     <View style={styles.appContainer}>
       <View style={styles.container}>
+
+        <LoadingOverlay 
+          shown={loading}
+        />
+
         <View style={styles.logoContainer}>
           <Image style={styles.logo} source={require('./../../img/logo.png')} />
         </View>
 
         <View style={styles.bottomContainer}></View>
 
-        <View>
+        <ScrollView contentContainerStyle={styles.contentContainer}>
+        
           <TextInput
             style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
             label="Email"
             value={email}
             onChangeText={email => setEmail(email)}
+            maxLength={321}
           />
 
           <TextInput
+            secureTextEntry={true}
             style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
             label="Password"
             value={password}
             onChangeText={password => setPassword(password)}
+            maxLength={100}
           />
+          <Text style={styles.rememberMeText} >Remember me:</Text>
+          <Text style={styles.rememberMeBox}><Switch value={isSwitchOn} onValueChange={onToggleSwitch} /></Text>
 
           <TouchableOpacity style={styles.button} onPress={postLoginFormToApi}>
             <Text style={styles.buttonText}>Log in</Text>
           </TouchableOpacity>
 
-          {/* Wrap the text with TouchableOpacity to navigate to SignUp */}
           <TouchableOpacity onPress={navigateToSignUp}>
             <Text style={{ textAlign: 'center' }}>Don't have an account? Sign up</Text>
           </TouchableOpacity>
-        </View>
+
+          <TouchableOpacity onPress={navigateToForgottenPasswordScreen}>
+            <Text style={{ textAlign: 'center' }}>Forgot your password?</Text>
+          </TouchableOpacity>
+        
+        </ScrollView>
       </View>
     </View>
   );
