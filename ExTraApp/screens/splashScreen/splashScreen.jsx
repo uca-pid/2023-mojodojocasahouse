@@ -3,10 +3,6 @@ import { View } from 'react-native';
 
 const SplashScreen = ({ navigation, route }) => {
 
-  React.useEffect(() => {
-    handleFocus()
-  }, [navigation]);
-
   return (
     <View style={styles.appContainer}>
       <View style={styles.container}>
