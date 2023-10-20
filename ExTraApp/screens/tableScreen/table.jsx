@@ -7,10 +7,10 @@ import FeatherIcon from 'react-native-vector-icons/Feather';
 import { styles } from './style';
 import ExpenseModal from '../../components/expenseModal/ExpenseModal';
 import SettingModal from '../../components/settingsModal/settingsModal';
-import LoadingOverlay from '../../components/loading/loading';
 import { Picker } from '../../components/picker/picker';
-import { postExpenseToApi, postLogout, fetchUserCategories, fetchExpensesByCategory,fetchExpensesList} from '../../utils/apiFetch';
+import { postExpenseToApi, fetchUserCategories, fetchExpensesByCategory,fetchExpensesList} from '../../utils/apiFetch';
 import { Dialog, ListItem, Button, Icon as MaterialIcon } from '@rneui/themed';
+import { AuthContext } from '../../context/authContext';
 
 
 const iconFactory = (id) => {
@@ -44,6 +44,7 @@ const Table = () => {
   const [categories, setCategories] = React.useState([]);
   const [selectedCategory, setSelectedCategory] = React.useState(null);
   const navigation = useNavigation();
+  const {signOut, sessionExpired} = React.useContext(AuthContext);
 
 
   const toggleModal = () => {
@@ -59,9 +60,9 @@ const Table = () => {
     toggleModal(); // Close the modal after saving
     try {
       setLoading(true);
-      await postExpenseToApi(newExpense, navigation);
-      await fetchExpensesList(setExpenses, navigation);
-      await fetchUserCategories(setCategories, navigation);
+      await postExpenseToApi(newExpense, sessionExpired);
+      await fetchExpensesList(setExpenses, sessionExpired);
+      await fetchUserCategories(setCategories, sessionExpired);
       setLoading(false);
 
     } catch (error) {
@@ -71,20 +72,20 @@ const Table = () => {
   };
 
   const handleFocusScreen = async () => {
-    await fetchUserCategories(setCategories, navigation);
-    await fetchExpensesList(setExpenses, navigation);
+    await fetchUserCategories(setCategories, sessionExpired);
+    await fetchExpensesList(setExpenses, sessionExpired);
     setLoading(false);
   };
 
   const handleLogout = async () => {
     setLoading(true);
-    await postLogout(navigation);
+    await signOut();
     setLoading(false);
   };
 
   const handleGettingExpensesByCategory = async () => {
     setLoading(true);
-    await fetchExpensesByCategory(selectedCategory, setExpenses, navigation);
+    await fetchExpensesByCategory(selectedCategory, setExpenses, sessionExpired);
     setLoading(false);
   };
 
@@ -146,11 +147,11 @@ const Table = () => {
           onClose={handleGettingExpensesByCategory}
         />
 
-        <ScrollView contentContainerStyle={styles.scrollviewContentContainer}>
-          <View style={styles.tableContainer}>
+        <ScrollView style={{marginBottom: 10, marginTop: 10}} contentContainerStyle={styles.scrollviewContentContainer}>
 
-            { expenses.map((item) => (
+            { expenses.map((item, index) => (
               <ListItem.Swipeable
+                key={index}
                 leftWidth={70}
                 rightWidth={70}
                 containerStyle={{borderBottomWidth: 1, }}
@@ -180,7 +181,7 @@ const Table = () => {
                       backgroundColor: "#d15c54",
                     }}
                     type="clear"
-                    icon={{ name: "delete-outline" }}
+                    icon={{ name: "delete-outline", color: "white" }}
                     onPress={() => {
                       reset();
                       handleDeleteExpense(item.id);
@@ -199,7 +200,6 @@ const Table = () => {
                 </ListItem.Content>
               </ListItem.Swipeable>
             ))}
-          </View>
         </ScrollView>
       </View>
       <ExpenseModal isVisible={isModalVisible} onClose={toggleModal} onSave={handleSaveExpense} />

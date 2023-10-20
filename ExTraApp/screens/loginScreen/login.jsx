@@ -3,8 +3,7 @@ import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { styles } from './style';
 import { TextInput, Switch } from 'react-native-paper';
 import { Dialog } from '@rneui/themed';
-import { postLoginFormToApi } from '../../utils/apiFetch';
-import LoadingOverlay from '../../components/loading/loading';
+import { AuthContext } from '../../context/authContext';
 
 
 const Login = ({ navigation, route }) => { 
@@ -12,6 +11,7 @@ const Login = ({ navigation, route }) => {
   const [password, setPassword] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [rememberMe, setRememberMe] = React.useState(false);
+  const {signIn} = React.useContext(AuthContext);
 
   const onToggleSwitch = () => setRememberMe(!rememberMe);
 
@@ -25,7 +25,7 @@ const Login = ({ navigation, route }) => {
 
   const handleSubmitLogin = async () => {
     setLoading(true);
-    await postLoginFormToApi(navigation, {email, password, rememberMe});
+    await signIn({email, password, rememberMe});
     setLoading(false);
   };
 
@@ -36,10 +36,6 @@ const Login = ({ navigation, route }) => {
         <Dialog isVisible={loading}>
           <Dialog.Loading />
         </Dialog>
-
-        {/* <LoadingOverlay 
-          shown={loading}
-        /> */}
 
         <View style={styles.logoContainer}>
           <Image style={styles.logo} source={require('./../../img/logo.png')} />
@@ -65,8 +61,12 @@ const Login = ({ navigation, route }) => {
             onChangeText={password => setPassword(password)}
             maxLength={100}
           />
-          <Text style={styles.rememberMeText} >Remember me:</Text>
-          <Text style={styles.rememberMeBox}><Switch value={rememberMe} onValueChange={onToggleSwitch} /></Text>
+          <View style={styles.rememberMeContainer}>
+            <Text style={styles.rememberMeText} >Remember me:</Text>
+            <View style={styles.rememberMeBox}>
+              <Switch value={rememberMe} color='green' onValueChange={onToggleSwitch} />
+            </View>
+          </View>
 
           <TouchableOpacity style={styles.button} onPress={handleSubmitLogin}>
             <Text style={styles.buttonText}>Log in</Text>

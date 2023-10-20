@@ -58,15 +58,30 @@ export const styles = StyleSheet.create({
     aspectRatio: 4,
     resizeMode: 'contain',
   },
+
+  rememberMeContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    marginTop: 5,
+    marginHorizontal: '10%',
+    justifyContent: 'space-between',
+    height: 30,
+  },
   rememberMeText: {
-    marginLeft: '10%',
-    //marginTop: '47%',
-    position: 'absolute',
-    marginTop: '47%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontSize: 17,
+    height: '100%',
+    alignSelf: 'flex-start',
   },
 
   rememberMeBox: {
-    marginLeft: '36%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100%',
+    alignSelf: 'flex-end',
   },
 
 });

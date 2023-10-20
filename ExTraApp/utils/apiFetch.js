@@ -48,7 +48,7 @@ async function fetchWithTimeout(resource, options = {}) {
   return response;
 }
 
-const postExpenseToApi = async (newExpense, navigation) => {
+const postExpenseToApi = async (newExpense, sessionExpiredCallback) => {
   let response = await fetchWithTimeout( API_URL + "/addExpense", {
     method: 'POST',
     credentials: 'include',
@@ -71,7 +71,7 @@ const postExpenseToApi = async (newExpense, navigation) => {
     Alert.alert(
       "Session Expired", 
       "Please log in again to continue",
-      () => navigation.navigate('Login')
+      sessionExpiredCallback
     );
     return;
   }
@@ -86,52 +86,79 @@ const postExpenseToApi = async (newExpense, navigation) => {
   Alert.alert("API Error", responseBody.message);
 };
 
-const postLogout = async (navigation) => {
-    try {
+// const postLogout = async (navigation) => {
+//     try {
+//     let response = await fetchWithTimeout( API_URL + "/logout", {
+//       method: "POST",
+//       credentials: "include",
+//       headers: {
+//         "Content-Type": "application/json",
+//       }
+//     });
+
+//     // OK
+//     if(response.ok){
+//       Alert.alert(
+//         "Logout Success", 
+//         "Logged out successfully",
+//         [{text: 'OK', onPress: () => navigation.navigate('Login')}]
+//       );
+//       return;
+//     }
+    
+//     // UNAUTHORIZED
+//     if(response.status == 401){
+//       Alert.alert(
+//         "Session Expired", 
+//         "Please log in again to continue",
+//         [{text: 'OK', onPress: () => navigation.navigate('Login')}]
+//       );
+//       return;
+//     }
+
+//     // INTERNAL ERROR
+//     if(response.status >= 500){
+//       Alert.alert("Server Error", "Oops! An unknown error happened");
+//       return;
+//     }
+
+//     // OTHER ERROR
+//     let responseBody = await response.json();
+//     Alert.alert("API Error", responseBody.message);
+
+//   } catch (error) {
+//     Alert.alert("Connection Error", "There was an error connecting to API");
+//   }
+// };
+
+const doLogout = async () => {
+  try {
     let response = await fetchWithTimeout( API_URL + "/logout", {
       method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      }
+      credentials: "include"
     });
 
-    // OK
-    if(response.ok){
-      Alert.alert(
-        "Logout Success", 
-        "Logged out successfully",
-        [{text: 'OK', onPress: () => navigation.navigate('Login')}]
-      );
-      return;
-    }
-    
-    // UNAUTHORIZED
-    if(response.status == 401){
-      Alert.alert(
-        "Session Expired", 
-        "Please log in again to continue",
-        [{text: 'OK', onPress: () => navigation.navigate('Login')}]
-      );
-      return;
+    if (response.status >= 500){
+      return "5xx";
     }
 
-    // INTERNAL ERROR
-    if(response.status >= 500){
-      Alert.alert("Server Error", "Oops! An unknown error happened");
-      return;
+    if (response.status >= 400){
+      return "4xx";
     }
 
-    // OTHER ERROR
-    let responseBody = await response.json();
-    Alert.alert("API Error", responseBody.message);
+    if (response.status >= 300){
+      return "3xx";
+    }
+
+    return "2xx";
 
   } catch (error) {
+    console.log(error);
     Alert.alert("Connection Error", "There was an error connecting to API");
   }
 };
 
-const fetchUserCategories = async (setCategories, navigation) => {
+const fetchUserCategories = async (setCategories, sessionExpiredCallback) => {
   let response = await fetchWithTimeout(API_URL + "/getAllCategories", {
     method: "GET",
     credentials: "include",
@@ -149,7 +176,7 @@ const fetchUserCategories = async (setCategories, navigation) => {
     Alert.alert(
       "Session Expired", 
       "Please log in again to continue",
-      [{text: 'OK', onPress: () => navigation.navigate('Login')}]
+      [{text: 'OK', onPress: sessionExpiredCallback}]
     );
     return;
   }
@@ -164,7 +191,7 @@ const fetchUserCategories = async (setCategories, navigation) => {
   Alert.alert("API Error", responseBody.message);
 };
 
-const fetchExpensesByCategory = async (categoryFilter, setExpenses, navigation) => {
+const fetchExpensesByCategory = async (categoryFilter, setExpenses, sessionExpiredCallback) => {
   try{
 
     if(categoryFilter == null){
@@ -195,7 +222,7 @@ const fetchExpensesByCategory = async (categoryFilter, setExpenses, navigation) 
       Alert.alert(
         "Session Expired", 
         "Please log in again to continue",
-        [{text: 'OK', onPress: () => navigation.navigate('Login')}]
+        [{text: 'OK', onPress: sessionExpiredCallback}]
       );
       return;
     }
@@ -215,7 +242,7 @@ const fetchExpensesByCategory = async (categoryFilter, setExpenses, navigation) 
   }
 };
 
-const fetchExpensesList = async (setExpenses, navigation) => {
+const fetchExpensesList = async (setExpenses, sessionExpiredCallback) => {
   let response = await fetchWithTimeout(API_URL + "/getMyExpenses", {
     method: "GET",
     credentials: "include",
@@ -236,7 +263,7 @@ const fetchExpensesList = async (setExpenses, navigation) => {
     Alert.alert(
       "Session Expired", 
       "Please log in again to continue",
-      [{text: 'OK', onPress: () => navigation.navigate('Login')}]
+      [{text: 'OK', onPress: sessionExpiredCallback}]
     );
     return;
   }
@@ -251,28 +278,55 @@ const fetchExpensesList = async (setExpenses, navigation) => {
   Alert.alert("API Error", responseBody.message);
 };
 
-const checkIsLoggedIn = async (navigation) => {
+// const checkIsLoggedIn = async (navigation) => {
+//   try{
+//     let response = await fetchWithTimeout(API_URL + "/protected", {
+//       method: "GET",
+//       credentials: 'include',
+//     });
+
+//     // IS LOGGED IN
+//     if(response.ok){
+//       navigation.navigate('Table');
+//       return;
+//     }
+
+//     // ERROR
+//     if(response.status >= 500){
+//       Alert.alert("Server Error", "Oops! An unknown error happened");
+//       return;
+//     }
+
+//     // NOT LOGGED IN
+//     navigation.navigate('Login');
+//     return;
+
+//   } catch (error) {
+//     console.log(error);
+//     Alert.alert("Connection Error", "There was an error connecting to API");
+//   }
+// };
+
+const verifyCredentials = async () => {
   try{
     let response = await fetchWithTimeout(API_URL + "/protected", {
       method: "GET",
-      credentials: 'include',
+      credentials: "include",
     });
 
-    // IS LOGGED IN
-    if(response.ok){
-      navigation.navigate('Table');
-      return;
+    if (response.status >= 500){
+      return "5xx";
     }
 
-    // ERROR
-    if(response.status >= 500){
-      Alert.alert("Server Error", "Oops! An unknown error happened");
-      return;
+    if (response.status >= 400){
+      return "4xx";
     }
 
-    // NOT LOGGED IN
-    navigation.navigate('Login');
-    return;
+    if (response.status >= 300){
+      return "3xx";
+    }
+
+    return "2xx";
 
   } catch (error) {
     console.log(error);
@@ -280,7 +334,41 @@ const checkIsLoggedIn = async (navigation) => {
   }
 };
 
-const postLoginFormToApi = async (navigation, request) => {
+// const postLoginFormToApi = async (navigation, request) => {
+//   try {
+//     let response = await fetchWithTimeout(API_URL + "/login", {
+//       method: 'POST',
+//       credentials: 'include',
+//       headers: {
+//         Accept: 'application/json',
+//         Authorization: "Basic " + Buffer.from(request.email + ":" + request.password, 'utf8').toString('base64')
+//       },
+//       body: new FormData().append('remember-me', request.rememberMe)
+//     });
+//     let responseBody = await response.json();
+
+//     // OK
+//     if (response.ok) {
+//       navigation.navigate('Table');
+//       return;
+//     }
+
+//     // INTERNAL ERROR
+//     if(response.status >= 500){
+//       Alert.alert("Server Error", "Oops! An unknown error happened");
+//       return;
+//     }
+
+//     // OTHER ERROR
+//     Alert.alert("API Error", responseBody.message);
+
+//   } catch (error) {
+//     console.log(error);
+//     Alert.alert("Connection Error", "There was an error connecting to API");
+//   }
+// };
+
+const doSignIn = async (request) => {
   try {
     let response = await fetchWithTimeout(API_URL + "/login", {
       method: 'POST',
@@ -291,22 +379,20 @@ const postLoginFormToApi = async (navigation, request) => {
       },
       body: new FormData().append('remember-me', request.rememberMe)
     });
-    let responseBody = await response.json();
 
-    // OK
-    if (response.ok) {
-      navigation.navigate('Table');
-      return;
+    if (response.status >= 500){
+      return "5xx";
     }
 
-    // INTERNAL ERROR
-    if(response.status >= 500){
-      Alert.alert("Server Error", "Oops! An unknown error happened");
-      return;
+    if (response.status >= 400){
+      return "4xx";
     }
 
-    // OTHER ERROR
-    Alert.alert("API Error", responseBody.message);
+    if (response.status >= 300){
+      return "3xx";
+    }
+
+    return "2xx";
 
   } catch (error) {
     console.log(error);
@@ -491,15 +577,15 @@ const postChangePassToApi = async (request, navigation) => {
 
 export {
   postExpenseToApi, 
-  fetchWithTimeout, 
-  postLogout, 
+  fetchWithTimeout,
   fetchUserCategories, 
   fetchExpensesByCategory,
   fetchExpensesList,
-  checkIsLoggedIn,
-  postLoginFormToApi,
   postForgottenPasswordFormToApi,
   postResetPasswordFormToApi,
   postRegistrationToApi,
-  postChangePassToApi
+  postChangePassToApi,
+  verifyCredentials,
+  doLogout,
+  doSignIn
 };
