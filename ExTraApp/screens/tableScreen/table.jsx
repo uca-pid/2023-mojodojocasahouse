@@ -10,28 +10,29 @@ import SettingModal from '../../components/settingsModal/settingsModal';
 import LoadingOverlay from '../../components/loading/loading';
 import { Picker } from '../../components/picker/picker';
 import { postExpenseToApi, postLogout, fetchUserCategories, fetchExpensesByCategory,fetchExpensesList} from '../../utils/apiFetch';
+import { Dialog, ListItem, Button, Icon as MaterialIcon } from '@rneui/themed';
 
 
-const IconFactory = (props) => {
-  switch (props.id) {
+const iconFactory = (id) => {
+  switch (id) {
     case 1:
-      return <Icon name="aircraft" style={props.style} />;
+      return "aircraft"
     case 2:
-      return <Icon name="drink" style={props.style} />;
+      return "drink"
     case 3:
-      return <Icon name="key" style={props.style} />;
+      return "key"
     case 4:
-      return <Icon name="shopping-cart" style={props.style} />;
+      return "shopping-cart"
     case 5:
-      return <Icon name="clapperboard" style={props.style} />;
+      return "clapperboard"
     case 6:
-      return <Icon name="squared-cross" style={props.style} />;
+      return "squared-cross"
     case 7:
-      return <Icon name="man" style={props.style} />;
+      return "man"
     case 8:
-      return <Icon name="open-book" style={props.style} />;
+      return "open-book"
     default:
-      return <Icon name="credit" style={props.style} />;
+      return "credit"
   }
 };
 
@@ -87,6 +88,16 @@ const Table = () => {
     setLoading(false);
   };
 
+  const handleDeleteExpense = async (id) => {
+    setLoading(true);
+    // await postDeleteExpense(id); needs implementation
+    setLoading(false);
+  };
+
+  const handleEditExpense = (id) => {
+    // Open modal for deleting expense
+  };
+
 
   React.useEffect(() => {
     try{
@@ -101,9 +112,9 @@ const Table = () => {
   return (
     <View style={styles.appContainer}>
       <View style={styles.contentContainer}>
-        <LoadingOverlay 
-          shown={loading}
-        />
+        <Dialog isVisible={loading}>
+          <Dialog.Loading />
+        </Dialog>
 
         <View style={styles.headerContainer}>
           <View style={styles.logoContainer}>
@@ -139,27 +150,54 @@ const Table = () => {
           <View style={styles.tableContainer}>
 
             { expenses.map((item) => (
-              <View key={item.id} style={styles.row}>
-                <View style={styles.iconContainer}>
-                  <IconFactory id={item.iconId} style={styles.icon} />
-                </View>
-                <View style={styles.rowMiddleContainer} >
-                  <View style={styles.conceptContainer}>
-                    <Text style={styles.concept}>{item.concept}</Text>
-                  </View>
-                  <View style={styles.categoryContainer}>
-                    <Text style={styles.category}>{item.category}</Text>
-                  </View>
-                </View>
-                <View style={styles.rowLeftContainer}>
-                  <View style={styles.amountContainer}>
-                    <Text style={styles.amount}>{item.amount}</Text>
-                  </View>
-                  <View style={styles.dateContainer}>
-                    <Text style={styles.date}>{item.date}</Text>
-                  </View>
-                </View>
-              </View>
+              <ListItem.Swipeable
+                leftWidth={70}
+                rightWidth={70}
+                containerStyle={{borderBottomWidth: 1, }}
+                leftContent={(reset) => (
+                  <Button
+                    containerStyle={{
+                      flex: 1,
+                      justifyContent: "center",
+                      backgroundColor: "#f4f4f4",
+                    }}
+                    type="clear"
+                    icon={{
+                      name: "file-document-edit-outline",
+                      type: "material-community",
+                    }}
+                    onPress={() => {
+                      reset();
+                      handleEditExpense(item.id);
+                    }}
+                  />
+                )}
+                rightContent={(reset) => (
+                  <Button
+                    containerStyle={{
+                      flex: 1,
+                      justifyContent: "center",
+                      backgroundColor: "#d15c54",
+                    }}
+                    type="clear"
+                    icon={{ name: "delete-outline" }}
+                    onPress={() => {
+                      reset();
+                      handleDeleteExpense(item.id);
+                    }}
+                  />
+                )}
+              >
+                <MaterialIcon name={iconFactory(item.iconId)} type="entypo" />
+                <ListItem.Content>
+                  <ListItem.Title style={{fontSize: 17}} numberOfLines={1}>{item.concept}</ListItem.Title>
+                  <ListItem.Subtitle style={{fontSize: 13}} numberOfLines={1}>{item.category}</ListItem.Subtitle>
+                </ListItem.Content>
+                <ListItem.Content right>
+                  <ListItem.Title right numberOfLines={1}>{item.amount}</ListItem.Title>
+                  <ListItem.Subtitle style={{fontSize: 12}} right numberOfLines={1}>{item.date}</ListItem.Subtitle>
+                </ListItem.Content>
+              </ListItem.Swipeable>
             ))}
           </View>
         </ScrollView>

@@ -10,6 +10,8 @@ import ForgottenPassword from './screens/forgottenPasswordScreen/forgottenPasswo
 import ResetPassword from './screens/resetPasswordScreen/resetPassword';
 import RedirectScreen from './screens/redirectScreen/redirect';
 import AdmCategories from './screens/admCategoriesScreen/admCategories';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -29,6 +31,7 @@ const linking = {
 const App = () => {
 
   return (
+    <SafeAreaProvider>
     <NavigationContainer linking={linking}>
       <Stack.Navigator initialRouteName="redirect">
         <Stack.Screen 
@@ -73,6 +76,7 @@ const App = () => {
         />
       </Stack.Navigator>
     </NavigationContainer>
+    </SafeAreaProvider>
   );
 };
 

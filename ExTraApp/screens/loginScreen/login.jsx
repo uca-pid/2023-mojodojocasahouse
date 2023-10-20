@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { styles } from './style';
 import { TextInput, Switch } from 'react-native-paper';
+import { Dialog } from '@rneui/themed';
 import { postLoginFormToApi } from '../../utils/apiFetch';
 import LoadingOverlay from '../../components/loading/loading';
 
@@ -32,9 +33,13 @@ const Login = ({ navigation, route }) => {
     <View style={styles.appContainer}>
       <View style={styles.container}>
 
-        <LoadingOverlay 
+        <Dialog isVisible={loading}>
+          <Dialog.Loading />
+        </Dialog>
+
+        {/* <LoadingOverlay 
           shown={loading}
-        />
+        /> */}
 
         <View style={styles.logoContainer}>
           <Image style={styles.logo} source={require('./../../img/logo.png')} />

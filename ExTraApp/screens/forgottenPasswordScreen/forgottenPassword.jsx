@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { styles } from './style';
+import { Dialog } from '@rneui/themed';
 import LoadingOverlay from '../../components/loading/loading';
 import * as EmailValidator from 'email-validator';
 import ValidatedTextInput from '../../components/validatedTextInput/validatedTextInput';
@@ -35,9 +36,13 @@ const ForgottenPassword = ({ navigation, route }) => {
   return (
     <View style={styles.appContainer}>
       <View style={styles.container}>
-        <LoadingOverlay 
+        <Dialog isVisible={loading}>
+          <Dialog.Loading />
+        </Dialog>
+
+        {/* <LoadingOverlay 
           shown={loading}
-        />
+        /> */}
 
         <View style={styles.logoContainer}>
           <Image style={styles.logo} source={require('./../../img/logo.png')} />
