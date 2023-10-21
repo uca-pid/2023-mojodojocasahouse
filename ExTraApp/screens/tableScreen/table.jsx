@@ -7,7 +7,7 @@ import FeatherIcon from 'react-native-vector-icons/Feather';
 import { styles } from './style';
 import ExpenseModal from '../../components/expenseModal/ExpenseModal';
 import SettingModal from '../../components/settingsModal/settingsModal';
-import { Picker } from '../../components/picker/picker';
+// import { Picker } from '../../components/picker/picker';
 import { postExpenseToApi, fetchUserCategories, fetchExpensesByCategory,fetchExpensesList} from '../../utils/apiFetch';
 import { Dialog, ListItem, Button, Icon as MaterialIcon } from '@rneui/themed';
 import { AuthContext } from '../../context/authContext';
@@ -40,16 +40,20 @@ const iconFactory = (id) => {
 const Table = () => {
   const [isModalVisible, setModalVisible] = React.useState(false);
   const [isModalSettingVisible, setModalSettingVisible] = React.useState(false);
+  const [isFilterModalVisible, setFilterModalVisible] = React.useState(false);
   const [expenses, setExpenses] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const [categories, setCategories] = React.useState([]);
-  const [selectedCategory, setSelectedCategory] = React.useState(null);
   const navigation = useNavigation();
   const {signOut, sessionExpired} = React.useContext(AuthContext);
 
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
+  };
+
+  const toggleFilterModal = () => {
+    setFilterModalVisible(!isFilterModalVisible);
   };
 
   const toggleSettingModal = () => {
@@ -84,9 +88,23 @@ const Table = () => {
     setLoading(false);
   };
 
-  const handleGettingExpensesByCategory = async () => {
+  const serializeCategoryName = (custCat) => {
+    if(custCat != null){
+      return custCat.toLowerCase().replaceAll(' ', '-');
+    }
+    return custCat;
+  };
+
+  const handleFilterModalSubmit = async (data) => {
     setLoading(true);
-    await fetchExpensesByCategory(selectedCategory, setExpenses, sessionExpired);
+    await fetchExpensesByCategory(serializeCategoryName(data.selectedCategory), setExpenses, sessionExpired);
+    setFilterModalVisible(false);
+    setLoading(false);
+  };
+
+  const handleGettingExpensesByCategory = async (data) => {
+    setLoading(true);
+    await fetchExpensesByCategory(serializeCategoryName(data.selectedCategory), setExpenses, sessionExpired);
     setLoading(false);
   };
 
@@ -113,7 +131,7 @@ const Table = () => {
 
   return (
     <View style={styles.appContainer}>
-      <FilterModal />
+      
       <View style={styles.contentContainer}>
         <Dialog isVisible={loading}>
           <Dialog.Loading />
@@ -141,13 +159,19 @@ const Table = () => {
           </TouchableOpacity>
         </View>
 
-        <Picker.Single 
+        <View style={styles.filterButtonContainer}>
+          <TouchableOpacity style={styles.filterButton} onPress={toggleFilterModal}>
+            <Text style={styles.buttonText}>Filter</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* <Picker.Single 
           value={selectedCategory}
           onChange={setSelectedCategory}
           placeholder={{value: null, label: "Any", inputLabel: "Category: Any"}}
           data={categories}
           onClose={handleGettingExpensesByCategory}
-        />
+        /> */}
 
         <ScrollView style={{marginBottom: 10, marginTop: 10}} contentContainerStyle={styles.scrollviewContentContainer}>
 
@@ -206,6 +230,7 @@ const Table = () => {
       </View>
       <ExpenseModal isVisible={isModalVisible} onClose={toggleModal} onSave={handleSaveExpense} />
       <SettingModal isVisible={isModalSettingVisible} onSettingClose={toggleSettingModal} navigation={navigation} /> 
+      <FilterModal visible={isFilterModalVisible} data={categories.map(item => item.label)} onDone={handleFilterModalSubmit} onCancel={toggleFilterModal} />
     </View>
   );
 };

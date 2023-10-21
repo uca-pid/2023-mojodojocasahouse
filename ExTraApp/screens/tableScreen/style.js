@@ -129,8 +129,22 @@ export const styles = StyleSheet.create({
     backgroundColor: '#433FF4',
   },
 
+  filterButtonContainer: {
+    height: '5%',
+    width: '100%',
+    marginTop: 5,
+    backgroundColor: '#ee9a00',
+  },
+
   button: {
     backgroundColor: '#433FF4',
+    paddingBottom: '2.5%',
+    paddingTop: '2.5%',
+    alignItems: 'center',
+  },
+
+  filterButton: {
+    backgroundColor: '#ee9a00',
     paddingBottom: '2.5%',
     paddingTop: '2.5%',
     alignItems: 'center',

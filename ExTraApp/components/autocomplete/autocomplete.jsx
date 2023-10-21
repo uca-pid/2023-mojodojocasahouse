@@ -1,5 +1,5 @@
 import React from "react";
-import { TouchableHighlight, Pressable, View, Text } from "react-native";
+import { Pressable, View, Text } from "react-native";
 import { Input, Icon } from "@rneui/themed";
 import styles from "./styles";
 
@@ -11,23 +11,38 @@ const Autocomplete = props => {
   const [filteredResults, setFilteredResults] = React.useState([]);
 
   const AutocompleteItem = itemProps => {
+    const handlePress = () => {
+      props.onChangeText(itemProps.value);
+      setShowResults(false);
+    };
+
     return (
-      <Pressable onPress={() => props.onChangeText(itemProps.value)}>
-        <Text>{itemProps.value}</Text>
+      <Pressable style={styles.itemContainer} onPress={handlePress}>
+        <Text style={styles.itemText}>{itemProps.value}</Text>
       </Pressable>
     );
   };
 
-  const filterResults = () => {
-    if (props.value == ''){
+  const filterResults = (text) => {
+    // If value is empty do not even filter
+    if (text == ''){
       setFilteredResults([]);
+      setShowResults(false);
       return;
     }
 
+    // If value != empty, filter
     let filteredResults = props.data.filter((item) => {
-      return item.toLowerCase().startsWith(props.value.toLowerCase());
+      return item.toLowerCase().startsWith(text.toLowerCase());
     }).slice(0, 3);
     setFilteredResults(filteredResults);
+    
+    // If filter results are empty, do not even show them
+    if(filteredResults.length == 0){
+      setShowResults(false);
+      return;
+    }
+    setShowResults(true);
   };
 
   return(
@@ -37,14 +52,14 @@ const Autocomplete = props => {
 
         <Input 
           value={props.value}
-          onChangeText={props.onChangeText}
-          onEndEditing={text => {
+          onChangeText={text => {
+            props.onChangeText(text);
             filterResults(text);
-            setShowResults(true);
           }}
-          containerStyle={{width: 200}}
-          placeholder='Category'
-          rightIcon={ <Icon name='search' size={24} color='black'/> }
+          onEndEditing={() => setShowResults(!areResultsShown)}
+          placeholder={props.placeholder || "Type something..."}
+          leftIcon={ <Icon name='filter' type="material-community" size={24} color='black'/> }
+          maxLength={49}
         />
 
       </View>
@@ -52,15 +67,17 @@ const Autocomplete = props => {
       {areResultsShown? (
         <View style={styles.resultsContainer}> 
 
-          {filteredResults.map(itemString => (
+          <View style={styles.resultItemsContainer}></View>
+
+          {filteredResults.map((itemString, index) => (
             <AutocompleteItem 
+              key={index}
               value={itemString}
             />
           ))}
 
         </View>
       ): null}
-
     </View>
   );
 };
