@@ -10,7 +10,7 @@ import DatePicker from 'react-native-date-picker';
  * Recibe ```textInputValue```, ```onChangeTextInput```, ```
  */
 const FilterModal = props => {
-    const [categoryFilter, setCategoryFilter] = React.useState('');
+    const [categoryFilter, setCategoryFilter] = React.useState(null);
     const [startingDate, setStartingDate] = React.useState(new Date());
     const [isStartingDateModalOpen, setOpenStartingDateModal] = React.useState(false);
     const [isEndingDateModalOpen, setOpenEndingDateModal] = React.useState(false);
@@ -20,7 +20,7 @@ const FilterModal = props => {
       let data = {
         startingDate,
         endingDate,
-        selectedCategory: categoryFilter
+        selectedCategory: categoryFilter == '' ? null : categoryFilter
       };
 
       props.onDone(data);
@@ -43,7 +43,7 @@ const FilterModal = props => {
                   value={categoryFilter}
                   onChangeText={setCategoryFilter}
                   data={props.data}
-                  placeholder="Category"
+                  placeholder="Any category"
                 />
               </View>
 
