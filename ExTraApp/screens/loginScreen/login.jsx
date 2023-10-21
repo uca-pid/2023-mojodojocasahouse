@@ -6,6 +6,7 @@ import { postLoginFormToApi } from '../../utils/apiFetch';
 import LoadingOverlay from '../../components/loading/loading';
 
 
+
 const Login = ({ navigation, route }) => { 
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -60,7 +61,13 @@ const Login = ({ navigation, route }) => {
             value={password}
             onChangeText={password => setPassword(password)}
             maxLength={100}
-            right={<TextInput.Icon name= 'eye' onPress={() => setSecureTextEntry(!secureTextEntry)} />}
+            right={
+              <TextInput.Icon
+                icon={secureTextEntry ? 'eye-off' : 'eye'}
+                onPress={() => setSecureTextEntry(!secureTextEntry)}
+                style={{ color: 'black', fontSize: 36 }}
+                />
+              }
           />
           <Text style={styles.rememberMeText} >Remember me:</Text>
           <Text style={styles.rememberMeBox}><Switch value={rememberMe} onValueChange={onToggleSwitch} /></Text>
