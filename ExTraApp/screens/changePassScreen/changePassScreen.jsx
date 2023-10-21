@@ -9,6 +9,7 @@ import { postChangePassToApi } from '../../utils/apiFetch';
 
 const ChangePassScreen = ({ navigation, route }) => { // Add navigation prop
   const [loading, setLoading] = React.useState(false);
+  const [secureTextEntry, setSecureTextEntry] = React.useState(true);
   const [newPassword, setNewPassword] = React.useState("");
   const [currentPassword, setCurrentPassword] = React.useState("");
   const [newPasswordRepeat, setNewPasswordRepeat] = React.useState("");
@@ -53,27 +54,41 @@ const ChangePassScreen = ({ navigation, route }) => { // Add navigation prop
 
         <View style={styles.bottomContainer}></View>
 
-        <ScrollView contentContainerStyle={styles.contentContainer}>
+        <ScrollView contentContainerStyle={styles.contentContainer} keyboardShouldPersistTaps="handled">
 
           <Text style={styles.textTitle}>Change password:</Text>
           <Text style={styles.textStyle}>Write your current password:</Text>
           <TextInput
-            secureTextEntry={true}
+            secureTextEntry={secureTextEntry}
             style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
             label="Current Password"
             value={currentPassword}
             onChangeText={setCurrentPassword}
+            right={
+              <TextInput.Icon
+              icon={secureTextEntry ? 'eye-off' : 'eye'}
+              onPress={() => setSecureTextEntry(!secureTextEntry)}
+              style={{ color: 'black', fontSize: 36 }}
+              />
+              }
           />
 
           <Text style={styles.textStyle}>Write your new password:</Text>
           <TextInput
-            secureTextEntry={true}
+            secureTextEntry={secureTextEntry}
             style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
             label="New Password"
             value={newPassword}
             onChangeText={setNewPassword}
             maxLength={100}
             onBlur={validatePassword}
+            right={
+              <TextInput.Icon
+              icon={secureTextEntry ? 'eye-off' : 'eye'}
+              onPress={() => setSecureTextEntry(!secureTextEntry)}
+              style={{ color: 'black', fontSize: 36 }}
+              />
+              }
           />
           <HelperText type="error" visible={passwordError}>
             Must contain: 8 letters, 1 number, 1 capital, and 1 symbol.
@@ -81,13 +96,20 @@ const ChangePassScreen = ({ navigation, route }) => { // Add navigation prop
 
           <Text style={styles.textStyle}>Write your new password again:</Text>
           <TextInput
-            secureTextEntry={true}
+            secureTextEntry={secureTextEntry}
             style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
             label="New Password"
             value={newPasswordRepeat}
             onChangeText={setNewPasswordRepeat}
             maxLength={100}
             onBlur={validateRepeatPassword}
+            right={
+              <TextInput.Icon
+              icon={secureTextEntry ? 'eye-off' : 'eye'}
+              onPress={() => setSecureTextEntry(!secureTextEntry)}
+              style={{ color: 'black', fontSize: 36 }}
+              />
+              }
           />
           <HelperText type="error" visible={repeatPasswordError}>
             Passwords do not match.

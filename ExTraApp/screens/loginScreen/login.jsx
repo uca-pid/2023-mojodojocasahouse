@@ -6,9 +6,11 @@ import { postLoginFormToApi } from '../../utils/apiFetch';
 import LoadingOverlay from '../../components/loading/loading';
 
 
+
 const Login = ({ navigation, route }) => { 
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [secureTextEntry, setSecureTextEntry] = React.useState(true);
   const [loading, setLoading] = React.useState(false);
   const [rememberMe, setRememberMe] = React.useState(false);
 
@@ -42,7 +44,7 @@ const Login = ({ navigation, route }) => {
 
         <View style={styles.bottomContainer}></View>
 
-        <ScrollView contentContainerStyle={styles.contentContainer}>
+        <ScrollView contentContainerStyle={styles.contentContainer} keyboardShouldPersistTaps="handled">
         
           <TextInput
             style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
@@ -53,12 +55,19 @@ const Login = ({ navigation, route }) => {
           />
 
           <TextInput
-            secureTextEntry={true}
+            secureTextEntry={secureTextEntry}
             style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
             label="Password"
             value={password}
             onChangeText={password => setPassword(password)}
             maxLength={100}
+            right={
+              <TextInput.Icon
+                icon={secureTextEntry ? 'eye-off' : 'eye'}
+                onPress={() => setSecureTextEntry(!secureTextEntry)}
+                style={{ color: 'black', fontSize: 36 }}
+                />
+              }
           />
           <Text style={styles.rememberMeText} >Remember me:</Text>
           <Text style={styles.rememberMeBox}><Switch value={rememberMe} onValueChange={onToggleSwitch} /></Text>
