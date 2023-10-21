@@ -11,6 +11,7 @@ import { Picker } from '../../components/picker/picker';
 import { postExpenseToApi, fetchUserCategories, fetchExpensesByCategory,fetchExpensesList} from '../../utils/apiFetch';
 import { Dialog, ListItem, Button, Icon as MaterialIcon } from '@rneui/themed';
 import { AuthContext } from '../../context/authContext';
+import FilterModal from '../../components/filterModal/filterModal';
 
 
 const iconFactory = (id) => {
@@ -112,6 +113,7 @@ const Table = () => {
 
   return (
     <View style={styles.appContainer}>
+      <FilterModal />
       <View style={styles.contentContainer}>
         <Dialog isVisible={loading}>
           <Dialog.Loading />
