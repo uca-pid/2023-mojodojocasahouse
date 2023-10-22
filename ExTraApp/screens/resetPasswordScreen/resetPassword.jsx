@@ -3,7 +3,6 @@ import { View, Text, TouchableOpacity, Image, Alert } from 'react-native';
 import { Dialog } from '@rneui/themed';
 import { styles } from './style';
 import { TextInput, HelperText } from 'react-native-paper';
-import LoadingOverlay from '../../components/loading/loading';
 import { postResetPasswordFormToApi } from '../../utils/apiFetch';
 
 const ResetPassword = ({ navigation, route }) => {
@@ -48,10 +47,6 @@ const ResetPassword = ({ navigation, route }) => {
         <Dialog isVisible={loading}>
           <Dialog.Loading />
         </Dialog>
-
-        {/* <LoadingOverlay 
-          shown={loading}
-        /> */}
 
         <View style={styles.logoContainer}>
           <Image style={styles.logo} source={require('./../../img/logo.png')} />

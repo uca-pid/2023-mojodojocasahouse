@@ -2,36 +2,7 @@ import { Alert } from "react-native";
 import { Buffer } from 'buffer';
 import { API_URL } from "@env";
 
-const formatCategories = (categoriesResponse) => {
-  return categoriesResponse.map(formatCategoryItem);
-};
 
-const formatExpenses = (expensesResponse) => {
-  return expensesResponse.map(formatExpenseItem);
-};
-
-const formatCategoryName = (categoryString) => {
-  let formattedItemLabel = categoryString.replaceAll("-", " ");
-  formattedItemLabel = [...formattedItemLabel][0].toUpperCase() + [...formattedItemLabel].slice(1).join('');
-  return formattedItemLabel;
-}
-
-const formatCategoryItem = (categoryString) => {
-  let formattedItemLabel = formatCategoryName(categoryString);
-  return {
-    label: formattedItemLabel,
-    value: categoryString,
-    inputLabel: "Category: " + formattedItemLabel
-  };
-};
-
-const formatExpenseItem = (expense) => {
-  let formattedCategoryName = formatCategoryName(expense.category);
-  return {
-    ...expense,
-    category: formattedCategoryName
-  }
-};
 
 async function fetchWithTimeout(resource, options = {}) {
   const { timeout = 8000 } = options;
@@ -167,7 +138,7 @@ const fetchUserCategories = async (setCategories, sessionExpiredCallback) => {
 
   // OK
   if(response.ok){
-    setCategories(formatCategories(responseBody));
+    setCategories(responseBody);
     return;
   }
   
@@ -191,29 +162,72 @@ const fetchUserCategories = async (setCategories, sessionExpiredCallback) => {
   Alert.alert("API Error", responseBody.message);
 };
 
-const fetchExpensesByCategory = async (categoryFilter, setExpenses, sessionExpiredCallback) => {
+// const fetchExpensesByCategory = async (categoryFilter, setExpenses, sessionExpiredCallback) => {
+//   try{
+
+//     if(categoryFilter == null){
+//       await fetchExpensesList(setExpenses);
+//       return;
+//     }
+
+//     let response = await fetchWithTimeout(API_URL + "/getMyExpensesByCategory", {
+//       method: "POST",
+//       credentials: "include",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify({
+//         category: categoryFilter
+//       })
+//     });
+//     let responseBody = await response.json();
+
+//     // OK
+//     if(response.ok){
+//       setExpenses(formatExpenses(responseBody));
+//       return;
+//     }
+    
+//     // UNAUTHORIZED
+//     if(response.status == 401){
+//       Alert.alert(
+//         "Session Expired", 
+//         "Please log in again to continue",
+//         [{text: 'OK', onPress: sessionExpiredCallback}]
+//       );
+//       return;
+//     }
+
+//     // INTERNAL ERROR
+//     if(response.status >= 500){
+//       Alert.alert("Server Error", "Oops! An unknown error happened");
+//       return;
+//     }
+
+//     // OTHER ERROR
+//     Alert.alert("API Error", responseBody.message);
+
+//   } catch (error) {
+//     console.log(error);
+//     Alert.alert("Connection Error", "There was an error connecting to API");
+//   }
+// };
+
+const fetchExpensesList = async (setExpenses, sessionExpiredCallback, request = {}) => {
+  console.log(request);
   try{
-
-    if(categoryFilter == null){
-      await fetchExpensesList(setExpenses);
-      return;
-    }
-
-    let response = await fetchWithTimeout(API_URL + "/getMyExpensesByCategory", {
-      method: "POST",
+    let response = await fetchWithTimeout(API_URL + "/getMyExpenses?categories=" + (request.categories? request.categories.map(c => c + ",")  : "") + "&from=" + (request.from? request.from.toISOString().substring(0,10) : "") + "&until=" + (request.until? request.until.toISOString().substring(0,10) : ""), {
+      method: "GET",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        category: categoryFilter
-      })
+      }
     });
     let responseBody = await response.json();
-
+    // console.log(response);
     // OK
     if(response.ok){
-      setExpenses(formatExpenses(responseBody));
+      setExpenses(responseBody);
       return;
     }
     
@@ -236,46 +250,10 @@ const fetchExpensesByCategory = async (categoryFilter, setExpenses, sessionExpir
     // OTHER ERROR
     Alert.alert("API Error", responseBody.message);
 
-  } catch (error) {
+  } catch(error){
     console.log(error);
     Alert.alert("Connection Error", "There was an error connecting to API");
   }
-};
-
-const fetchExpensesList = async (setExpenses, sessionExpiredCallback) => {
-  let response = await fetchWithTimeout(API_URL + "/getMyExpenses", {
-    method: "GET",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    }
-  });
-  let responseBody = await response.json();
-
-  // OK
-  if(response.ok){
-    setExpenses(formatExpenses(responseBody));
-    return;
-  }
-  
-  // UNAUTHORIZED
-  if(response.status == 401){
-    Alert.alert(
-      "Session Expired", 
-      "Please log in again to continue",
-      [{text: 'OK', onPress: sessionExpiredCallback}]
-    );
-    return;
-  }
-
-  // INTERNAL ERROR
-  if(response.status >= 500){
-    Alert.alert("Server Error", "Oops! An unknown error happened");
-    return;
-  }
-
-  // OTHER ERROR
-  Alert.alert("API Error", responseBody.message);
 };
 
 // const checkIsLoggedIn = async (navigation) => {
@@ -579,7 +557,7 @@ export {
   postExpenseToApi, 
   fetchWithTimeout,
   fetchUserCategories, 
-  fetchExpensesByCategory,
+  // fetchExpensesByCategory,
   fetchExpensesList,
   postForgottenPasswordFormToApi,
   postResetPasswordFormToApi,

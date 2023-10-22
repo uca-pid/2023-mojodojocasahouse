@@ -39,24 +39,15 @@ const Picker = (props) => {
 };
 
 const PickerText = (props) => {
-  const placeholderRef = React.useRef(null);
-  if(placeholderRef.current == null){
-    placeholderRef.current = (props.placeholder || {value: null, label: "Choose an option..."})
-  }
-
   const [modalVisible, setModalVisible] = React.useState(false);
-  const [selectedItem, setSelectedItem] = React.useState(placeholderRef.current);
 
   const toggleCategoryModal = () => {
     setModalVisible(!modalVisible);
   };
 
   const handleItemSelection = (item) => {
-    // Set selected Item
-    setSelectedItem(item);
-
     // Change value
-    props.onChange(item.value);
+    props.onChange(item);
   };
 
   const closeModal = () => {
@@ -74,7 +65,7 @@ const PickerText = (props) => {
     <>
     <TouchableOpacity style={defaultStyles.button} onPress={toggleCategoryModal}>
       <Text style={defaultStyles.buttonText}>
-        {selectedItem.inputLabel || selectedItem.label}
+        Category: {props.value || "Any"}
       </Text>
     </TouchableOpacity>
 
@@ -94,17 +85,17 @@ const PickerText = (props) => {
           >
             <PickerItem 
               key={0}
-              onPress={() => handleItemSelection(placeholderRef.current)}
-              itemLabel={placeholderRef.current.label}
-              selected={selectedItem.value == placeholderRef.current.value}
+              onPress={() => handleItemSelection(null)}
+              itemLabel={"Choose a category"}
+              selected={props.value == null}
             />
             
             {props.data.map((item, index) => (
               <PickerItem 
-                key={index}
+                key={index + 1}
                 onPress={() => handleItemSelection(item)}
-                itemLabel={item.label}
-                selected={selectedItem.value == item.value}
+                itemLabel={item}
+                selected={props.value == item}
               />
             ))}
           </ScrollView>
@@ -112,6 +103,79 @@ const PickerText = (props) => {
 
         <DoneButton 
           onPress={closeModal}
+        />
+
+      </View>
+    </Modal>
+    </>
+  );
+};
+
+const PickerTextMultiple = (props) => {
+  const [modalVisible, setModalVisible] = React.useState(false);
+
+  const toggleCategoryModal = () => {
+    setModalVisible(!modalVisible);
+  };
+
+  const handleItemSelection = (item) => {
+    let newItems;
+
+    // this = true -> Deletion; this = false -> Addition
+    if(props.value.includes(item)){
+
+      // Check if its the only item in it
+      // If true, replace it for placeholder
+      if(props.value.length == 1){
+        props.onChange([]);
+      }
+      else{
+        newItems = props.value.filter((existingItems) => existingItems != item);
+        props.onChange(newItems);
+      }
+    }
+    else{
+      newItems = [...props.value, item];
+      props.onChange(newItems);
+    }
+  };
+
+  return (
+    <>
+    <TouchableOpacity style={defaultStyles.button} onPress={toggleCategoryModal}>
+      <Text style={defaultStyles.buttonText}>
+        Categories selected: {props.value.length || "All"}
+      </Text>
+    </TouchableOpacity>
+
+    <Modal
+      visible={modalVisible}
+      animationType="none"
+      transparent={true}
+      onRequestClose={toggleCategoryModal}
+    >
+      <View style={defaultStyles.backgroundView} />
+
+      <View style={defaultStyles.categoryModalContainer}>
+
+        <View style={defaultStyles.scrollviewContainer}>
+          <ScrollView 
+            style={defaultStyles.scrollviewStyle}
+          >
+            
+            {props.data.map((item, index) => (
+              <PickerItem 
+                key={index}
+                onPress={() => handleItemSelection(item)}
+                itemLabel={item}
+                selected={props.value.includes(item)}
+              />
+            ))}
+          </ScrollView>
+        </View>
+
+        <DoneButton 
+          onPress={toggleCategoryModal}
         />
 
       </View>
@@ -176,7 +240,7 @@ const PickerSingleIcon = (props) => {
             {props.data? (
               props.data.map((iconItem, index) => (
                 <PickerIcon 
-                  key={index}
+                  key={index + 1}
                   onPress={() => props.onChange(iconItem)}
                   iconName={iconItem.iconName}
                   iconType={iconItem.iconType}
@@ -211,4 +275,4 @@ Picker.Text = PickerText;
 
 Picker.Icon = PickerSingleIcon
 
-export { Picker };
+export { Picker, PickerTextMultiple };

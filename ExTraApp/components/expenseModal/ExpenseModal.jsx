@@ -10,25 +10,25 @@ import { Input, Icon } from '@rneui/themed';
 
 const getIcon = (category) => {
   switch(category){
-    case "travel":
+    case "Travel":
       return 1;
-    case "food":
+    case "Food":
       return 2;
-    case "housing":
+    case "Housing":
       return 3;
-    case "shopping":
+    case "Shopping":
       return 4;
-    case "entertainment":
+    case "Entertainment":
       return 5;
-    case "health":
+    case "Health":
       return 6;
-    case "clothes":
+    case "Clothes":
       return 7;
-    case "education":
+    case "Education":
       return 8;
-    case "various":
+    case "Various":
       return 9;
-    case "custom":
+    case "Custom":
       return 10;
   }
 };
@@ -72,24 +72,13 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
   const checkCustomCategoryError = () => {
     let regex = /^[A-Za-z\d\s]+$/;
     if(!regex.test(customCategory)){
-      console.log("Not matches");
       setCustomCategoryError(true);
       return true;
     }
-    console.log("matches");
     setCustomCategoryError(false);
     return false;
   };
 
-  const formatCustomCategory = (custCat) => {
-    if(custCat != null){
-      var resp = custCat.toLowerCase().replaceAll(' ', '-')
-    }
-    else{
-      return custCat;
-    }
-    return resp;
-  };
 
   const handleSave = () => {
     try {
@@ -99,8 +88,8 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
         concept, 
         amount, 
         date, 
-        category: (category=='custom'? formatCustomCategory(customCategory): category), 
-        iconId: (category=='custom'? custIcon.value : iconId)
+        category: (category=='Custom'? customCategory: category), 
+        iconId: (category=='Custom'? custIcon.value : iconId)
       });
       resetFields();
       onClose();
@@ -128,16 +117,16 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
   };
 
   const categories = [
-    {value: 'travel', label: 'Travel', inputLabel: 'Category: Travel'},
-    {value: 'food', label: 'Food', inputLabel: 'Category: Food'},
-    {value: 'housing', label: 'Housing', inputLabel: 'Category: Housing'},
-    {value: 'shopping', label: 'Shopping', inputLabel: 'Category: Shopping'},
-    {value: 'entertainment', label: 'Entertainment', inputLabel: 'Category: Entertainment'},
-    {value: 'health', label: 'Health', inputLabel: 'Category: Health'},
-    {value: 'clothes', label: 'Clothes', inputLabel: 'Category: Clothes'},
-    {value: 'education', label: 'Education', inputLabel: 'Category: Education'},
-    {value: 'various', label: 'Various', inputLabel: 'Category: Various'},
-    {value: 'custom', label: 'Custom', inputLabel: 'Custom category'},
+    "Travel",
+    "Food",
+    "Housing",
+    "Shopping",
+    "Entertainment",
+    "Health",
+    "Clothes",
+    "Education",
+    "Various",
+    "Custom"
   ];
 
   const setIcon = () => {
@@ -153,7 +142,7 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
           <ValidatedTextInput
             label="Concept"
             value={concept}
-            onChangeText={(text) => setConcept(text)}
+            onChangeText={setConcept}
             validationErrorMessage="Concept may only contain letters or numbers"
             maxLength={100}
             hasError={checkConceptError}
@@ -163,7 +152,7 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
           <ValidatedTextInput
             value={amount}
             label="Amount"
-            onChangeText={(text) => setAmount(text)}
+            onChangeText={setAmount}
             keyboardType="numeric"
             validationErrorMessage="Amount must be positive and limited to cent precision"
             hasError={checkAmountError}
@@ -200,12 +189,11 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
           <Picker.Text 
             value={category}
             onChange={setCategory}
-            placeholder={{value: null, label: 'Choose a category...'}}
             data={categories}
             onClose={setIcon}
           />
 
-          { category == 'custom' ? 
+          { category == 'Custom' ? 
             <>
               <Input
                 placeholder='Category name'
@@ -224,15 +212,7 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
                 onEndEditing={checkCustomCategoryError}
                 inputContainerStyle={{backgroundColor: 'white', padding: 3, borderRadius: 2}}
               />
-              {/* <ValidatedTextInput
-                label="New Category Name"
-                value={customCategory}
-                onChangeText={setCustomCategory}
-                maxLength={49}
-                validationErrorMessage="Category can contain letters or numbers"
-                hasError={checkCustomCategoryError}
-                style={{ container: {width: '60%'}}}
-              /> */}
+
               <Picker.Icon 
                 visible={isIconPickerVisible}
                 value={custIcon}

@@ -51,7 +51,7 @@ const Login = ({ navigation, route }) => {
             style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
             label="Email"
             value={email}
-            onChangeText={email => setEmail(email)}
+            onChangeText={setEmail}
             maxLength={321}
           />
 
@@ -60,7 +60,7 @@ const Login = ({ navigation, route }) => {
             style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
             label="Password"
             value={password}
-            onChangeText={password => setPassword(password)}
+            onChangeText={setPassword}
             maxLength={100}
             right={
               <TextInput.Icon

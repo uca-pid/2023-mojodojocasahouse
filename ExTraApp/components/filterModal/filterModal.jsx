@@ -2,25 +2,25 @@ import React from 'react';
 import styles from './styles';
 import { View } from 'react-native';
 import { Icon, Overlay, Button, ListItem } from '@rneui/themed';
-import Autocomplete from '../autocomplete/autocomplete';
 import DatePicker from 'react-native-date-picker';
+import { PickerTextMultiple } from '../picker/picker';
 
 
 /**
  * Recibe ```textInputValue```, ```onChangeTextInput```, ```
  */
 const FilterModal = props => {
-    const [categoryFilter, setCategoryFilter] = React.useState(null);
-    const [startingDate, setStartingDate] = React.useState(new Date());
+    const [categories, setCategories] = React.useState([]);
+    const [from, setFrom] = React.useState(new Date());
     const [isStartingDateModalOpen, setOpenStartingDateModal] = React.useState(false);
     const [isEndingDateModalOpen, setOpenEndingDateModal] = React.useState(false);
-    const [endingDate, setEndingDate] = React.useState(new Date());
+    const [until, setUntil] = React.useState(new Date());
 
     const handleSubmit = () => {
       let data = {
-        startingDate,
-        endingDate,
-        selectedCategory: categoryFilter == '' ? null : categoryFilter
+        from,
+        until,
+        categories
       };
 
       props.onDone(data);
@@ -39,11 +39,11 @@ const FilterModal = props => {
             <View style={styles.categoryFilterContainer}>
 
               <View style={styles.autocompleteContainer}>
-                <Autocomplete 
-                  value={categoryFilter}
-                  onChangeText={setCategoryFilter}
+
+                <PickerTextMultiple 
+                  value={categories}
+                  onChange={setCategories}
                   data={props.data}
-                  placeholder="Any category"
                 />
               </View>
 
@@ -53,7 +53,7 @@ const FilterModal = props => {
               <ListItem bottomDivider topDivider onPress={() => setOpenStartingDateModal(true)}>
                 <Icon name="arrow-expand-right" type="material-community" color="grey" />
                 <ListItem.Content>
-                  <ListItem.Title>From {startingDate.toLocaleDateString('es-AR')}</ListItem.Title>
+                  <ListItem.Title>From {from.toLocaleDateString('es-AR')}</ListItem.Title>
                 </ListItem.Content>
                 <ListItem.Chevron />
               </ListItem>
@@ -63,7 +63,7 @@ const FilterModal = props => {
               <ListItem bottomDivider topDivider onPress={() => setOpenEndingDateModal(true)}>
                 <Icon name="arrow-expand-left" type="material-community" color="grey" />
                 <ListItem.Content>
-                  <ListItem.Title>Until {endingDate.toLocaleDateString('es-AR')}</ListItem.Title>
+                  <ListItem.Title>Until {until.toLocaleDateString('es-AR')}</ListItem.Title>
                 </ListItem.Content>
                 <ListItem.Chevron />
               </ListItem>
@@ -73,12 +73,12 @@ const FilterModal = props => {
               {/* <Button title="Starting date" onPress={() => setOpenStartingDateModal(true)} /> */}
               <DatePicker
                 modal
-                date={startingDate}
-                maximumDate={endingDate}
+                date={from}
+                maximumDate={until}
                 open={isStartingDateModalOpen}
                 onConfirm={(date) => {
                   setOpenStartingDateModal(false)
-                  setStartingDate(date)
+                  setFrom(date)
                 }}
                 onCancel={() => setOpenStartingDateModal(false)}
                 mode='date'
@@ -90,12 +90,12 @@ const FilterModal = props => {
               {/* <Button title="Ending date" onPress={() => setOpenEndingDateModal(true)} /> */}
               <DatePicker 
                 modal
-                date={endingDate}
-                minimumDate={startingDate}
+                date={until}
+                minimumDate={from}
                 open={isEndingDateModalOpen}
                 onConfirm={(date) => {
                   setOpenEndingDateModal(false)
-                  setEndingDate(date)
+                  setUntil(date)
                 }}
                 onCancel={() => setOpenEndingDateModal(false)}
                 mode='date'

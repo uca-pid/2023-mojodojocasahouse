@@ -7,7 +7,6 @@ import FeatherIcon from 'react-native-vector-icons/Feather';
 import { styles } from './style';
 import ExpenseModal from '../../components/expenseModal/ExpenseModal';
 import SettingModal from '../../components/settingsModal/settingsModal';
-// import { Picker } from '../../components/picker/picker';
 import { postExpenseToApi, fetchUserCategories, fetchExpensesByCategory,fetchExpensesList} from '../../utils/apiFetch';
 import { Dialog, ListItem, Button, Icon as MaterialIcon } from '@rneui/themed';
 import { AuthContext } from '../../context/authContext';
@@ -88,23 +87,10 @@ const Table = () => {
     setLoading(false);
   };
 
-  const serializeCategoryName = (custCat) => {
-    if(custCat != null){
-      return custCat.toLowerCase().replaceAll(' ', '-');
-    }
-    return custCat;
-  };
-
   const handleFilterModalSubmit = async (data) => {
     setLoading(true);
-    await fetchExpensesByCategory(serializeCategoryName(data.selectedCategory), setExpenses, sessionExpired);
+    await fetchExpensesList(setExpenses, sessionExpired, data);
     setFilterModalVisible(false);
-    setLoading(false);
-  };
-
-  const handleGettingExpensesByCategory = async (data) => {
-    setLoading(true);
-    await fetchExpensesByCategory(serializeCategoryName(data.selectedCategory), setExpenses, sessionExpired);
     setLoading(false);
   };
 
@@ -165,14 +151,6 @@ const Table = () => {
           </TouchableOpacity>
         </View>
 
-        {/* <Picker.Single 
-          value={selectedCategory}
-          onChange={setSelectedCategory}
-          placeholder={{value: null, label: "Any", inputLabel: "Category: Any"}}
-          data={categories}
-          onClose={handleGettingExpensesByCategory}
-        /> */}
-
         <ScrollView style={{marginBottom: 10, marginTop: 10}} contentContainerStyle={styles.scrollviewContentContainer}>
 
             { expenses.map((item, index) => (
@@ -230,7 +208,7 @@ const Table = () => {
       </View>
       <ExpenseModal isVisible={isModalVisible} onClose={toggleModal} onSave={handleSaveExpense} />
       <SettingModal isVisible={isModalSettingVisible} onSettingClose={toggleSettingModal} navigation={navigation} /> 
-      <FilterModal visible={isFilterModalVisible} data={categories.map(item => item.label)} onDone={handleFilterModalSubmit} onCancel={toggleFilterModal} />
+      <FilterModal visible={isFilterModalVisible} data={categories} onDone={handleFilterModalSubmit} onCancel={toggleFilterModal} />
     </View>
   );
 };
