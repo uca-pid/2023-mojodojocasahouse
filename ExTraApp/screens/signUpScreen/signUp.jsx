@@ -23,6 +23,7 @@ const SignUp = ({navigation, route}) => {
   const [emailError, setEmailError] = React.useState(false);
   const [passwordError, setPasswordError] = React.useState(false);
   const [repeatPasswordError, setRepeatPasswordError] = React.useState(false);
+  const [secureTextEntry, setSecureTextEntry] = React.useState(true);
 
   const navigateToLogin = () => {
     navigation.navigate('Login'); // Navigate back to the 'Login' screen
@@ -82,7 +83,7 @@ const SignUp = ({navigation, route}) => {
 
         <View style={styles.bottomContainer} />
 
-        <ScrollView contentContainerStyle={styles.contentContainer}>
+        <ScrollView contentContainerStyle={styles.contentContainer} keyboardShouldPersistTaps="handled">
 
           <TextInput
             style={{ marginLeft: '10%', width: '80%', marginBottom: '9%' }}
@@ -121,26 +122,41 @@ const SignUp = ({navigation, route}) => {
           </HelperText>
 
           <TextInput
-            secureTextEntry={true}
-            style={{ marginLeft: '10%', width: '80%', marginBottom: '2%' }}
+            secureTextEntry={secureTextEntry}
+            style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
             label="Password"
             value={password}
             onChangeText={setPassword}
             onBlur={validatePassword}
             maxLength={100}
+            right={
+              <TextInput.Icon
+              icon={secureTextEntry ? 'eye-off' : 'eye'}
+              onPress={() => setSecureTextEntry(!secureTextEntry)}
+              style={{ color: 'black', fontSize: 36 }}
+              />
+            }
           />
+          
           <HelperText type="error" visible={passwordError}>
             Must contain: 8 letters, 1 number, 1 capital, and 1 symbol.
           </HelperText>
 
           <TextInput
-            secureTextEntry={true}
-            style={{ marginLeft: '10%', width: '80%' }}
+            secureTextEntry={secureTextEntry}
+            style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
             label="Password"
             value={passwordRepeat}
             onChangeText={setRepeatPassword}
             onBlur={validateRepeatPassword}
             maxLength={100}
+            right={
+              <TextInput.Icon
+              icon={secureTextEntry ? 'eye-off' : 'eye'}
+              onPress={() => setSecureTextEntry(!secureTextEntry)}
+              style={{ color: 'black', fontSize: 36 }}
+              />
+            }
           />
           <HelperText type="error" visible={repeatPasswordError}>
             Passwords do not match.
