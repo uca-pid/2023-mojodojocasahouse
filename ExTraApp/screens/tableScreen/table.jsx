@@ -27,7 +27,7 @@ const iconFactory = (id) => {
     case 5:
       return "clapperboard"
     case 6:
-      return "squared-cross"
+      return "squared-plus"
     case 7:
       return "man"
     case 8:

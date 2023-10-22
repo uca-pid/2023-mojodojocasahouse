@@ -19,6 +19,13 @@ const defaultStyles = StyleSheet.create({
         fontWeight: 'bold',
     },
 
+    iconButton: {
+        width: 55,
+        padding: 10,
+        height: 'auto',
+        backgroundColor: '#d9d9d9',
+    },
+
 
 
     // Modal background
@@ -78,6 +85,23 @@ const defaultStyles = StyleSheet.create({
         backgroundColor: '#d9d9d9',
         borderWidth: 0.5,
         borderColor: '#a1a1a1'
+    },
+
+    scrollviewIconsStyle: {
+
+        backgroundColor: '#d9d9d9',
+        borderWidth: 0.5,
+        borderColor: '#a1a1a1'
+    },
+
+    scrollviewIconsContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+
+        justifyContent: 'center',
+        alignItems: 'center',
+
+        backgroundColor: '#efefef',
     },
 
     cancelButtonContainer: {
@@ -148,6 +172,41 @@ const defaultStyles = StyleSheet.create({
         color: '#363636',
     },
     
+
+    
+
+    // Icons
+
+    selectedIconContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+
+        padding: 10,
+
+        backgroundColor: '#e3ffd1',
+        borderWidth: 0.5,
+        borderColor: 'rgba(2, 204, 42, 1)',
+        // backgroundColor: 'red',
+    },
+
+    unselectedIconContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+
+        padding: 10,
+
+        borderWidth: 0.5,
+        borderColor: '#efefef',
+        // backgroundColor: 'green'
+    },
+
+    unselectedIcon: {
+        color: '#363636',
+    },
+
+    selectedIcon: {
+        color: '#363636',
+    },
 });
 
 export default defaultStyles;
