@@ -31,10 +31,8 @@
 		516CE0752AD5F10D00DABB80 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 516CE0622AD5F10D00DABB80 /* SimpleLineIcons.ttf */; };
 		516CE0762AD5F10D00DABB80 /* FontAwesome6_Brands.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 516CE0632AD5F10D00DABB80 /* FontAwesome6_Brands.ttf */; };
 		516CE0772AD5F10D00DABB80 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 516CE0642AD5F10D00DABB80 /* MaterialIcons.ttf */; };
-		5D551EFD86592D7335A7D535 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D0FD448BE407FF4A61B4D9 /* ExpoModulesProvider.swift */; };
 		7699B88040F8A987B510C191 /* libPods-ExTraApp-ExTraAppTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-ExTraApp-ExTraAppTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		D9506DEA145C527EDA810275 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 808857C10F7EC1216A8FED53 /* ExpoModulesProvider.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,7 +56,6 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ExTraApp/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ExTraApp/main.m; sourceTree = "<group>"; };
 		19F6CBCC0A4E27FBF8BF4A61 /* libPods-ExTraApp-ExTraAppTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ExTraApp-ExTraAppTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		23D0FD448BE407FF4A61B4D9 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-ExTraApp-ExTraAppTests/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-ExTraApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ExTraApp.debug.xcconfig"; path = "Target Support Files/Pods-ExTraApp/Pods-ExTraApp.debug.xcconfig"; sourceTree = "<group>"; };
 		516CE0522AD5F10D00DABB80 /* Fontisto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fontisto.ttf; sourceTree = "<group>"; };
 		516CE0532AD5F10D00DABB80 /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Octicons.ttf; sourceTree = "<group>"; };
@@ -82,7 +79,6 @@
 		5709B34CF0A7D63546082F79 /* Pods-ExTraApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ExTraApp.release.xcconfig"; path = "Target Support Files/Pods-ExTraApp/Pods-ExTraApp.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-ExTraApp-ExTraAppTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ExTraApp-ExTraAppTests.debug.xcconfig"; path = "Target Support Files/Pods-ExTraApp-ExTraAppTests/Pods-ExTraApp-ExTraAppTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-ExTraApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ExTraApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		808857C10F7EC1216A8FED53 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-ExTraApp/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = ExTraApp/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-ExTraApp-ExTraAppTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ExTraApp-ExTraAppTests.release.xcconfig"; path = "Target Support Files/Pods-ExTraApp-ExTraAppTests/Pods-ExTraApp-ExTraAppTests.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -139,14 +135,6 @@
 			name = ExTraApp;
 			sourceTree = "<group>";
 		};
-		17694A592C0FF46F0AFC19FA /* ExTraAppTests */ = {
-			isa = PBXGroup;
-			children = (
-				23D0FD448BE407FF4A61B4D9 /* ExpoModulesProvider.swift */,
-			);
-			name = ExTraAppTests;
-			sourceTree = "<group>";
-		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -155,14 +143,6 @@
 				19F6CBCC0A4E27FBF8BF4A61 /* libPods-ExTraApp-ExTraAppTests.a */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		50BDB663AE043855D84249EF /* ExTraApp */ = {
-			isa = PBXGroup;
-			children = (
-				808857C10F7EC1216A8FED53 /* ExpoModulesProvider.swift */,
-			);
-			name = ExTraApp;
 			sourceTree = "<group>";
 		};
 		516CE0512AD5F10D00DABB80 /* Fonts */ = {
@@ -208,7 +188,6 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
-				B05E7767A190842F340EEDF6 /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -222,15 +201,6 @@
 				00E356EE1AD99517003FC87E /* ExTraAppTests.xctest */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		B05E7767A190842F340EEDF6 /* ExpoModulesProviders */ = {
-			isa = PBXGroup;
-			children = (
-				50BDB663AE043855D84249EF /* ExTraApp */,
-				17694A592C0FF46F0AFC19FA /* ExTraAppTests */,
-			);
-			name = ExpoModulesProviders;
 			sourceTree = "<group>";
 		};
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
@@ -252,7 +222,6 @@
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "ExTraAppTests" */;
 			buildPhases = (
 				A55EABD7B0C7F3A422A6CC61 /* [CP] Check Pods Manifest.lock */,
-				C88EC6C64F78C83CF3A13C56 /* [Expo] Configure project */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
@@ -275,7 +244,6 @@
 			buildPhases = (
 				C38B50BA6285516D6DCD4F65 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
-				85895BD282EC814B1B81B1C7 /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
@@ -400,25 +368,6 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ExTraApp/Pods-ExTraApp-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		85895BD282EC814B1B81B1C7 /* [Expo] Configure project */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "[Expo] Configure project";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-ExTraApp/expo-configure-project.sh\"\n";
-		};
 		A55EABD7B0C7F3A422A6CC61 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -479,25 +428,6 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ExTraApp-ExTraAppTests/Pods-ExTraApp-ExTraAppTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
-		};
-		C88EC6C64F78C83CF3A13C56 /* [Expo] Configure project */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "[Expo] Configure project";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-ExTraApp-ExTraAppTests/expo-configure-project.sh\"\n";
 		};
 		E235C05ADACE081382539298 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -560,7 +490,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				00E356F31AD99517003FC87E /* ExTraAppTests.m in Sources */,
-				5D551EFD86592D7335A7D535 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -570,7 +499,6 @@
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
-				D9506DEA145C527EDA810275 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -595,7 +523,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = ExTraAppTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -606,7 +534,6 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ExTraApp.app/ExTraApp";
@@ -620,7 +547,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = ExTraAppTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -631,7 +558,6 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ExTraApp.app/ExTraApp";
@@ -657,7 +583,6 @@
 					"-ObjC",
 					"-lc++",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = ExTraApp;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -684,7 +609,6 @@
 					"-ObjC",
 					"-lc++",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = ExTraApp;
 				SWIFT_VERSION = 5.0;
@@ -741,7 +665,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
@@ -807,7 +731,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
