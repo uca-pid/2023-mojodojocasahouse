@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { TextInput, HelperText } from 'react-native-paper';
+import { Dialog } from '@rneui/themed';
 
 import { styles } from './style';
-import LoadingOverlay from '../../components/loading/loading';
 import { postChangePassToApi } from '../../utils/apiFetch';
 
 
@@ -45,9 +45,10 @@ const ChangePassScreen = ({ navigation, route }) => { // Add navigation prop
   return (
     <View style={styles.appContainer}>
       <View style={styles.container}>
-        <LoadingOverlay 
-          shown={loading}
-        />
+        <Dialog isVisible={loading}>
+          <Dialog.Loading />
+        </Dialog>
+
         <View style={styles.logoContainer}>
           <Image style={styles.logo} source={require('./../../img/logo.png')} />
         </View>

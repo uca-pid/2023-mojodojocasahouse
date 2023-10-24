@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, Image, FlatList } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Entypo';
+import { Dialog } from '@rneui/themed';
 
 import { styles } from './style';
 import LoadingOverlay from '../../components/loading/loading';
@@ -97,9 +98,13 @@ const AdmCategories = ({ navigation, route }) => {
   return (
     <View style={styles.appContainer}>
       <View style={styles.container}>
-        <LoadingOverlay 
+        <Dialog isVisible={loading}>
+          <Dialog.Loading />
+        </Dialog>
+
+        {/* <LoadingOverlay 
           shown={loading}
-        />
+        /> */}
         <View style={styles.logoContainer}>
           <Image style={styles.logo} source={require('./../../img/logo.png')} />
         </View>

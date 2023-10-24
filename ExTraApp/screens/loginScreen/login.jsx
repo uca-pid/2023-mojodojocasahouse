@@ -2,8 +2,8 @@ import React from 'react';
 import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { styles } from './style';
 import { TextInput, Switch } from 'react-native-paper';
-import { postLoginFormToApi } from '../../utils/apiFetch';
-import LoadingOverlay from '../../components/loading/loading';
+import { Dialog } from '@rneui/themed';
+import { AuthContext } from '../../context/authContext';
 
 
 
@@ -13,6 +13,7 @@ const Login = ({ navigation, route }) => {
   const [secureTextEntry, setSecureTextEntry] = React.useState(true);
   const [loading, setLoading] = React.useState(false);
   const [rememberMe, setRememberMe] = React.useState(false);
+  const {signIn} = React.useContext(AuthContext);
 
   const onToggleSwitch = () => setRememberMe(!rememberMe);
 
@@ -26,7 +27,7 @@ const Login = ({ navigation, route }) => {
 
   const handleSubmitLogin = async () => {
     setLoading(true);
-    await postLoginFormToApi(navigation, {email, password, rememberMe});
+    await signIn({email, password, rememberMe});
     setLoading(false);
   };
 
@@ -34,9 +35,9 @@ const Login = ({ navigation, route }) => {
     <View style={styles.appContainer}>
       <View style={styles.container}>
 
-        <LoadingOverlay 
-          shown={loading}
-        />
+        <Dialog isVisible={loading}>
+          <Dialog.Loading />
+        </Dialog>
 
         <View style={styles.logoContainer}>
           <Image style={styles.logo} source={require('./../../img/logo.png')} />
@@ -50,7 +51,7 @@ const Login = ({ navigation, route }) => {
             style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
             label="Email"
             value={email}
-            onChangeText={email => setEmail(email)}
+            onChangeText={setEmail}
             maxLength={321}
           />
 
@@ -59,7 +60,7 @@ const Login = ({ navigation, route }) => {
             style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
             label="Password"
             value={password}
-            onChangeText={password => setPassword(password)}
+            onChangeText={setPassword}
             maxLength={100}
             right={
               <TextInput.Icon
@@ -69,8 +70,12 @@ const Login = ({ navigation, route }) => {
                 />
               }
           />
-          <Text style={styles.rememberMeText} >Remember me:</Text>
-          <Text style={styles.rememberMeBox}><Switch value={rememberMe} onValueChange={onToggleSwitch} /></Text>
+          <View style={styles.rememberMeContainer}>
+            <Text style={styles.rememberMeText} >Remember me:</Text>
+            <View style={styles.rememberMeBox}>
+              <Switch value={rememberMe} color='green' onValueChange={onToggleSwitch} />
+            </View>
+          </View>
 
           <TouchableOpacity style={styles.button} onPress={handleSubmitLogin}>
             <Text style={styles.buttonText}>Log in</Text>

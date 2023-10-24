@@ -4,30 +4,31 @@ import { View, Text, Modal, TouchableOpacity, Alert  } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import ValidatedTextInput from '../validatedTextInput/validatedTextInput';
 import styles from './style';
-import Icon from 'react-native-vector-icons/Entypo';
+import EntypoIcon from 'react-native-vector-icons/Entypo';
 import { Picker } from '../picker/picker';
+import { Input, Icon } from '@rneui/themed';
 
 const getIcon = (category) => {
   switch(category){
-    case "travel":
+    case "Travel":
       return 1;
-    case "food":
+    case "Food":
       return 2;
-    case "housing":
+    case "Housing":
       return 3;
-    case "shopping":
+    case "Shopping":
       return 4;
-    case "entertainment":
+    case "Entertainment":
       return 5;
-    case "health":
+    case "Health":
       return 6;
-    case "clothes":
+    case "Clothes":
       return 7;
-    case "education":
+    case "Education":
       return 8;
-    case "various":
+    case "Various":
       return 9;
-    case "custom":
+    case "Custom":
       return 10;
   }
 };
@@ -38,8 +39,11 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
   const [date, setDate] = useState(new Date());
   const [category, setCategory] = useState(null);
   const [customCategory, setCustomCategory]= useState('');
+  const [hasCustomCategoryError, setCustomCategoryError] = useState(false);
   const [iconId, setIconId] = useState(null);
   const [open, setOpen] = useState(false);
+  const [custIcon, setCustIcon] = useState({value: 0, iconName: 'credit', iconType: 'entypo'});
+  const [isIconPickerVisible, setIconPickerVisible] = useState(false);
 
   const checkErrors = () => {
     if (checkConceptError() || checkAmountError() || checkCategoryError()) {
@@ -67,18 +71,14 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
 
   const checkCustomCategoryError = () => {
     let regex = /^[A-Za-z\d\s]+$/;
-    return !regex.test(customCategory);
+    if(!regex.test(customCategory)){
+      setCustomCategoryError(true);
+      return true;
+    }
+    setCustomCategoryError(false);
+    return false;
   };
 
-  const formatCustomCategory = (custCat) => {
-    if(custCat != null){
-      var resp = custCat.toLowerCase().replaceAll(' ', '-')
-    }
-    else{
-      return custCat;
-    }
-    return resp;
-  };
 
   const handleSave = () => {
     try {
@@ -88,8 +88,8 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
         concept, 
         amount, 
         date, 
-        category: (category=='custom'? formatCustomCategory(customCategory): category), 
-        iconId
+        category: (category=='Custom'? customCategory: category), 
+        iconId: (category=='Custom'? custIcon.value : iconId)
       });
       resetFields();
       onClose();
@@ -113,19 +113,20 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
     setCategory(null);
     setIconId(null);
     setCustomCategory(null);
+    setCustIcon({value: 0, iconName: "credit", iconType: "entypo"})
   };
 
   const categories = [
-    {value: 'travel', label: 'Travel', inputLabel: 'Category: Travel'},
-    {value: 'food', label: 'Food', inputLabel: 'Category: Food'},
-    {value: 'housing', label: 'Housing', inputLabel: 'Category: Housing'},
-    {value: 'shopping', label: 'Shopping', inputLabel: 'Category: Shopping'},
-    {value: 'entertainment', label: 'Entertainment', inputLabel: 'Category: Entertainment'},
-    {value: 'health', label: 'Health', inputLabel: 'Category: Health'},
-    {value: 'clothes', label: 'Clothes', inputLabel: 'Category: Clothes'},
-    {value: 'education', label: 'Education', inputLabel: 'Category: Education'},
-    {value: 'various', label: 'Various', inputLabel: 'Category: Various'},
-    {value: 'custom', label: 'Custom', inputLabel: 'Custom category'},
+    "Travel",
+    "Food",
+    "Housing",
+    "Shopping",
+    "Entertainment",
+    "Health",
+    "Clothes",
+    "Education",
+    "Various",
+    "Custom"
   ];
 
   const setIcon = () => {
@@ -141,7 +142,7 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
           <ValidatedTextInput
             label="Concept"
             value={concept}
-            onChangeText={(text) => setConcept(text)}
+            onChangeText={setConcept}
             validationErrorMessage="Concept may only contain letters or numbers"
             maxLength={100}
             hasError={checkConceptError}
@@ -151,7 +152,7 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
           <ValidatedTextInput
             value={amount}
             label="Amount"
-            onChangeText={(text) => setAmount(text)}
+            onChangeText={setAmount}
             keyboardType="numeric"
             validationErrorMessage="Amount must be positive and limited to cent precision"
             hasError={checkAmountError}
@@ -159,7 +160,7 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
             maxLength={12}
           />
 
-          <Icon.Button
+          <EntypoIcon.Button
             onPress={() => {
               setOpen(true);
             }}
@@ -169,7 +170,7 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
             style={styles.dateButton}
           >
             {date.toDateString()}
-          </Icon.Button>
+          </EntypoIcon.Button>
 
           <DatePicker
             modal
@@ -185,24 +186,39 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
             }}
           />
 
-          <Picker.Single 
+          <Picker.Text 
             value={category}
             onChange={setCategory}
-            placeholder={{value: null, label: 'Choose a category...'}}
             data={categories}
             onClose={setIcon}
           />
 
-          { category == 'custom' ? 
+          { category == 'Custom' ? 
             <>
-              <ValidatedTextInput
-                label="New Category Name"
+              <Input
+                placeholder='Category name'
+                rightIcon={
+                  <Icon
+                    name={custIcon.iconName}
+                    type={custIcon.iconType}
+                    size={24}
+                    color='black'
+                    onPress={() => setIconPickerVisible(true)}
+                  />
+                }
                 value={customCategory}
                 onChangeText={setCustomCategory}
-                maxLength={49}
-                validationErrorMessage="Category can contain letters or numbers"
-                hasError={checkCustomCategoryError}
-                style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
+                errorMessage={hasCustomCategoryError? "Category can contain letters or numbers" : null}
+                onEndEditing={checkCustomCategoryError}
+                inputContainerStyle={{backgroundColor: 'white', padding: 3, borderRadius: 2}}
+              />
+
+              <Picker.Icon 
+                visible={isIconPickerVisible}
+                value={custIcon}
+                onChange={setCustIcon}
+                onDone={() => setIconPickerVisible(false)}
+                onCancel={() => setIconPickerVisible(false)}
               />
             </>
           : null}

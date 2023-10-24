@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { TextInput, HelperText } from 'react-native-paper';
 import EmailValidator from 'email-validator';
+import { Dialog } from '@rneui/themed';
 
 import { styles } from './style';
 import LoadingOverlay from '../../components/loading/loading';
@@ -68,9 +69,9 @@ const SignUp = ({navigation, route}) => {
     <View style={styles.appContainer}>
       <View style={styles.container}>
 
-        <LoadingOverlay 
-          shown={loading}
-        />
+        <Dialog isVisible={loading}>
+          <Dialog.Loading />
+        </Dialog>
 
         <View style={styles.logoContainer}>
           <Image style={styles.logo} source={require('./../../img/logo.png')} />
@@ -121,9 +122,9 @@ const SignUp = ({navigation, route}) => {
             style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
             label="Password"
             value={password}
-            onChangeText={password => setPassword(password)}
-            maxLength={100}
+            onChangeText={setPassword}
             onBlur={validatePassword}
+            maxLength={100}
             right={
               <TextInput.Icon
               icon={secureTextEntry ? 'eye-off' : 'eye'}
@@ -142,9 +143,9 @@ const SignUp = ({navigation, route}) => {
             style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
             label="Password"
             value={passwordRepeat}
-            onChangeText={password => setRepeatPassword(password)}
-            maxLength={100}
+            onChangeText={setRepeatPassword}
             onBlur={validateRepeatPassword}
+            maxLength={100}
             right={
               <TextInput.Icon
               icon={secureTextEntry ? 'eye-off' : 'eye'}

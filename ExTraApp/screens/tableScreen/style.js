@@ -15,10 +15,10 @@ export const styles = StyleSheet.create({
     flexDirection: 'column',
 
     margin: "2%",
-    marginTop: 20,
+    marginTop: "6%",
     borderRadius: 14,
     backgroundColor: '#AEB4E8', // Background color
-    height: '100%',
+    height: '96%',
     width: '96%',
   },
 
@@ -129,8 +129,22 @@ export const styles = StyleSheet.create({
     backgroundColor: '#433FF4',
   },
 
+  filterButtonContainer: {
+    height: '5%',
+    width: '100%',
+    marginTop: 5,
+    backgroundColor: '#ee9a00',
+  },
+
   button: {
     backgroundColor: '#433FF4',
+    paddingBottom: '2.5%',
+    paddingTop: '2.5%',
+    alignItems: 'center',
+  },
+
+  filterButton: {
+    backgroundColor: '#ee9a00',
     paddingBottom: '2.5%',
     paddingTop: '2.5%',
     alignItems: 'center',
@@ -150,9 +164,13 @@ export const styles = StyleSheet.create({
   // Scrollview
 
   scrollviewContentContainer: {
-    paddingBottom: 20,
-    borderRadius: 20,
-    backgroundColor: '#AEB4E8', // Background color
+    display: 'flex',
+    marginLeft: 16,
+    marginRight: 16,
+    backgroundColor: '#e1e1e8', // Table background color
+    borderWidth: 1,
+    borderColor: '#AEB4E7', // Border color
+    borderRadius: 5,
   },
 
   tableContainer: {
