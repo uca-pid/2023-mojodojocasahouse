@@ -6,9 +6,9 @@
     "start:stage": "APP_ENV=staging react-native start --reset-cache",
     "start:prod": "APP_ENV=prod react-native start --reset-cache",
     "start": "APP_ENV=dev react-native start --reset-cache",
-    "startwin:stage": "$env:APP_ENV=\"staging\" react-native start --reset-cache",
-    "startwin:prod": "$env:APP_ENV=\"prod\" react-native start --reset-cache",
-    "startwin": "$env:APP_ENV=\"dev\" react-native start --reset-cache",
+    "startwin:stage": "set APP_ENV=staging && react-native start --reset-cache",
+    "startwin:prod": "set APP_ENV=prod && react-native start --reset-cache",
+    "startwin": "set APP_ENV=dev && react-native start --reset-cache",
     "lint": "eslint .",
     "test": "jest"
   },
