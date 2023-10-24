@@ -7,7 +7,7 @@ import FeatherIcon from 'react-native-vector-icons/Feather';
 import { styles } from './style';
 import ExpenseModal from '../../components/expenseModal/ExpenseModal';
 import SettingModal from '../../components/settingsModal/settingsModal';
-import { postExpenseToApi, fetchUserCategories, fetchExpensesByCategory,fetchExpensesList} from '../../utils/apiFetch';
+import { postExpenseToApi, fetchUserCategories, fetchExpensesByCategory,fetchExpensesList, deleteExpense} from '../../utils/apiFetch';
 import { Dialog, ListItem, Button, Icon as MaterialIcon } from '@rneui/themed';
 import { AuthContext } from '../../context/authContext';
 import FilterModal from '../../components/filterModal/filterModal';
@@ -96,7 +96,9 @@ const Table = () => {
 
   const handleDeleteExpense = async (id) => {
     setLoading(true);
-    // await postDeleteExpense(id); needs implementation
+    await deleteExpense(id);
+    await fetchUserCategories(setCategories, sessionExpired);
+    await fetchExpensesList(setExpenses, sessionExpired);
     setLoading(false);
   };
 

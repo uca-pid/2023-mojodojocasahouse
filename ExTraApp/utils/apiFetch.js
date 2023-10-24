@@ -214,7 +214,6 @@ const fetchUserCategories = async (setCategories, sessionExpiredCallback) => {
 // };
 
 const fetchExpensesList = async (setExpenses, sessionExpiredCallback, request = {}) => {
-  console.log(request);
   try{
     let response = await fetchWithTimeout(API_URL + "/getMyExpenses?categories=" + (request.categories? request.categories.map(c => c + ",")  : "") + "&from=" + (request.from? request.from.toISOString().substring(0,10) : "") + "&until=" + (request.until? request.until.toISOString().substring(0,10) : ""), {
       method: "GET",
@@ -357,26 +356,61 @@ const doSignIn = async (request) => {
       },
       body: new FormData().append('remember-me', request.rememberMe)
     });
+    let responseBody = await response.json();
 
     if (response.status >= 500){
-      return "5xx";
+      return {status: "5xx", credentials: null};
     }
 
     if (response.status >= 400){
-      return "4xx";
+      return {status: "4xx", credentials: null};
     }
 
     if (response.status >= 300){
-      return "3xx";
+      return {status: "3xx", credentials: null};
     }
 
-    return "2xx";
+    return {status: "2xx", credentials: responseBody.response};
 
   } catch (error) {
     console.log(error);
     Alert.alert("Connection Error", "There was an error connecting to API");
   }
 };
+
+const deleteExpense = async (expenseId) => {
+  try{
+    let response = await fetchWithTimeout(API_URL + "/expenses/" + expenseId, {
+      method: 'DELETE',
+      credentials: 'include',
+      headers: {
+        Accept: 'application/json',
+      }
+    });
+    let responseBody = await response.json();
+
+    // OK
+    if(response.ok){
+      return;
+    }
+
+    // INTERNAL ERROR
+    if(response.status >= 500){
+      Alert.alert("Server Error", "Oops! An unknown error happened");
+      return;
+    }
+
+    // OTHER ERROR
+    Alert.alert(
+      "Request Failed", 
+      "API says: " + responseBody.message
+    );
+
+  } catch (error){
+    console.log(error);
+    Alert.alert('Invalid Operation', 'Could not delete expense');
+  }
+}
 
 const postForgottenPasswordFormToApi = async (formHasErrors, email, navigation) => {
   if(formHasErrors()){
@@ -558,6 +592,7 @@ export {
   fetchWithTimeout,
   fetchUserCategories, 
   // fetchExpensesByCategory,
+  deleteExpense,
   fetchExpensesList,
   postForgottenPasswordFormToApi,
   postResetPasswordFormToApi,

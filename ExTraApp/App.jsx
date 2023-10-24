@@ -15,6 +15,8 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { doLogout, doSignIn, verifyCredentials } from './utils/apiFetch';
 import SplashScreen from './screens/splashScreen/splashScreen';
+import CustomDrawer from './components/customDrawer/customDrawer';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -42,18 +44,21 @@ const App = () => {
             ...prevState,
             hasCredentials: action.hasCredentials,
             isLoading: false,
+            userCredentials: null,
           };
         case 'SIGN_IN':
           return {
             ...prevState,
             isSignout: false,
             hasCredentials: action.hasCredentials,
+            userCredentials: action.userCredentials,
           };
         case 'SIGN_OUT':
           return {
             ...prevState,
             isSignout: true,
             hasCredentials: false,
+            userCredentials: null,
           };
       }
     },
@@ -91,12 +96,12 @@ const App = () => {
   const authContext = React.useMemo(
     () => ({
       signIn: async (request) => {
-        let apiStatusResponse = await doSignIn(request);
+        let {status, credentials} = await doSignIn(request);
 
-        switch(apiStatusResponse){
+        switch(status){
           case("2xx"):
             // await AsyncStorage.setItem("rememberMeCookie", cookieResponse);
-            dispatch({ type: 'SIGN_IN', hasCredentials: true });
+            dispatch({ type: 'SIGN_IN', hasCredentials: true, userCredentials: credentials });
             break;
           case("4xx"):
             Alert.alert("Invalid credentials", "Check fields and try again.");
@@ -134,7 +139,22 @@ const App = () => {
 
   const DrawerNavigation = (props) => {
     return (
-      <Drawer.Navigator backBehavior='history' screenOptions={{headerShown: false}}>
+      <Drawer.Navigator 
+      drawerContent={props => (
+        <CustomDrawer {...props} 
+        username={state.userCredentials? state.userCredentials.firstName + " " + state.userCredentials.lastName : "Anonymous"} />)}
+      screenOptions={{
+        headerShown: false,
+        drawerActiveBackgroundColor: '#aa18ea',
+        drawerActiveTintColor: '#fff',
+        drawerInactiveTintColor: '#333',
+        drawerLabelStyle: {
+          marginLeft: -25,
+          fontFamily: 'Roboto-Medium',
+          fontSize: 15,
+        },
+      }} 
+      backBehavior='history'>
       {state.isLoading ? (
             // We haven't finished checking for the token yet
             <>
@@ -151,6 +171,9 @@ const App = () => {
               options={{
                 title: "Log in",
                 animationTypeForReplace: state.isSignout ? 'pop' : 'push',
+                drawerIcon: ({color}) => (
+                  <Ionicons name="log-in-outline" size={22} color={color} />
+                ),
               }}
             />
             <Drawer.Screen
@@ -158,6 +181,9 @@ const App = () => {
               component={SignUp} // Use the SignUp component
               options={{
                 title: "Sign up",
+                drawerIcon: ({color}) => (
+                  <Ionicons name="create-outline" size={22} color={color} />
+                ),
               }}
             />
             <Drawer.Screen
@@ -165,6 +191,9 @@ const App = () => {
               component={ForgottenPassword}
               options={{
                 title: "Forgot your password?",
+                drawerIcon: ({color}) => (
+                  <Ionicons name="help-outline" size={22} color={color} />
+                ),
               }}
             />
           </>
@@ -175,6 +204,9 @@ const App = () => {
               component={Table} // Use a separate component for the screen
               options={{
                 title: "My expenses",
+                drawerIcon: ({color}) => (
+                  <Ionicons name="home-outline" size={22} color={color} />
+                ),
               }}
             />
             <Drawer.Screen
@@ -182,6 +214,9 @@ const App = () => {
               component={ChangePassScreen} // Use a separate component for the screen
               options={{
                 title: "Change password",
+                drawerIcon: ({color}) => (
+                  <Ionicons name="lock-closed-outline" size={22} color={color} />
+                ),
               }}
             />
           </>
