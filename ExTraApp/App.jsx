@@ -11,6 +11,8 @@ import ChangePassScreen from './screens/changePassScreen/changePassScreen';
 import ForgottenPassword from './screens/forgottenPasswordScreen/forgottenPassword';
 import ResetPassword from './screens/resetPasswordScreen/resetPassword';
 import AdmCategories from './screens/admCategoriesScreen/admCategories';
+import GraphScreen from './screens/graphScreen/graphScreen';
+import BarScreen from './screens/graphScreen/barScreen';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { doLogout, doSignIn, verifyCredentials } from './utils/apiFetch';
@@ -206,6 +208,26 @@ const App = () => {
                 title: "My expenses",
                 drawerIcon: ({color}) => (
                   <Ionicons name="home-outline" size={22} color={color} />
+                ),
+              }}
+            />
+            <Drawer.Screen
+              name="GraphScreen"
+              component={GraphScreen} // Use a separate component for the screen
+              options={{
+              title: "Pie-Chart",
+              drawerIcon: ({color}) => (
+                  <Ionicons name="bowling-ball-outline" size={22} color={color} />
+                ),
+              }}
+            />
+            <Drawer.Screen
+              name="BarScreen"
+              component={BarScreen} // Use a separate component for the screen
+              options={{
+              title: "Bar-Chart",
+              drawerIcon: ({color}) => (
+                  <Ionicons name="analytics-outline" size={22} color={color} />
                 ),
               }}
             />
