@@ -1,21 +1,23 @@
 // ExpenseModal.js
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, Modal, TouchableOpacity, Alert  } from 'react-native';
-import DatePicker from 'react-native-date-picker';
 import ValidatedTextInput from '../validatedTextInput/validatedTextInput';
 import styles from './style';
-import moment from 'moment';
-
 import EntypoIcon from 'react-native-vector-icons/Entypo';
-import { Picker } from '../picker/picker';
-import { Input, Icon } from '@rneui/themed';
+import DatePicker from 'react-native-date-picker';
 
 
 const NewEditModal = ({ isVisible, onClose, onSave, selectedExpense }) => {
-  console.log(selectedExpense);
-  const [concept, setConcept] = useState(selectedExpense.concept + "");
-  const [amount, setAmount] = useState(selectedExpense.amount + "");
-  const [open, setOpen] = useState(false);
+  const [concept, setConcept] = React.useState("");
+  const [amount, setAmount] = React.useState("");
+  const [date, setDate] = React.useState(new Date());
+  const [open, setOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    setConcept(selectedExpense.concept);
+    setAmount(selectedExpense.amount + "");
+    setDate(selectedExpense.date? new Date(selectedExpense.date) : new Date);
+  }, [selectedExpense]);
 
   const checkErrors = () => {
     if (checkConceptError() || checkAmountError()) {
@@ -41,6 +43,7 @@ const NewEditModal = ({ isVisible, onClose, onSave, selectedExpense }) => {
         id: selectedExpense.id,
         concept, 
         amount,
+        date
       });
       resetFields();
       onClose();
@@ -60,6 +63,7 @@ const NewEditModal = ({ isVisible, onClose, onSave, selectedExpense }) => {
   const resetFields = () => {
     setConcept(null);
     setAmount(null);
+    setDate(new Date());
   };
 
 
@@ -88,6 +92,33 @@ const NewEditModal = ({ isVisible, onClose, onSave, selectedExpense }) => {
             hasError={checkAmountError}
             style={styles.validatedTextInput}
             maxLength={12}
+          />
+
+<EntypoIcon.Button
+            onPress={() => {
+              setOpen(true);
+            }}
+            backgroundColor="#ffffff"
+            color="black"
+            name="calendar"
+            style={styles.dateButton}
+          >
+            {date.toDateString()}
+          </EntypoIcon.Button>
+
+          <DatePicker
+            modal
+            mode="date"
+            open={open}
+            date={date}
+            onConfirm={(selectedDate) => {
+              setOpen(false);
+              setDate(selectedDate);
+            }}
+            onCancel={() => {
+              setOpen(false);
+            }}
+            maximumDate={new Date()}
           />
 
           <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
