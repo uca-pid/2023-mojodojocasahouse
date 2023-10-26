@@ -55,14 +55,18 @@ const BarScreen = () => {
     return yearlyExpenses;
   };
 
-  useEffect(() => {
-    try {
-      setLoading(true);
-      handleFocusScreen();
-    } catch (error) {
-      setLoading(false);
-      Alert.alert("Connection Error", "There was an error connecting to the API");
-    }
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      try {
+        setLoading(true);
+        handleFocusScreen();
+      } catch (error) {
+        setLoading(false);
+        Alert.alert("Connection Error", "There was an error connecting to the API");
+      }
+    });
+    
+    return unsubscribe;
   }, [navigation]);
 
   const yearlyExpenses = calculateYearlyExpenses();

@@ -98,16 +98,20 @@ import FilterModal from '../../components/filterModal/filterModal';
         });
         return categoryExpenses;
       };
-    
+      
       React.useEffect(() => {
-        try{
-          setLoading(true);
-          handleFocusScreen();
-        } catch (error) {
-          setLoading(false);
-          Alert.alert("Connection Error", "There was an error connecting to API");
-        }
-      },[navigation]);
+        const unsubscribe = navigation.addListener("focus", () => {
+          try{
+            setLoading(true);
+            handleFocusScreen();
+          } catch (error) {
+            setLoading(false);
+            Alert.alert("Connection Error", "There was an error connecting to API");
+          }
+        });
+    
+        return unsubscribe;
+      }, [navigation]);
     
       const categoryExpenses = calculateCategoryExpenses();
     
