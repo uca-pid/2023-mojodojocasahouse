@@ -57,50 +57,7 @@ const postExpenseToApi = async (newExpense, sessionExpiredCallback) => {
   Alert.alert("API Error", responseBody.message);
 };
 
-// const postLogout = async (navigation) => {
-//     try {
-//     let response = await fetchWithTimeout( API_URL + "/logout", {
-//       method: "POST",
-//       credentials: "include",
-//       headers: {
-//         "Content-Type": "application/json",
-//       }
-//     });
 
-//     // OK
-//     if(response.ok){
-//       Alert.alert(
-//         "Logout Success", 
-//         "Logged out successfully",
-//         [{text: 'OK', onPress: () => navigation.navigate('Login')}]
-//       );
-//       return;
-//     }
-    
-//     // UNAUTHORIZED
-//     if(response.status == 401){
-//       Alert.alert(
-//         "Session Expired", 
-//         "Please log in again to continue",
-//         [{text: 'OK', onPress: () => navigation.navigate('Login')}]
-//       );
-//       return;
-//     }
-
-//     // INTERNAL ERROR
-//     if(response.status >= 500){
-//       Alert.alert("Server Error", "Oops! An unknown error happened");
-//       return;
-//     }
-
-//     // OTHER ERROR
-//     let responseBody = await response.json();
-//     Alert.alert("API Error", responseBody.message);
-
-//   } catch (error) {
-//     Alert.alert("Connection Error", "There was an error connecting to API");
-//   }
-// };
 
 const doLogout = async () => {
   try {
@@ -162,56 +119,6 @@ const fetchUserCategories = async (setCategories, sessionExpiredCallback) => {
   Alert.alert("API Error", responseBody.message);
 };
 
-// const fetchExpensesByCategory = async (categoryFilter, setExpenses, sessionExpiredCallback) => {
-//   try{
-
-//     if(categoryFilter == null){
-//       await fetchExpensesList(setExpenses);
-//       return;
-//     }
-
-//     let response = await fetchWithTimeout(API_URL + "/getMyExpensesByCategory", {
-//       method: "POST",
-//       credentials: "include",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify({
-//         category: categoryFilter
-//       })
-//     });
-//     let responseBody = await response.json();
-
-//     // OK
-//     if(response.ok){
-//       setExpenses(formatExpenses(responseBody));
-//       return;
-//     }
-    
-//     // UNAUTHORIZED
-//     if(response.status == 401){
-//       Alert.alert(
-//         "Session Expired", 
-//         "Please log in again to continue",
-//         [{text: 'OK', onPress: sessionExpiredCallback}]
-//       );
-//       return;
-//     }
-
-//     // INTERNAL ERROR
-//     if(response.status >= 500){
-//       Alert.alert("Server Error", "Oops! An unknown error happened");
-//       return;
-//     }
-
-//     // OTHER ERROR
-//     Alert.alert("API Error", responseBody.message);
-
-//   } catch (error) {
-//     console.log(error);
-//     Alert.alert("Connection Error", "There was an error connecting to API");
-//   }
-// };
 
 const fetchExpensesList = async (setExpenses, sessionExpiredCallback, request = {}) => {
   try{
@@ -256,34 +163,6 @@ const fetchExpensesList = async (setExpenses, sessionExpiredCallback, request = 
   }
 };
 
-// const checkIsLoggedIn = async (navigation) => {
-//   try{
-//     let response = await fetchWithTimeout(API_URL + "/protected", {
-//       method: "GET",
-//       credentials: 'include',
-//     });
-
-//     // IS LOGGED IN
-//     if(response.ok){
-//       navigation.navigate('Table');
-//       return;
-//     }
-
-//     // ERROR
-//     if(response.status >= 500){
-//       Alert.alert("Server Error", "Oops! An unknown error happened");
-//       return;
-//     }
-
-//     // NOT LOGGED IN
-//     navigation.navigate('Login');
-//     return;
-
-//   } catch (error) {
-//     console.log(error);
-//     Alert.alert("Connection Error", "There was an error connecting to API");
-//   }
-// };
 
 const verifyCredentials = async () => {
   try{
@@ -307,44 +186,10 @@ const verifyCredentials = async () => {
     return "2xx";
 
   } catch (error) {
-    console.log(error);
     Alert.alert("Connection Error", "There was an error connecting to API");
   }
 };
 
-// const postLoginFormToApi = async (navigation, request) => {
-//   try {
-//     let response = await fetchWithTimeout(API_URL + "/login", {
-//       method: 'POST',
-//       credentials: 'include',
-//       headers: {
-//         Accept: 'application/json',
-//         Authorization: "Basic " + Buffer.from(request.email + ":" + request.password, 'utf8').toString('base64')
-//       },
-//       body: new FormData().append('remember-me', request.rememberMe)
-//     });
-//     let responseBody = await response.json();
-
-//     // OK
-//     if (response.ok) {
-//       navigation.navigate('Table');
-//       return;
-//     }
-
-//     // INTERNAL ERROR
-//     if(response.status >= 500){
-//       Alert.alert("Server Error", "Oops! An unknown error happened");
-//       return;
-//     }
-
-//     // OTHER ERROR
-//     Alert.alert("API Error", responseBody.message);
-
-//   } catch (error) {
-//     console.log(error);
-//     Alert.alert("Connection Error", "There was an error connecting to API");
-//   }
-// };
 
 const doSignIn = async (request) => {
   try {
@@ -641,7 +486,6 @@ export {
   fetchWithTimeout,
   fetchUserCategories, 
   postEditExpenseToApi,
-  // fetchExpensesByCategory,
   deleteExpense,
   fetchExpensesList,
   postForgottenPasswordFormToApi,

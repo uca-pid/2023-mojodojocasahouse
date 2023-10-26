@@ -1,24 +1,23 @@
 import 'react-native-gesture-handler';
 import React from 'react';
+import { Alert } from 'react-native';
 import { AuthContext } from './context/authContext';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import Login from './screens/loginScreen/login';
 import Table from './screens/tableScreen/table';
-import SignUp from './screens/signUpScreen/signUp';
 import ChangePassScreen from './screens/changePassScreen/changePassScreen';
 import ForgottenPassword from './screens/forgottenPasswordScreen/forgottenPassword';
 import ResetPassword from './screens/resetPasswordScreen/resetPassword';
-import AdmCategories from './screens/admCategoriesScreen/admCategories';
 import GraphScreen from './screens/graphScreen/graphScreen';
 import BarScreen from './screens/graphScreen/barScreen';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { doLogout, doSignIn, verifyCredentials } from './utils/apiFetch';
 import SplashScreen from './screens/splashScreen/splashScreen';
 import CustomDrawer from './components/customDrawer/customDrawer';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import RegisterScreen from './screens/registerScreen/registerScreen';
+import LoginScreen from './screens/newLoginScreen/newLoginScreen';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -169,7 +168,7 @@ const App = () => {
           <>
             <Drawer.Screen
               name="Login" // Define a new screen called "Login"
-              component={Login} // Use the Login component
+              component={LoginScreen} // Use the Login component
               options={{
                 title: "Log in",
                 animationTypeForReplace: state.isSignout ? 'pop' : 'push',
@@ -180,7 +179,7 @@ const App = () => {
             />
             <Drawer.Screen
               name="SignUp" // Define a new screen called "SignUp"
-              component={SignUp} // Use the SignUp component
+              component={RegisterScreen} // Use the SignUp component
               options={{
                 title: "Sign up",
                 drawerIcon: ({color}) => (
