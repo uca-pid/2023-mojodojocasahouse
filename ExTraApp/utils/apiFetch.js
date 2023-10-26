@@ -251,6 +251,7 @@ const fetchExpensesList = async (setExpenses, sessionExpiredCallback, request = 
 
   } catch(error){
     console.log(error);
+    console.log("fetchExpensesList");
     Alert.alert("Connection Error", "There was an error connecting to API");
   }
 };
@@ -587,16 +588,23 @@ const postChangePassToApi = async (request, navigation) => {
   }
 };
 
-const postEditExpenseToApi = async (expenseId, request) => {
+const postEditExpenseToApi = async (request) => {
   try {
-    let response = await fetchWithTimeout(API_URL + "/editExpense/" + expenseId, {
+    let response = await fetchWithTimeout(API_URL + "/editExpense", {
       method: 'POST',
       credentials: 'include',
       headers: {
         Accept: 'application/json',
         'Content-Type':'application/json',
       },
-      body: JSON.stringify(request)
+      body: JSON.stringify({
+        id: request.id,
+        concept: request.concept,
+        amount: request.amount,
+        date: request.date,
+        category: request.category,
+        iconId: request.iconId
+      })
     });
     let responseBody = await response.json();
 
@@ -619,6 +627,8 @@ const postEditExpenseToApi = async (expenseId, request) => {
     Alert.alert("API Error", responseBody.message);
 
   } catch (error) {
+    console.log("postEditExpenseToApi");
+    console.log(error);
     Alert.alert(
       "Connection Error", 
       "There was an error connecting to API"

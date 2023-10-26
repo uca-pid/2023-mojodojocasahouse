@@ -1,24 +1,32 @@
+// ExpenseModal.js
 import React, { useState } from 'react';
 import { View, Text, Modal, TouchableOpacity, Alert  } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import ValidatedTextInput from '../validatedTextInput/validatedTextInput';
 import styles from './style';
+import moment from 'moment';
+
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import { Picker } from '../picker/picker';
 import { Input, Icon } from '@rneui/themed';
 
-const EditModal = ({ isVisible, onClose, onSave }) => {
-  const [amount, setAmount] = useState('');
+
+const NewEditModal = ({ isVisible, onClose, onSave, selectedExpense }) => {
+  console.log(selectedExpense);
+  const [concept, setConcept] = useState(selectedExpense.concept + "");
+  const [amount, setAmount] = useState(selectedExpense.amount + "");
   const [open, setOpen] = useState(false);
 
-
   const checkErrors = () => {
-    if (checkAmountError()) {
+    if (checkConceptError() || checkAmountError()) {
       throw new Error();
     }
-
   };
 
+  const checkConceptError = () => {
+    let regex = /^[A-Za-z\d\s]+$/;
+    return !regex.test(concept);
+  };
 
   const checkAmountError = () => {
     let regex = /^[\d]{1,12}((\.)(\d){1,2})?$/;
@@ -26,13 +34,13 @@ const EditModal = ({ isVisible, onClose, onSave }) => {
   };
 
 
-
   const handleSave = () => {
     try {
-      console.log({ amount})
       checkErrors();
       onSave({ 
-        amount, 
+        id: selectedExpense.id,
+        concept, 
+        amount,
       });
       resetFields();
       onClose();
@@ -50,8 +58,8 @@ const EditModal = ({ isVisible, onClose, onSave }) => {
   };
 
   const resetFields = () => {
+    setConcept(null);
     setAmount(null);
-
   };
 
 
@@ -60,6 +68,16 @@ const EditModal = ({ isVisible, onClose, onSave }) => {
       <View style={styles.modalBackground}>
         <View style={styles.modalContainer}>
           <Text style={styles.modalTitle}>Edit Expense</Text>
+
+          <ValidatedTextInput
+            label="Concept"
+            value={concept}
+            onChangeText={setConcept}
+            validationErrorMessage="Concept may only contain letters or numbers"
+            maxLength={100}
+            hasError={checkConceptError}
+            style={styles.validatedTextInput}
+          />
 
           <ValidatedTextInput
             value={amount}
@@ -85,4 +103,4 @@ const EditModal = ({ isVisible, onClose, onSave }) => {
   );
 };
 
-export default EditModal;
+export default NewEditModal;
