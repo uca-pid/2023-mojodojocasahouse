@@ -37,6 +37,7 @@ const EmailInput = (props) => {
       placeholderTextColor={"#c4c4c4"}
       keyboardType='email-address'
       errorMessage={props.errorMessage}
+      maxLength={320}
     />
   );
 };
@@ -82,6 +83,7 @@ const SecureInput = (props) => {
       }
       secureTextEntry={!pass_visible}
       errorMessage={props.errorMessage}
+      maxLength={50}
     />
   );
 };
@@ -115,6 +117,7 @@ const NameInput = (props) => {
       }
       placeholderTextColor={"#c4c4c4"}
       errorMessage={props.errorMessage}
+      maxLength={99}
     />
   );
 };
@@ -148,6 +151,7 @@ const CategoryInput = props => {
       }
       placeholderTextColor={"#c4c4c4"}
       errorMessage={props.errorMessage}
+      maxLength={49}
     />
   );
 };
