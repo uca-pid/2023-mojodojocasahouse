@@ -1,5 +1,6 @@
 import 'react-native-gesture-handler';
 import React from 'react';
+import { Alert } from 'react-native';
 import { AuthContext } from './context/authContext';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -17,6 +18,8 @@ import { doLogout, doSignIn, verifyCredentials } from './utils/apiFetch';
 import SplashScreen from './screens/splashScreen/splashScreen';
 import CustomDrawer from './components/customDrawer/customDrawer';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import RegisterScreen from './screens/registerScreen/registerScreen';
+import LoginScreen from './screens/newLoginScreen/newLoginScreen';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -167,7 +170,7 @@ const App = () => {
           <>
             <Drawer.Screen
               name="Login" // Define a new screen called "Login"
-              component={Login} // Use the Login component
+              component={LoginScreen} // Use the Login component
               options={{
                 title: "Log in",
                 animationTypeForReplace: state.isSignout ? 'pop' : 'push',
@@ -178,7 +181,7 @@ const App = () => {
             />
             <Drawer.Screen
               name="SignUp" // Define a new screen called "SignUp"
-              component={SignUp} // Use the SignUp component
+              component={RegisterScreen} // Use the SignUp component
               options={{
                 title: "Sign up",
                 drawerIcon: ({color}) => (
