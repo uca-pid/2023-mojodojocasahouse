@@ -510,7 +510,7 @@ const postResetPasswordFormToApi = async (formHasErrors, request, navigation) =>
 
 const postRegistrationToApi = async (request, navigation) => {
   try {
-    let response = await fetch(API_URL + "/register", {
+    let response = await fetchWithTimeout(API_URL + "/register", {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -549,7 +549,7 @@ const postRegistrationToApi = async (request, navigation) => {
 
 const postChangePassToApi = async (request, navigation) => {
   try {
-    let response = await fetch(API_URL + "/auth/password/change", {
+    let response = await fetchWithTimeout(API_URL + "/auth/password/change", {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -587,9 +587,9 @@ const postChangePassToApi = async (request, navigation) => {
   }
 };
 
-const postEditExpenseToApi = async (expenseId) => {
+const postEditExpenseToApi = async (expenseId, request) => {
   try {
-    let response = await fetch(API_URL + "/editExpense/" + expenseId, {
+    let response = await fetchWithTimeout(API_URL + "/editExpense/" + expenseId, {
       method: 'POST',
       credentials: 'include',
       headers: {
