@@ -587,10 +587,50 @@ const postChangePassToApi = async (request, navigation) => {
   }
 };
 
+const postEditExpenseToApi = async (expenseId) => {
+  try {
+    let response = await fetch(API_URL + "/editExpense/" + expenseId, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type':'application/json',
+      },
+      body: JSON.stringify(request)
+    });
+    let responseBody = await response.json();
+
+    // OK
+    if(response.ok){
+      Alert.alert(
+        "Expense Edit Success", 
+        "Your Expense was edited successfully", 
+      );
+      return;
+    }
+
+    // INTERNAL ERROR
+    if(response.status >= 500){
+      Alert.alert("Server Error", "Oops! An unknown error happened");
+      return;
+    }
+
+    // OTHER ERROR
+    Alert.alert("API Error", responseBody.message);
+
+  } catch (error) {
+    Alert.alert(
+      "Connection Error", 
+      "There was an error connecting to API"
+    );
+  }
+};
+
 export {
   postExpenseToApi, 
   fetchWithTimeout,
   fetchUserCategories, 
+  postEditExpenseToApi,
   // fetchExpensesByCategory,
   deleteExpense,
   fetchExpensesList,

@@ -27,7 +27,28 @@ import FilterModal from '../../components/filterModal/filterModal';
       
     
       const randomColorGenerator = (idx) => {
-        const sliceColor = ['#DF928E', '#47132D', '#CC0066', '#A24875', '#FF5CAD', '#D47DA8', '#DCBACB', '#634F59', '#EE4097', '#F82A91', '#210010', '#CE5650']
+        const sliceColor = [      '#DF928E',
+        '#47132D',
+        '#CC0066',
+        '#A24875',
+        '#FF5CAD',
+        '#D47DA8',
+        '#DCBACB',
+        '#634F59',
+        '#EE4097',
+        '#F82A91',
+        '#210010',
+        '#CE5650',
+        '#F8ACA8',
+        '#FA9791',
+        '#EE7A74',
+        '#EE665F',
+        '#B43831',
+        '#DC4037',
+        '#894542',
+        '#744340',
+        '#B47E7B',
+        '#DE9894',]
         return sliceColor[idx]
       }
 
