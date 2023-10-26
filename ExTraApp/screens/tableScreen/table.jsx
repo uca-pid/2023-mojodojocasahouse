@@ -3,14 +3,15 @@ import { View, Text, TouchableOpacity, Image, ScrollView, Alert } from 'react-na
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Entypo';
 import FeatherIcon from 'react-native-vector-icons/Feather';
-
 import { styles } from './style';
 import ExpenseModal from '../../components/expenseModal/ExpenseModal';
 import SettingModal from '../../components/settingsModal/settingsModal';
-import { postExpenseToApi, fetchUserCategories, fetchExpensesByCategory,fetchExpensesList, deleteExpense} from '../../utils/apiFetch';
+import { postExpenseToApi, fetchUserCategories, postEditExpenseToApi,fetchExpensesList, deleteExpense} from '../../utils/apiFetch';
 import { Dialog, ListItem, Button, Icon as MaterialIcon } from '@rneui/themed';
 import { AuthContext } from '../../context/authContext';
 import FilterModal from '../../components/filterModal/filterModal';
+import EditModal from '../../components/editModal/editModal';
+import NewEditModal from '../../components/newEditModal/newEditModal';
 
 
 const iconFactory = (id) => {
@@ -40,16 +41,18 @@ const Table = () => {
   const [isModalVisible, setModalVisible] = React.useState(false);
   const [isModalSettingVisible, setModalSettingVisible] = React.useState(false);
   const [isFilterModalVisible, setFilterModalVisible] = React.useState(false);
+  const [isEditModalVisible, setEditModalVisible] = React.useState(false);
   const [expenses, setExpenses] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const [categories, setCategories] = React.useState([]);
   const navigation = useNavigation();
   const {signOut, sessionExpired} = React.useContext(AuthContext);
-
+  const [selectedExpense, setSelectedExpense] = React.useState({});
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
+
 
   const toggleFilterModal = () => {
     setFilterModalVisible(!isFilterModalVisible);
@@ -102,8 +105,23 @@ const Table = () => {
     setLoading(false);
   };
 
-  const handleEditExpense = (id) => {
-    // Open modal for deleting expense
+  const handleEditExpense = async (item) => {
+    setSelectedExpense(item);
+    setEditModalVisible(!isModalVisible);
+  };
+
+  const handleSaveEditExpense = async (request) => {
+    setLoading(true);
+    try {
+      await postEditExpenseToApi(request);
+      await fetchExpensesList(setExpenses, sessionExpired);
+      await fetchUserCategories(setCategories, sessionExpired);
+      setLoading(false);
+      setEditModalVisible(false); // Close the Edit Modal
+    } catch (error) {
+      setLoading(false);
+      Alert.alert("Connection Error", "There was an error connecting to API");
+    }
   };
 
 
@@ -175,7 +193,7 @@ const Table = () => {
                     }}
                     onPress={() => {
                       reset();
-                      handleEditExpense(item.id);
+                      handleEditExpense(item);
                     }}
                   />
                 )}
@@ -211,6 +229,8 @@ const Table = () => {
       <ExpenseModal isVisible={isModalVisible} onClose={toggleModal} onSave={handleSaveExpense} />
       <SettingModal isVisible={isModalSettingVisible} onSettingClose={toggleSettingModal} navigation={navigation} /> 
       <FilterModal visible={isFilterModalVisible} data={categories} onDone={handleFilterModalSubmit} onCancel={toggleFilterModal} />
+      {/* <EditModal isVisible={isEditModalVisible} onClose={() => setEditModalVisible(false)} onSave={handleSaveEditExpense} /> */}
+      <NewEditModal isVisible={isEditModalVisible} onClose={() => setEditModalVisible(false)} onSave={handleSaveEditExpense} selectedExpense={selectedExpense}/>
     </View>
   );
 };

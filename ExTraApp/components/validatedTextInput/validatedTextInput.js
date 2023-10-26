@@ -26,6 +26,7 @@ const ValidatedTextInput = props => {
     <View style={props.style?.container? props.style.container : null}>
 
       <TextInput
+        placeholder={props.placeholder}
         style={props.style?.input ? props.style.input : { marginLeft: '10%', width: '80%', marginBottom: '5%' }}
         label={props.label}
         value={props.value}

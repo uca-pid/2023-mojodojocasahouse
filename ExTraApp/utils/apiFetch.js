@@ -251,6 +251,7 @@ const fetchExpensesList = async (setExpenses, sessionExpiredCallback, request = 
 
   } catch(error){
     console.log(error);
+    console.log("fetchExpensesList");
     Alert.alert("Connection Error", "There was an error connecting to API");
   }
 };
@@ -510,7 +511,7 @@ const postResetPasswordFormToApi = async (formHasErrors, request, navigation) =>
 
 const postRegistrationToApi = async (request, navigation) => {
   try {
-    let response = await fetch(API_URL + "/register", {
+    let response = await fetchWithTimeout(API_URL + "/register", {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -549,7 +550,7 @@ const postRegistrationToApi = async (request, navigation) => {
 
 const postChangePassToApi = async (request, navigation) => {
   try {
-    let response = await fetch(API_URL + "/auth/password/change", {
+    let response = await fetchWithTimeout(API_URL + "/auth/password/change", {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -587,10 +588,59 @@ const postChangePassToApi = async (request, navigation) => {
   }
 };
 
+const postEditExpenseToApi = async (request) => {
+  try {
+    let response = await fetchWithTimeout(API_URL + "/editExpense", {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type':'application/json',
+      },
+      body: JSON.stringify({
+        id: request.id,
+        concept: request.concept,
+        amount: request.amount,
+        date: request.date,
+        category: request.category,
+        iconId: request.iconId
+      })
+    });
+    let responseBody = await response.json();
+
+    // OK
+    if(response.ok){
+      Alert.alert(
+        "Expense Edit Success", 
+        "Your Expense was edited successfully", 
+      );
+      return;
+    }
+
+    // INTERNAL ERROR
+    if(response.status >= 500){
+      Alert.alert("Server Error", "Oops! An unknown error happened");
+      return;
+    }
+
+    // OTHER ERROR
+    Alert.alert("API Error", responseBody.message);
+
+  } catch (error) {
+    console.log("postEditExpenseToApi");
+    console.log(error);
+    Alert.alert(
+      "Connection Error", 
+      "There was an error connecting to API"
+    );
+  }
+};
+
 export {
   postExpenseToApi, 
   fetchWithTimeout,
   fetchUserCategories, 
+  postEditExpenseToApi,
   // fetchExpensesByCategory,
   deleteExpense,
   fetchExpensesList,
