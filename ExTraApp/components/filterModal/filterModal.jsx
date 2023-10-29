@@ -109,15 +109,18 @@ const FilterModal = props => {
             <Button
               title="Done"
               buttonStyle={{
-                borderColor: 'rgba(2, 204, 42, 1)',
+                borderColor: 'black',
+                backgroundColor: '#E86DC3',
+                borderRadius: 10,
               }}
               type="outline"
               raised
-              titleStyle={{ color: 'rgba(2, 204, 42, 1)' }}
+              titleStyle={{ color: 'white' }}
               containerStyle={{
                 width: 200,
                 marginHorizontal: 50,
                 marginVertical: 10,
+                borderRadius: 10,
               }}
               onPress={handleSubmit}
             />
@@ -126,11 +129,13 @@ const FilterModal = props => {
               title="Cancel"
               buttonStyle={{
                 borderColor: '#a1a1a1',
+                borderRadius: 10,
               }}
               type="outline"
               raised
               titleStyle={{ color: '#696969' }}
               containerStyle={{
+                borderRadius: 10,
                 width: 200,
                 marginHorizontal: 50,
                 marginVertical: 10,

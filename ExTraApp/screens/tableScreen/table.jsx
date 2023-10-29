@@ -142,19 +142,9 @@ const Table = () => {
         <Dialog isVisible={loading}>
           <Dialog.Loading />
         </Dialog>
-
         <View style={styles.headerContainer}>
           <View style={styles.logoContainer}>
             <Image style={styles.logo} source={require('./../../img/logo.png')} />
-          </View>
-        </View>
-
-        <View style={styles.menuContainer}>
-          <View style={styles.menuItemContainer}>
-            <FeatherIcon.Button onPress={toggleSettingModal} backgroundColor="#D9D9d9" color="black" name="settings">Settings</FeatherIcon.Button>
-          </View>
-          <View style={styles.menuItemContainer}>
-            <Icon.Button onPress={handleLogout} backgroundColor="#d15c54" name="log-out">Logout</Icon.Button>
           </View>
         </View>
 

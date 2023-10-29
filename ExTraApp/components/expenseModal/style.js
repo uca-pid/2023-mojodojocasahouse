@@ -18,9 +18,9 @@ const styles = StyleSheet.create({
       flexDirection: 'column',
 
       width: '90%',
-      height: '90%',
+      height: '75%',
 
-      backgroundColor: '#AEB4E8',
+      backgroundColor: 'white',
       borderRadius: 10,
       padding: 20,
     },
@@ -123,20 +123,21 @@ const styles = StyleSheet.create({
   
     },
     saveButton: {
-      backgroundColor: '#ADC4C0',
+      backgroundColor: '#E86DC3',
       borderRadius: 5,
       padding: 10,
       alignItems: 'center',
       marginBottom: 10,
       marginTop: 20,
+      borderWidth: 1,
     },
     saveButtonText: {
-      color: 'black',
+      color: 'white',
       fontSize: 16,
       fontWeight: 'bold',
     },
     cancelButton: {
-      backgroundColor: '#d15c54',
+      backgroundColor: 'grey',
       borderRadius: 5,
       padding: 10,
       alignItems: 'center',

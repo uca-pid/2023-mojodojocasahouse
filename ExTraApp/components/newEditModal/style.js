@@ -7,8 +7,6 @@ const styles = StyleSheet.create({
 
       width: '100%',
       height: '100%',
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-
       justifyContent: 'center',
       alignItems: 'center',
     },
@@ -18,10 +16,11 @@ const styles = StyleSheet.create({
       flexDirection: 'column',
 
       width: '90%',
-      height: '90%',
+      height: '75%',
 
-      backgroundColor: '#AEB4E8',
-      borderRadius: 10,
+      backgroundColor: 'white',
+      borderWidth: 1,
+      borderColor: 'black',
       padding: 20,
     },
 
@@ -123,23 +122,27 @@ const styles = StyleSheet.create({
   
     },
     saveButton: {
-      backgroundColor: '#ADC4C0',
+      backgroundColor: '#E86DC3',
       borderRadius: 5,
       padding: 10,
       alignItems: 'center',
       marginBottom: 10,
       marginTop: 20,
+      borderColor: 'black',
+      borderWidth: 1, 
     },
     saveButtonText: {
-      color: 'black',
+      color: 'white',
       fontSize: 16,
       fontWeight: 'bold',
     },
     cancelButton: {
-      backgroundColor: '#d15c54',
+      backgroundColor: 'grey',
       borderRadius: 5,
       padding: 10,
       alignItems: 'center',
+      borderColor: 'black',
+      borderWidth: 1, 
     },
     cancelButtonText: {
       color: 'white',
