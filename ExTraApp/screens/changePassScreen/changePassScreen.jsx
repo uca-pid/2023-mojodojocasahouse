@@ -2,9 +2,9 @@ import React from 'react';
 import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { TextInput, HelperText } from 'react-native-paper';
 import { Dialog } from '@rneui/themed';
-
 import { styles } from './style';
 import { postChangePassToApi } from '../../utils/apiFetch';
+import {LinearGradient} from 'react-native-linear-gradient';
 
 
 const ChangePassScreen = ({ navigation, route }) => { // Add navigation prop
@@ -43,7 +43,7 @@ const ChangePassScreen = ({ navigation, route }) => { // Add navigation prop
   };
 
   return (
-    <View style={styles.appContainer}>
+    <LinearGradient colors={['#E86DC3', 'white']} style={styles.appContainer}>
       <View style={styles.container}>
         <Dialog isVisible={loading}>
           <Dialog.Loading />
@@ -53,7 +53,6 @@ const ChangePassScreen = ({ navigation, route }) => { // Add navigation prop
           <Image style={styles.logo} source={require('./../../img/logo.png')} />
         </View>
 
-        <View style={styles.bottomContainer}></View>
 
         <ScrollView contentContainerStyle={styles.contentContainer} keyboardShouldPersistTaps="handled">
 
@@ -126,7 +125,7 @@ const ChangePassScreen = ({ navigation, route }) => { // Add navigation prop
           </TouchableOpacity>
         </ScrollView>
       </View>
-    </View>
+      </LinearGradient>
   );
 };
 

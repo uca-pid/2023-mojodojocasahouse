@@ -146,7 +146,7 @@ const App = () => {
         username={state.userCredentials? state.userCredentials.firstName + " " + state.userCredentials.lastName : "Anonymous"} />)}
       screenOptions={{
         headerShown: false,
-        drawerActiveBackgroundColor: '#aa18ea',
+        drawerActiveBackgroundColor: '#E86DC3',
         drawerActiveTintColor: '#fff',
         drawerInactiveTintColor: '#333',
         drawerLabelStyle: {

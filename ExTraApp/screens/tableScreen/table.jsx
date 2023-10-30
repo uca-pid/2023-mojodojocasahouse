@@ -12,6 +12,8 @@ import { AuthContext } from '../../context/authContext';
 import FilterModal from '../../components/filterModal/filterModal';
 import EditModal from '../../components/editModal/editModal';
 import NewEditModal from '../../components/newEditModal/newEditModal';
+import {LinearGradient} from 'react-native-linear-gradient';
+
 
 
 const iconFactory = (id) => {
@@ -136,7 +138,7 @@ const Table = () => {
   },[navigation]);
 
   return (
-    <View style={styles.appContainer}>
+    <LinearGradient colors={['#E86DC3', 'white']} style={styles.appContainer}>
       
       <View style={styles.contentContainer}>
         <Dialog isVisible={loading}>
@@ -221,7 +223,7 @@ const Table = () => {
       <FilterModal visible={isFilterModalVisible} data={categories} onDone={handleFilterModalSubmit} onCancel={toggleFilterModal} />
       {/* <EditModal isVisible={isEditModalVisible} onClose={() => setEditModalVisible(false)} onSave={handleSaveEditExpense} /> */}
       <NewEditModal isVisible={isEditModalVisible} onClose={() => setEditModalVisible(false)} onSave={handleSaveEditExpense} selectedExpense={selectedExpense}/>
-    </View>
+    </LinearGradient>
   );
 };
 

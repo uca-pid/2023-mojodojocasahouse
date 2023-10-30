@@ -9,7 +9,6 @@ export const styles = StyleSheet.create({
     backgroundColor: 'white',
     height: '100%',
   },
-
   contentContainer: {
     display: 'flex',
     flexDirection: 'column',
@@ -17,12 +16,10 @@ export const styles = StyleSheet.create({
     margin: "2%",
     marginTop: 20,
     borderRadius: 14,
-    backgroundColor: '#AEB4E8', // Background color
+    backgroundColor: 'white', // Background color
     height: '100%',
     width: '96%',
   },
-
-
 
   // Logo Container
 
@@ -68,7 +65,6 @@ export const styles = StyleSheet.create({
   logoutButton: {
     display: 'flex',
     flexDirection: 'row',
-
     borderRadius: 10,
     backgroundColor: '#d15c54',
     height: '70%',
@@ -104,8 +100,7 @@ export const styles = StyleSheet.create({
 
     width: '100%',
     marginTop: 20,
-                                            backgroundColor: '#433FF4',
-
+    backgroundColor: '#433FF4',
     justifyContent: 'space-evenly',
   },
 
@@ -165,16 +160,19 @@ export const styles = StyleSheet.create({
 
   addExpenseButtonContainer: {
     height: '5%',
-    width: '100%',
+    width: '80%',
+    marginLeft: '10%',
     marginTop: '1%',
-    backgroundColor: '#433FF4',
+    backgroundColor: '#ed93d2',
+    borderRadius: 10,
   },
 
   button: {
-    backgroundColor: '#433FF4',
+    backgroundColor: '#E86DC3',
     paddingBottom: '2.5%',
     paddingTop: '2.5%',
     alignItems: 'center',
+    borderRadius: 10,
   },
   categorySelectionPicker: {
     marginTop: '2%',
@@ -186,17 +184,12 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
-
-
-
-
-
   // Scrollview
 
   scrollviewContentContainer: {
     paddingBottom: 20,
     borderRadius: 20,
-    backgroundColor: '#AEB4E8', // Background color
+    backgroundColor: 'white', // Background color
   },
 
   tableContainer: {
@@ -350,8 +343,18 @@ export const styles = StyleSheet.create({
 
     fontSize: 11,
     color: '#5c5c5c',
-
     textAlign: 'left',
   },
+  textForNoData: {
+    marginTop: '50%',
+    fontSize: 20,
+    textAlign: 'center',
+  },
+  titulo:{
+    textAlign: 'center',
+    marginTop: 5,
+    fontSize: 18,
+    fontFamily: 'sans-serif-medium',
 
+  }
 });

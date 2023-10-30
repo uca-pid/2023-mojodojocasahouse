@@ -9,13 +9,13 @@ export const styles = StyleSheet.create({
   },
 
   button: {
-    backgroundColor: 'lightgray',
+    backgroundColor: '#E86DC3',
     borderRadius: 10,
     padding: 10,
     alignItems: 'center',
     margin: 10,
-    marginLeft: '30%',
-    marginHorizontal: '30%',
+    marginLeft: '10%',
+    marginHorizontal: '10%',
   },
 
   buttonText: {
@@ -25,13 +25,34 @@ export const styles = StyleSheet.create({
     
   },
   
-  logoContainer: {
-    flexDirection: 'row',
+  // Logo Container
+
+  headerContainer: {
     display: 'flex',
-    height: '10%',
-    margin: 5,
+    flexDirection: 'row',
 
+    height: 80,
+    width: '100%',
 
+    justifyContent: 'space-around',
+    alignItems: 'center'
+  },
+
+  logoContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+
+    aspectRatio: 3.55,
+    width: '100%',
+
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  logo: {
+    width: '100%',
+    aspectRatio: 2,
+    resizeMode: 'contain',
   },
 
   bottomContainer: {
@@ -46,13 +67,13 @@ export const styles = StyleSheet.create({
     flex: 1,
     margin: 10,
     borderRadius: 20,
-    backgroundColor: '#AEB4E8', // Background color
+    backgroundColor: 'white', // Background color
     height: '100%',
   },
   contentContainer: {
     paddingBottom: 20,
-    borderRadius: 20,
-    backgroundColor: '#AEB4E8', // Background color
+
+    backgroundColor: 'white', // Background color
   },
   
 

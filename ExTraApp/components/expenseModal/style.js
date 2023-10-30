@@ -18,7 +18,6 @@ const styles = StyleSheet.create({
       flexDirection: 'column',
 
       width: '90%',
-      height: '75%',
 
       backgroundColor: 'white',
       borderRadius: 10,

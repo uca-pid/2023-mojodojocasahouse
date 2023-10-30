@@ -7,7 +7,7 @@ import { BarChart, PieChart,} from "react-native-chart-kit";
 import { fetchUserCategories,fetchExpensesList} from '../../utils/apiFetch';
 import { AuthContext } from '../../context/authContext';
 import FilterModal from '../../components/filterModal/filterModal';
-
+import {LinearGradient} from 'react-native-linear-gradient';
   const GraphScreen = () => {
     const [loading, setLoading] = useState(false);
     const [expenses, setExpenses] = useState([]);
@@ -116,7 +116,8 @@ import FilterModal from '../../components/filterModal/filterModal';
       const categoryExpenses = calculateCategoryExpenses();
     
       return (
-        <View style={styles.appContainer}>
+        <LinearGradient colors={['#E86DC3', 'white']} style={styles.appContainer}>
+
           <View style={styles.contentContainer}>
             <LoadingOverlay shown={loading} />
     
@@ -128,11 +129,11 @@ import FilterModal from '../../components/filterModal/filterModal';
     
             <View style={styles.addExpenseButtonContainer}>
             <TouchableOpacity style={styles.button} onPress={toggleFilterModal}>
-                <Text style={styles.buttonText}>User a Filter</Text>
+                <Text style={styles.buttonText}>Use a Filter</Text>
               </TouchableOpacity>
             </View>
     
-            <View style={styles.pieChartContainer}>
+            <View style={styles.e}>
               {Object.keys(categoryExpenses).length ? (
                 <PieChart
                 data={Object.keys(categoryExpenses).map((category, idx) => ({
@@ -150,13 +151,13 @@ import FilterModal from '../../components/filterModal/filterModal';
                 legendData={legendData} // Pass the legend data here
               />
               ) : (
-                <Text>No expenses data available.</Text>
+                <Text style={styles.textForNoData}>There is no expenses data available for selected parameters. Please try again</Text>
               )}
             </View>
 
           </View>
           <FilterModal visible={isFilterModalVisible} data={categories} onDone={handleFilterModalSubmit} onCancel={toggleFilterModal} />
-        </View>
+        </LinearGradient>
       );
     };
     
