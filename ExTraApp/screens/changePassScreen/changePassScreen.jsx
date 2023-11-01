@@ -1,15 +1,14 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
-import { TextInput, HelperText } from 'react-native-paper';
+import { View, Text, TouchableOpacity, Image, ScrollView, Alert } from 'react-native';
 import { Dialog } from '@rneui/themed';
 import { styles } from './style';
 import { postChangePassToApi } from '../../utils/apiFetch';
-import {LinearGradient} from 'react-native-linear-gradient';
+import { LinearGradient } from 'react-native-linear-gradient';
+import { AppInput } from '../../components/inputField/customInputs';
 
 
 const ChangePassScreen = ({ navigation, route }) => { // Add navigation prop
   const [loading, setLoading] = React.useState(false);
-  const [secureTextEntry, setSecureTextEntry] = React.useState(true);
   const [newPassword, setNewPassword] = React.useState("");
   const [currentPassword, setCurrentPassword] = React.useState("");
   const [newPasswordRepeat, setNewPasswordRepeat] = React.useState("");
@@ -19,6 +18,11 @@ const ChangePassScreen = ({ navigation, route }) => { // Add navigation prop
 
 
   const handleSubmit = async () => {
+    if (!validatePassword() || !validateRepeatPassword()){
+      Alert.alert("Validation Error", "Verify some of the fields and try again");
+      return;
+    }
+
     setLoading(true);
     await postChangePassToApi({
       currentPassword,
@@ -33,13 +37,16 @@ const ChangePassScreen = ({ navigation, route }) => { // Add navigation prop
   };
 
   const validatePassword = () => {
-    // Password validation criteria: at least 8 letters, 1 number, 1 capital, and 1 symbol
     const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
-    setPasswordError(!passwordRegex.test(newPassword));
+    const isValid = passwordRegex.test(newPassword);
+    setPasswordError(!isValid);
+    return isValid;
   };
 
   const validateRepeatPassword = () => {
-    setRepeatPasswordError(newPassword != newPasswordRepeat);
+    const isValid = newPassword == newPasswordRepeat;
+    setRepeatPasswordError(!isValid);
+    return isValid;
   };
 
   return (
@@ -55,66 +62,34 @@ const ChangePassScreen = ({ navigation, route }) => { // Add navigation prop
 
 
         <ScrollView contentContainerStyle={styles.contentContainer} keyboardShouldPersistTaps="handled">
-
-          <Text style={styles.textTitle}>Change password:</Text>
-          <Text style={styles.textStyle}>Write your current password:</Text>
-          <TextInput
-            secureTextEntry={secureTextEntry}
-            style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
-            label="Current Password"
+          <View style={styles.textTitleContainer}>
+            <Text style={styles.textTitle}>Change password:</Text>
+          </View>
+          
+          <AppInput.Secure
+            label="Write your current password"
             value={currentPassword}
             onChangeText={setCurrentPassword}
-            right={
-              <TextInput.Icon
-              icon={secureTextEntry ? 'eye-off' : 'eye'}
-              onPress={() => setSecureTextEntry(!secureTextEntry)}
-              style={{ color: 'black', fontSize: 36 }}
-              />
-              }
+            placeholder="Current Password"
           />
 
-          <Text style={styles.textStyle}>Write your new password:</Text>
-          <TextInput
-            secureTextEntry={secureTextEntry}
-            style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
-            label="New Password"
+          <AppInput.Secure
+            label="Write your new password"
             value={newPassword}
             onChangeText={setNewPassword}
-            maxLength={100}
-            onBlur={validatePassword}
-            right={
-              <TextInput.Icon
-              icon={secureTextEntry ? 'eye-off' : 'eye'}
-              onPress={() => setSecureTextEntry(!secureTextEntry)}
-              style={{ color: 'black', fontSize: 36 }}
-              />
-              }
+            placeholder="New Password"
+            onEndEditing={validatePassword}
+            errorMessage={passwordError? "Must contain: 8 letters, 1 number, 1 capital, and 1 symbol." : null}
           />
-          <HelperText type="error" visible={passwordError}>
-            Must contain: 8 letters, 1 number, 1 capital, and 1 symbol.
-          </HelperText>
 
-          <Text style={styles.textStyle}>Write your new password again:</Text>
-          <TextInput
-            secureTextEntry={secureTextEntry}
-            style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
-            label="New Password"
+          <AppInput.Secure
+            label="Write your new password again"
             value={newPasswordRepeat}
             onChangeText={setNewPasswordRepeat}
-            maxLength={100}
-            onBlur={validateRepeatPassword}
-            right={
-              <TextInput.Icon
-              icon={secureTextEntry ? 'eye-off' : 'eye'}
-              onPress={() => setSecureTextEntry(!secureTextEntry)}
-              style={{ color: 'black', fontSize: 36 }}
-              />
-              }
+            placeholder="New Password"
+            onEndEditing={validateRepeatPassword}
+            errorMessage={repeatPasswordError? "Passwords do not match." : null}
           />
-          <HelperText type="error" visible={repeatPasswordError}>
-            Passwords do not match.
-          </HelperText>
-
 
           <TouchableOpacity style={styles.button} onPress={handleSubmit}>
             <Text style={styles.buttonText}>Change Password</Text>

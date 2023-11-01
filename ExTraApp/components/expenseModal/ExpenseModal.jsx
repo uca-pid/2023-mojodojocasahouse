@@ -2,11 +2,10 @@
 import React, { useState } from 'react';
 import { View, Text, Modal, TouchableOpacity, Alert  } from 'react-native';
 import DatePicker from 'react-native-date-picker';
-import ValidatedTextInput from '../validatedTextInput/validatedTextInput';
 import styles from './style';
-import EntypoIcon from 'react-native-vector-icons/Entypo';
 import { Picker } from '../picker/picker';
-import { Input, Icon } from '@rneui/themed';
+import { Icon } from '@rneui/themed';
+import { AppInput } from '../inputField/customInputs';
 
 const getIcon = (category) => {
   switch(category){
@@ -44,6 +43,8 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
   const [open, setOpen] = useState(false);
   const [custIcon, setCustIcon] = useState({value: 0, iconName: 'credit', iconType: 'entypo'});
   const [isIconPickerVisible, setIconPickerVisible] = useState(false);
+  const [conceptError, setConceptError] = React.useState(false);
+  const [amountError, setAmountError] = React.useState(false);
 
   const checkErrors = () => {
     if (checkConceptError() || checkAmountError() || checkCategoryError()) {
@@ -57,12 +58,16 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
 
   const checkConceptError = () => {
     let regex = /^[A-Za-z\d\s]+$/;
-    return !regex.test(concept);
+    let isValid = regex.test(concept);
+    setConceptError(!isValid);
+    return !isValid;
   };
 
   const checkAmountError = () => {
     let regex = /^[\d]{1,12}((\.)(\d){1,2})?$/;
-    return !regex.test(amount);
+    let isValid = regex.test(amount);
+    setAmountError(!isValid);
+    return !isValid;
   };
 
   const checkCategoryError = () => {
@@ -71,12 +76,9 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
 
   const checkCustomCategoryError = () => {
     let regex = /^[A-Za-z\d\s]+$/;
-    if(!regex.test(customCategory)){
-      setCustomCategoryError(true);
-      return true;
-    }
-    setCustomCategoryError(false);
-    return false;
+    let isValid = regex.test(customCategory);
+    setCustomCategoryError(!isValid);
+    return !isValid;
   };
 
 
@@ -139,38 +141,24 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
         <View style={styles.modalContainer}>
           <Text style={styles.modalTitle}>Add Expense</Text>
 
-          <ValidatedTextInput
-            label="Concept"
+          <AppInput.Concept 
             value={concept}
             onChangeText={setConcept}
-            validationErrorMessage="Concept may only contain letters or numbers"
-            maxLength={100}
-            hasError={checkConceptError}
-            style={styles.validatedTextInput}
+            onEndEditing={checkConceptError}
+            errorMessage={conceptError? "Concept may only contain letters or numbers" : null}
           />
 
-          <ValidatedTextInput
+          <AppInput.Amount 
             value={amount}
-            label="Amount"
             onChangeText={setAmount}
-            keyboardType="numeric"
-            validationErrorMessage="Amount must be positive and limited to cent precision"
-            hasError={checkAmountError}
-            style={styles.validatedTextInput}
-            maxLength={12}
+            onEndEditing={checkAmountError}
+            errorMessage={amountError? "Amount must be positive and limited to cent precision" : null}
           />
 
-          <EntypoIcon.Button
-            onPress={() => {
-              setOpen(true);
-            }}
-            backgroundColor="#ffffff"
-            color="black"
-            name="calendar"
-            style={styles.dateButton}
-          >
-            {date.toDateString()}
-          </EntypoIcon.Button>
+          <AppInput.Date 
+            value={date}
+            onPress={() => setOpen(true)}
+          />
 
           <DatePicker
             modal
@@ -184,6 +172,7 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
             onCancel={() => {
               setOpen(false);
             }}
+            maximumDate={new Date()}
           />
 
           <Picker.Text 
@@ -195,8 +184,8 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
 
           { category == 'Custom' ? 
             <>
-              <Input
-                placeholder='Category name'
+              <AppInput.Category 
+                value={customCategory}
                 rightIcon={
                   <Icon
                     name={custIcon.iconName}
@@ -206,11 +195,9 @@ const ExpenseModal = ({ isVisible, onClose, onSave }) => {
                     onPress={() => setIconPickerVisible(true)}
                   />
                 }
-                value={customCategory}
                 onChangeText={setCustomCategory}
                 errorMessage={hasCustomCategoryError? "Category can contain letters or numbers" : null}
                 onEndEditing={checkCustomCategoryError}
-                inputContainerStyle={{backgroundColor: 'white', padding: 3, borderRadius: 2}}
               />
 
               <Picker.Icon 

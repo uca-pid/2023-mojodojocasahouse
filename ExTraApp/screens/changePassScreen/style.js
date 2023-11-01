@@ -69,6 +69,7 @@ export const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: 'white', // Background color
     height: '100%',
+    paddingHorizontal: 20,
   },
   contentContainer: {
     paddingBottom: 20,
@@ -83,9 +84,12 @@ export const styles = StyleSheet.create({
     marginBottom: '2%',
   },
 
+  textTitleContainer: {
+    marginBottom: '5%',
+  },
+  
   textTitle: {
     textAlign: 'center',
-    marginBottom: '2%',
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
