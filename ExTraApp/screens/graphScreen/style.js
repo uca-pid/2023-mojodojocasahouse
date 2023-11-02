@@ -104,6 +104,7 @@ export const styles = StyleSheet.create({
 
     width: '100%',
     marginTop: 20,
+                                            backgroundColor: '#433FF4',
 
     justifyContent: 'space-evenly',
   },
@@ -116,26 +117,6 @@ export const styles = StyleSheet.create({
   },
 
 
-
-
-
-
-  // Bottom container
-
-  // categoryFilterContainer: {
-  //   height: '5%',
-  //   width: '100%',
-  //   marginTop: 20,
-  //   backgroundColor: '#433FF4',
-  // },
-
-  // categoryButton: {
-  //   backgroundColor: '#a0d406',
-
-  //   paddingBottom: '2.5%',
-  //   paddingTop: '2.5%',
-  //   alignItems: 'center',
-  // },
 
   rnPickerSelect: {
     inputIOS: {
@@ -191,7 +172,6 @@ export const styles = StyleSheet.create({
 
   button: {
     backgroundColor: '#433FF4',
-
     paddingBottom: '2.5%',
     paddingTop: '2.5%',
     alignItems: 'center',

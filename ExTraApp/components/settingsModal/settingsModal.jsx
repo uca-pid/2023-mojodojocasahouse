@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; // Import useNavigation
+import { View, Text, Modal, TouchableOpacity } from 'react-native';
 import styles from './style';
 
 const SettingsModal = ({ isVisible, onSettingClose, navigation }) => {
@@ -12,20 +11,6 @@ const SettingsModal = ({ isVisible, onSettingClose, navigation }) => {
     navigation.navigate('ChangePassScreen'); // Navigate to the ChangePasswordScreen
     onSettingClose(); // Close the modal
   };
-
-  /*const navigateToAdmCategories = () => {
-    navigation.navigate('AdmCategoriesScreen'); // Navigate to the ChangePasswordScreen
-    onSettingClose(); // Close the modal
-  };
-
-
-   Esto va debajo del touchable opaciti de change password, no puedo comentar un return
-
-  <TouchableOpacity style={styles.saveButton} onPress={navigateToAdmCategories}>
-    <Text style={styles.saveButtonText}>Add New Category</Text>
-  </TouchableOpacity>
-          
-          */
 
 
   return (

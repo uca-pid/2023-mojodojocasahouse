@@ -1,9 +1,12 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, FlatList } from 'react-native';
-import { styles } from './style';
+import { View, Text, TouchableOpacity, Image, FlatList } from 'react-native';
 import { TextInput } from 'react-native-paper';
-import LoadingOverlay from '../../components/loading/loading';
 import Icon from 'react-native-vector-icons/Entypo';
+import { Dialog } from '@rneui/themed';
+
+import { styles } from './style';
+import LoadingOverlay from '../../components/loading/loading';
+import { API_URL } from "@env";
 
 const AdmCategories = ({ navigation, route }) => {
   const [categoryName, setCategoryName] = React.useState("");
@@ -24,7 +27,7 @@ const AdmCategories = ({ navigation, route }) => {
   const postAddCategoryToApi = async () => {
     setLoading(true);
     try {
-      let response = await fetch("http://localhost:8080/auth/password/change", {
+      let response = await fetch(API_URL + "/auth/password/change", {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -95,9 +98,13 @@ const AdmCategories = ({ navigation, route }) => {
   return (
     <View style={styles.appContainer}>
       <View style={styles.container}>
-      <LoadingOverlay 
+        <Dialog isVisible={loading}>
+          <Dialog.Loading />
+        </Dialog>
+
+        {/* <LoadingOverlay 
           shown={loading}
-        />
+        /> */}
         <View style={styles.logoContainer}>
           <Image style={styles.logo} source={require('./../../img/logo.png')} />
         </View>
@@ -111,7 +118,7 @@ const AdmCategories = ({ navigation, route }) => {
             style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
             label="New Category Name"
             value={categoryName}
-            onChangeText={categoryName => setCategoryName(categoryName)}
+            onChangeText={setCategoryName}
           />
           <Text style={styles.textStyle}>Choose an icon:</Text>
           <FlatList

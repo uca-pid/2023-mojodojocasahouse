@@ -1,66 +1,43 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image, Alert, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { styles } from './style';
 import { TextInput, Switch } from 'react-native-paper';
-import { Buffer } from 'buffer'; 
-import { fetchWithTimeout } from '../../utils/fetchingUtils';
-import LoadingOverlay from '../../components/loading/loading';
+import { Dialog } from '@rneui/themed';
+import { AuthContext } from '../../context/authContext';
+
 
 
 const Login = ({ navigation, route }) => { 
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [secureTextEntry, setSecureTextEntry] = React.useState(true);
   const [loading, setLoading] = React.useState(false);
-  const [isSwitchOn, setIsSwitchOn] = React.useState(false);
+  const [rememberMe, setRememberMe] = React.useState(false);
+  const {signIn} = React.useContext(AuthContext);
 
-  const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
+  const onToggleSwitch = () => setRememberMe(!rememberMe);
 
   const navigateToSignUp = () => {
     navigation.navigate('SignUp'); // Navigate to the 'SignUp' screen
-  };
-
-  const navigateToHomeScreen = () => {
-    navigation.navigate('Table');
   };
 
   const navigateToForgottenPasswordScreen = () => {
     navigation.navigate('forgotten-password');
   };
 
-  const postLoginFormToApi = async () => {
+  const handleSubmitLogin = async () => {
     setLoading(true);
-    try {
-      let response = await fetchWithTimeout("http://localhost:8080/login", {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          Accept: 'application/json',
-          Authorization: "Basic " + Buffer.from(email + ":" + password, 'utf8').toString('base64')
-        },
-        body: new FormData().append('remember-me', isSwitchOn)
-      });
-      let responseBody = await response.json();
-      setLoading(false);
-
-      if (response.ok) {
-        navigateToHomeScreen();
-        return;
-      }
-      Alert.alert("API Error", responseBody.message);
-
-    } catch (error) {
-      setLoading(false);
-      Alert.alert("Connection Error", "There was an error connecting to API");
-    }
+    await signIn({email, password, rememberMe});
+    setLoading(false);
   };
 
   return (
     <View style={styles.appContainer}>
       <View style={styles.container}>
 
-        <LoadingOverlay 
-          shown={loading}
-        />
+        <Dialog isVisible={loading}>
+          <Dialog.Loading />
+        </Dialog>
 
         <View style={styles.logoContainer}>
           <Image style={styles.logo} source={require('./../../img/logo.png')} />
@@ -68,28 +45,39 @@ const Login = ({ navigation, route }) => {
 
         <View style={styles.bottomContainer}></View>
 
-        <ScrollView contentContainerStyle={styles.contentContainer}>
+        <ScrollView contentContainerStyle={styles.contentContainer} keyboardShouldPersistTaps="handled">
         
           <TextInput
             style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
             label="Email"
             value={email}
-            onChangeText={email => setEmail(email)}
+            onChangeText={setEmail}
             maxLength={321}
           />
 
           <TextInput
-            secureTextEntry={true}
+            secureTextEntry={secureTextEntry}
             style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
             label="Password"
             value={password}
-            onChangeText={password => setPassword(password)}
+            onChangeText={setPassword}
             maxLength={100}
+            right={
+              <TextInput.Icon
+                icon={secureTextEntry ? 'eye-off' : 'eye'}
+                onPress={() => setSecureTextEntry(!secureTextEntry)}
+                style={{ color: 'black', fontSize: 36 }}
+                />
+              }
           />
-          <Text style={styles.rememberMeText} >Remember me:</Text>
-          <Text style={styles.rememberMeBox}><Switch value={isSwitchOn} onValueChange={onToggleSwitch} /></Text>
+          <View style={styles.rememberMeContainer}>
+            <Text style={styles.rememberMeText} >Remember me:</Text>
+            <View style={styles.rememberMeBox}>
+              <Switch value={rememberMe} color='green' onValueChange={onToggleSwitch} />
+            </View>
+          </View>
 
-          <TouchableOpacity style={styles.button} onPress={postLoginFormToApi}>
+          <TouchableOpacity style={styles.button} onPress={handleSubmitLogin}>
             <Text style={styles.buttonText}>Log in</Text>
           </TouchableOpacity>
 

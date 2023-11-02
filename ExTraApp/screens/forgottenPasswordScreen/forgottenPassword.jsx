@@ -1,11 +1,10 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { styles } from './style';
-import { TextInput, HelperText } from 'react-native-paper';
-import LoadingOverlay from '../../components/loading/loading';
+import { Dialog } from '@rneui/themed';
 import * as EmailValidator from 'email-validator';
 import ValidatedTextInput from '../../components/validatedTextInput/validatedTextInput';
-import { fetchWithTimeout } from '../../utils/fetchingUtils';
+import { postForgottenPasswordFormToApi } from '../../utils/apiFetch';
 
 const ForgottenPassword = ({ navigation, route }) => {
   const [email, setEmail] = React.useState("");
@@ -19,52 +18,10 @@ const ForgottenPassword = ({ navigation, route }) => {
     navigation.navigate('Login');
   };
 
-  const postForgottenPasswordFormToApi = async () => {
-    if(formHasErrors()){
-      Alert.alert('Invalid Fields', "One or more required fields are invalid. Please correct these errors and try again.");
-      return;
-    }
-
+  const handleSubmit = async () => {
     setLoading(true);
-    try{
-      let response = await fetchWithTimeout("http://localhost:8080/auth/forgotten", {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type':'application/json',
-        },
-        body: JSON.stringify({
-          email: email
-        })
-      });
-      let responseBody = await response.json();
-      setLoading(false);
-
-      console.log(responseBody);
-
-      // OK
-      if(response.ok){
-        Alert.alert(
-          "Request Sent", 
-          "Please check your inbox",
-          [{text: 'OK', onPress: navigateToLogin}],
-        );
-        return;
-      }
-
-      // OTHER ERROR
-      Alert.alert(
-        "Request Failed", 
-        "API says: " + responseBody.message
-      );
-
-    } catch (error) {
-      Alert.alert(
-        "Connection Error", 
-        "There was an error connecting to API"
-      );
-    }
+    await postForgottenPasswordFormToApi(formHasErrors, email, navigation);
+    setLoading(false);
   };
 
   const formHasErrors = () => {
@@ -78,9 +35,9 @@ const ForgottenPassword = ({ navigation, route }) => {
   return (
     <View style={styles.appContainer}>
       <View style={styles.container}>
-        <LoadingOverlay 
-          shown={loading}
-        />
+        <Dialog isVisible={loading}>
+          <Dialog.Loading />
+        </Dialog>
 
         <View style={styles.logoContainer}>
           <Image style={styles.logo} source={require('./../../img/logo.png')} />
@@ -98,7 +55,7 @@ const ForgottenPassword = ({ navigation, route }) => {
             maxLength={321}
           />
 
-          <TouchableOpacity style={styles.button} onPress={postForgottenPasswordFormToApi}>
+          <TouchableOpacity style={styles.button} onPress={handleSubmit}>
             <Text style={styles.buttonText}>Confirm</Text>
           </TouchableOpacity>
 

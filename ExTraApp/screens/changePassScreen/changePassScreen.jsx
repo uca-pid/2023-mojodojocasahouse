@@ -1,55 +1,31 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Alert, } from 'react-native';
-import { styles } from './style';
+import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { TextInput, HelperText } from 'react-native-paper';
-import LoadingOverlay from '../../components/loading/loading';
+import { Dialog } from '@rneui/themed';
+
+import { styles } from './style';
+import { postChangePassToApi } from '../../utils/apiFetch';
 
 
 const ChangePassScreen = ({ navigation, route }) => { // Add navigation prop
   const [loading, setLoading] = React.useState(false);
+  const [secureTextEntry, setSecureTextEntry] = React.useState(true);
   const [newPassword, setNewPassword] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const [currentPassword, setCurrentPassword] = React.useState("");
   const [newPasswordRepeat, setNewPasswordRepeat] = React.useState("");
   const [passwordError, setPasswordError] = React.useState(false);
   const [repeatPasswordError, setRepeatPasswordError] = React.useState(false);
 
 
 
-  const postChangePassToApi = async () => {
+  const handleSubmit = async () => {
     setLoading(true);
-    try {
-      let response = await fetch("http://localhost:8080/auth/password/change", {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type':'application/json',
-        },
-        body: JSON.stringify({
-          currentPassword: password,
-          newPasswordRepeat: newPasswordRepeat,
-          newPassword: newPassword
-
-        })
-      });
-      let responseBody = await response.json();
-      setLoading(false);
-
-      // OK
-      if(response.ok){
-        Alert.alert("Password Change Success", "Your password was changed successfully", [{text: 'OK', onPress: navigateToHomeScreen}]);
-        return;
-      }
-
-      // OTHER ERROR
-      Alert.alert("API Error", responseBody.message);
-
-    } catch (error) {
-      Alert.alert(
-        "Connection Error", 
-        "There was an error connecting to API"
-      );
-    }
+    await postChangePassToApi({
+      currentPassword,
+      newPasswordRepeat,
+      newPassword
+    }, navigation);
+    setLoading(false);
   };
 
   const navigateToHomeScreen = () => {
@@ -69,34 +45,51 @@ const ChangePassScreen = ({ navigation, route }) => { // Add navigation prop
   return (
     <View style={styles.appContainer}>
       <View style={styles.container}>
-      <LoadingOverlay 
-          shown={loading}
-        />
+        <Dialog isVisible={loading}>
+          <Dialog.Loading />
+        </Dialog>
+
         <View style={styles.logoContainer}>
           <Image style={styles.logo} source={require('./../../img/logo.png')} />
         </View>
 
         <View style={styles.bottomContainer}></View>
-        <ScrollView contentContainerStyle={styles.contentContainer}>
 
-            <Text style={styles.textTitle}>Change password:</Text>
-            <Text style={styles.textStyle}>Write your current password:</Text>
+        <ScrollView contentContainerStyle={styles.contentContainer} keyboardShouldPersistTaps="handled">
+
+          <Text style={styles.textTitle}>Change password:</Text>
+          <Text style={styles.textStyle}>Write your current password:</Text>
           <TextInput
-          secureTextEntry={true}
+            secureTextEntry={secureTextEntry}
             style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
             label="Current Password"
-            value={password}
-            onChangeText={password => setPassword(password)}
+            value={currentPassword}
+            onChangeText={setCurrentPassword}
+            right={
+              <TextInput.Icon
+              icon={secureTextEntry ? 'eye-off' : 'eye'}
+              onPress={() => setSecureTextEntry(!secureTextEntry)}
+              style={{ color: 'black', fontSize: 36 }}
+              />
+              }
           />
-            <Text style={styles.textStyle}>Write your new password:</Text>
+
+          <Text style={styles.textStyle}>Write your new password:</Text>
           <TextInput
-            secureTextEntry={true}
+            secureTextEntry={secureTextEntry}
             style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
             label="New Password"
             value={newPassword}
-            onChangeText={newPassword => setNewPassword(newPassword)}
+            onChangeText={setNewPassword}
             maxLength={100}
             onBlur={validatePassword}
+            right={
+              <TextInput.Icon
+              icon={secureTextEntry ? 'eye-off' : 'eye'}
+              onPress={() => setSecureTextEntry(!secureTextEntry)}
+              style={{ color: 'black', fontSize: 36 }}
+              />
+              }
           />
           <HelperText type="error" visible={passwordError}>
             Must contain: 8 letters, 1 number, 1 capital, and 1 symbol.
@@ -104,28 +97,34 @@ const ChangePassScreen = ({ navigation, route }) => { // Add navigation prop
 
           <Text style={styles.textStyle}>Write your new password again:</Text>
           <TextInput
-            secureTextEntry={true}
+            secureTextEntry={secureTextEntry}
             style={{ marginLeft: '10%', width: '80%', marginBottom: '5%' }}
             label="New Password"
             value={newPasswordRepeat}
-            onChangeText={newPasswordRepeat => setNewPasswordRepeat(newPasswordRepeat)}
+            onChangeText={setNewPasswordRepeat}
             maxLength={100}
             onBlur={validateRepeatPassword}
+            right={
+              <TextInput.Icon
+              icon={secureTextEntry ? 'eye-off' : 'eye'}
+              onPress={() => setSecureTextEntry(!secureTextEntry)}
+              style={{ color: 'black', fontSize: 36 }}
+              />
+              }
           />
           <HelperText type="error" visible={repeatPasswordError}>
             Passwords do not match.
           </HelperText>
 
 
-          <TouchableOpacity style={styles.button} onPress={postChangePassToApi}>
+          <TouchableOpacity style={styles.button} onPress={handleSubmit}>
             <Text style={styles.buttonText}>Change Password</Text>
           </TouchableOpacity>
 
-          {/* Wrap the text with TouchableOpacity to navigate to SignUp */}
           <TouchableOpacity onPress={navigateToHomeScreen}>
             <Text style={{ textAlign: 'center' }}>I don't want to change my password. Send me back.</Text>
           </TouchableOpacity>
-          </ScrollView>
+        </ScrollView>
       </View>
     </View>
   );
