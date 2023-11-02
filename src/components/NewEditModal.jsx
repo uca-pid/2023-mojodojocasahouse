@@ -2,7 +2,6 @@
 import React from 'react';
 import { View, Text, Modal, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import ValidatedTextInput from './ValidatedTextInput';
-import styles from './style';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import DatePicker from 'react-native-date-picker';
 

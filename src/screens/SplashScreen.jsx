@@ -4,8 +4,8 @@ import { View } from 'react-native';
 const SplashScreen = ({ navigation, route }) => {
 
   return (
-    <View style={styles.appContainer}>
-      <View style={styles.container}>
+    <View style={null}>
+      <View style={null}>
         {/* Empty splash screen for modification */}
       </View>
     </View>

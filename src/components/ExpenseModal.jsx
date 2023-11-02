@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { View, Text, Modal, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import DatePicker from 'react-native-date-picker';
-import styles from './style';
 import { Picker } from './Picker';
 import { Icon } from '@rneui/themed';
 import { AppInput } from './AppInput';
