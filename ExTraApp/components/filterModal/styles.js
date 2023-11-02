@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     // Bottom section
 
     bottomSection: {
-        marginTop: 50,
+        marginTop: 30,
     },
 });
 

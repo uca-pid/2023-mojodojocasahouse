@@ -77,7 +77,7 @@ const LoginScreen = ({navigation}) => {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-            <Switch value={rememberMe} color='#AD40AF' onValueChange={() => setRememberMe(!rememberMe)} />
+            <Switch value={rememberMe} color='#E86DC3' onValueChange={() => setRememberMe(!rememberMe)} />
           </View>
         </View>
         
@@ -92,7 +92,7 @@ const LoginScreen = ({navigation}) => {
           }}>
           <Text>New to the app?</Text>
           <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-            <Text style={{color: '#AD40AF', fontWeight: '700'}}> Register</Text>
+            <Text style={{color: '#E86DC3', fontWeight: '700'}}> Register</Text>
           </TouchableOpacity>
         </View>
 
@@ -104,7 +104,7 @@ const LoginScreen = ({navigation}) => {
           }}>
           <Text>Forgot your password?</Text>
           <TouchableOpacity onPress={() => navigation.navigate('forgotten-password')}>
-            <Text style={{color: '#AD40AF', fontWeight: '700'}}> Tap here</Text>
+            <Text style={{color: '#E86DC3', fontWeight: '700'}}> Tap here</Text>
           </TouchableOpacity>
         </View>
       </View>

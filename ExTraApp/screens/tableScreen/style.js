@@ -17,7 +17,7 @@ export const styles = StyleSheet.create({
     margin: "2%",
     marginTop: "6%",
     borderRadius: 14,
-    backgroundColor: '#AEB4E8', // Background color
+    backgroundColor: 'white', // Background color
     height: '96%',
     width: '96%',
   },
@@ -124,30 +124,36 @@ export const styles = StyleSheet.create({
 
   addExpenseButtonContainer: {
     height: '5%',
-    width: '100%',
-    marginTop: 20,
-    backgroundColor: '#433FF4',
+    width: '90%',
+    marginLeft: '5%',
+    marginTop: 10,
+    borderRadius: 10,
+    backgroundColor: '#e86dc3',
   },
 
   filterButtonContainer: {
     height: '5%',
-    width: '100%',
-    marginTop: 5,
-    backgroundColor: '#ee9a00',
+    width: '90%',
+    marginLeft: '5%',
+    marginTop: 10,
+    borderRadius: 10,
+    backgroundColor: '#e86dc3',
   },
 
   button: {
-    backgroundColor: '#433FF4',
+    backgroundColor: '#e86dc3',
     paddingBottom: '2.5%',
     paddingTop: '2.5%',
     alignItems: 'center',
+    borderRadius: 10,
   },
 
   filterButton: {
-    backgroundColor: '#ee9a00',
+    backgroundColor: '#e86dc3',
     paddingBottom: '2.5%',
     paddingTop: '2.5%',
     alignItems: 'center',
+    borderRadius: 10,
   },
   
   buttonText: {

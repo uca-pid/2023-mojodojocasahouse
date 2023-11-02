@@ -12,6 +12,8 @@ import { AuthContext } from '../../context/authContext';
 import FilterModal from '../../components/filterModal/filterModal';
 import EditModal from '../../components/editModal/editModal';
 import NewEditModal from '../../components/newEditModal/newEditModal';
+import {LinearGradient} from 'react-native-linear-gradient';
+
 
 
 const iconFactory = (id) => {
@@ -136,25 +138,15 @@ const Table = () => {
   },[navigation]);
 
   return (
-    <View style={styles.appContainer}>
+    <LinearGradient colors={['#E86DC3', 'white']} style={styles.appContainer}>
       
       <View style={styles.contentContainer}>
         <Dialog isVisible={loading}>
           <Dialog.Loading />
         </Dialog>
-
         <View style={styles.headerContainer}>
           <View style={styles.logoContainer}>
             <Image style={styles.logo} source={require('./../../img/logo.png')} />
-          </View>
-        </View>
-
-        <View style={styles.menuContainer}>
-          <View style={styles.menuItemContainer}>
-            <FeatherIcon.Button onPress={toggleSettingModal} backgroundColor="#D9D9d9" color="black" name="settings">Settings</FeatherIcon.Button>
-          </View>
-          <View style={styles.menuItemContainer}>
-            <Icon.Button onPress={handleLogout} backgroundColor="#d15c54" name="log-out">Logout</Icon.Button>
           </View>
         </View>
 
@@ -231,7 +223,7 @@ const Table = () => {
       <FilterModal visible={isFilterModalVisible} data={categories} onDone={handleFilterModalSubmit} onCancel={toggleFilterModal} />
       {/* <EditModal isVisible={isEditModalVisible} onClose={() => setEditModalVisible(false)} onSave={handleSaveEditExpense} /> */}
       <NewEditModal isVisible={isEditModalVisible} onClose={() => setEditModalVisible(false)} onSave={handleSaveEditExpense} selectedExpense={selectedExpense}/>
-    </View>
+    </LinearGradient>
   );
 };
 

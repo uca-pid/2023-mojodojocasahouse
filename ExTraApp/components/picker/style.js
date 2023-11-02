@@ -5,12 +5,14 @@ const defaultStyles = StyleSheet.create({
     // Selector
 
     button: {
-        backgroundColor: '#ee9a00',
-
+        backgroundColor: '#E86DC3',
+        borderWidth: 1,
+        borderColor: 'black',
         paddingBottom: '2.5%',
         paddingTop: '2.5%',
         alignItems: 'center',
         marginTop: 5,
+        borderRadius: 10,
     },
 
     buttonText: {
@@ -34,7 +36,6 @@ const defaultStyles = StyleSheet.create({
 
         width: '100%',
         height: '100%',
-
         backgroundColor: '#d9d9d9',
         opacity: 0.7,
     },
@@ -51,6 +52,7 @@ const defaultStyles = StyleSheet.create({
         left: '15%',
 
         backgroundColor: '#ffffff',
+        borderWidth: 0.5,
         padding: 20,
         shadowColor: "#000",
         shadowOffset: {
@@ -121,14 +123,14 @@ const defaultStyles = StyleSheet.create({
         borderRadius: 8,
         height: '100%',
         width: '80%',
-        backgroundColor: '#39fa4a',
+        backgroundColor: '#E86DC3',
 
         justifyContent: 'center',
         alignItems: 'center'
     },
 
     categoryCancelText: {
-        color: '#474747',
+        color: 'white',
         fontSize: 25,
         fontFamily: 'Tahoma,Verdana,Segoe,sans-serif'
     },
@@ -158,7 +160,7 @@ const defaultStyles = StyleSheet.create({
         height: 30,
         borderBottomWidth: 1,
         borderBottomColor: '#a1a1a1',
-        backgroundColor: '#e3ffd1',
+        backgroundColor: '#f7bae5',
 
         justifyContent: 'center',
         alignItems: 'center',

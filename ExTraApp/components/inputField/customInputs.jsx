@@ -38,6 +38,7 @@ const EmailInput = (props) => {
       keyboardType='email-address'
       errorMessage={props.errorMessage}
       maxLength={320}
+      onEndEditing={props.onEndEditing}
     />
   );
 };
@@ -48,6 +49,7 @@ const SecureInput = (props) => {
 
   return (
     <Input 
+      label={props.label}
       value={props.value}
       onChangeText={props.onChangeText}
       placeholder={props.placeholder || 'Password'}
@@ -84,6 +86,7 @@ const SecureInput = (props) => {
       secureTextEntry={!pass_visible}
       errorMessage={props.errorMessage}
       maxLength={50}
+      onEndEditing={props.onEndEditing}
     />
   );
 };
@@ -118,17 +121,19 @@ const NameInput = (props) => {
       placeholderTextColor={"#c4c4c4"}
       errorMessage={props.errorMessage}
       maxLength={99}
+      onEndEditing={props.onEndEditing}
     />
   );
 };
 AppInput.Name = NameInput;
 
-const CategoryInput = props => {
+
+const ConceptInput = (props) => {
   return(
     <Input 
       value={props.value}
       onChangeText={props.onChangeText}
-      placeholder={props.placeholder || 'Name'}
+      placeholder={props.placeholder || 'Concept'}
       containerStyle={{
         width: '100%',
         paddingHorizontal: 0,
@@ -151,7 +156,121 @@ const CategoryInput = props => {
       }
       placeholderTextColor={"#c4c4c4"}
       errorMessage={props.errorMessage}
+      maxLength={99}
+      onEndEditing={props.onEndEditing}
+    />
+  );
+};
+AppInput.Concept = ConceptInput;
+
+const AmountInput = (props) => {
+  return(
+    <Input 
+      value={props.value}
+      onChangeText={props.onChangeText}
+      placeholder={props.placeholder || 'Amount'}
+      containerStyle={{
+        width: '100%',
+        paddingHorizontal: 0,
+      }}
+      inputContainerStyle={{
+        borderBottomColor: '#ccc',
+        borderBottomWidth: 1,
+        height: 35,
+      }}
+      inputStyle={{
+        fontSize: 15,
+      }}
+      leftIcon={
+        <MaterialIcons
+          name="attach-money"
+          size={20}
+          color="#666"
+          style={{marginRight: 5}}
+        />
+      }
+      placeholderTextColor={"#c4c4c4"}
+      errorMessage={props.errorMessage}
+      maxLength={12}
+      onEndEditing={props.onEndEditing}
+    />
+  );
+};
+AppInput.Amount = AmountInput;
+
+const DateInput = props => {
+  return(
+    <Input 
+      value={props.value.toLocaleDateString('es-AR')}
+      placeholder={props.placeholder || 'DD-MM-YYYY'}
+      onPressOut={props.onPress}
+      containerStyle={{
+        width: '100%',
+        paddingHorizontal: 0,
+      }}
+      inputContainerStyle={{
+        borderBottomColor: '#ccc',
+        borderBottomWidth: 1,
+        height: 35,
+      }}
+      inputStyle={{
+        fontSize: 15,
+      }}
+      leftIcon={
+        <MaterialIcons
+          name="calendar-today"
+          size={20}
+          color="#666"
+          style={{marginRight: 5}}
+        />
+      }
+      rightIcon={
+        <MaterialIcons
+          name="edit-calendar"
+          size={20}
+          color="#E86DC3"
+          style={{marginLeft: 5}}
+          onPress={props.onPress}
+        />
+      }
+      placeholderTextColor={"#c4c4c4"}
+      disabled={true}
+    />
+  );
+};
+AppInput.Date = DateInput;
+
+const CategoryInput = props => {
+  return(
+    <Input 
+      value={props.value}
+      onChangeText={props.onChangeText}
+      placeholder={props.placeholder || 'Category'}
+      containerStyle={{
+        width: '100%',
+        paddingHorizontal: 0,
+      }}
+      inputContainerStyle={{
+        borderBottomColor: '#ccc',
+        borderBottomWidth: 1,
+        height: 35,
+      }}
+      inputStyle={{
+        fontSize: 15,
+      }}
+      leftIcon={
+        <MaterialIcons
+          name="category"
+          size={20}
+          color="#666"
+          style={{marginRight: 5}}
+        />
+      }
+      rightIcon={props.rightIcon}
+      placeholderTextColor={"#c4c4c4"}
+      errorMessage={props.errorMessage}
       maxLength={49}
+      onEndEditing={props.onEndEditing}
     />
   );
 };

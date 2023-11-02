@@ -8,6 +8,7 @@ import { BarChart } from "react-native-chart-kit";
 import { postExpenseToApi, fetchUserCategories, fetchExpensesByCategory, fetchExpensesList, deleteExpense } from '../../utils/apiFetch';
 import { AuthContext } from '../../context/authContext';
 import FilterModal from '../../components/filterModal/filterModal';
+import {LinearGradient} from 'react-native-linear-gradient';
 
 const BarScreen = () => {
   const [loading, setLoading] = useState(false);
@@ -23,9 +24,9 @@ const BarScreen = () => {
   };
 
   const chartConfig2 = {
-    backgroundGradientFrom: "#AEB4E8",
+    backgroundGradientFrom: "white",
     backgroundGradientFromOpacity: 0,
-    backgroundGradientTo: "#AEB4E8",
+    backgroundGradientTo: "white",
     height: 10000,
     backgroundGradientToOpacity: 0.5,
     color: () => `#47132D`,
@@ -72,7 +73,7 @@ const BarScreen = () => {
   const yearlyExpenses = calculateYearlyExpenses();
 
   return (
-    <View style={styles.appContainer}>
+    <LinearGradient colors={['#E86DC3', 'white']} style={styles.appContainer}>
       <View style={styles.contentContainer}>
         <LoadingOverlay shown={loading} />
 
@@ -82,7 +83,9 @@ const BarScreen = () => {
           </View>
         </View>
 
-        <View style={styles.addExpenseButtonContainer}></View>
+        <View style={styles.addExpenseButtonContainer}> 
+          <Text style={styles.titulo}>Gastos totales por año</Text>
+        </View>
 
         <ScrollView contentContainerStyle={styles.scrollviewContentContainer} horizontal={true}>
           <View style={{ paddingLeft: '5%', paddingBottom: '7%', paddingTop: '16%' }}>
@@ -106,7 +109,7 @@ const BarScreen = () => {
           </View>
         </ScrollView>
       </View>
-    </View>
+    </LinearGradient>
   );
 };
 

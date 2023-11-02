@@ -1,18 +1,17 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
-import { styles } from './style';
+import { View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
 import { Dialog } from '@rneui/themed';
 import * as EmailValidator from 'email-validator';
-import ValidatedTextInput from '../../components/validatedTextInput/validatedTextInput';
 import { postForgottenPasswordFormToApi } from '../../utils/apiFetch';
+
+import LoginSVG from '../../img/login.svg';
+import CustomButton from '../../components/customButton/customButton';
+import { AppInput } from '../../components/inputField/customInputs';
 
 const ForgottenPassword = ({ navigation, route }) => {
   const [email, setEmail] = React.useState("");
+  const [emailError, setEmailError] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
-
-  const navigateToSignUp = () => {
-    navigation.navigate('SignUp'); // Navigate to the 'SignUp' screen
-  };
 
   const navigateToLogin = () => {
     navigation.navigate('Login');
@@ -25,50 +24,63 @@ const ForgottenPassword = ({ navigation, route }) => {
   };
 
   const formHasErrors = () => {
-    return emailHasErrors(email);
+    return checkEmailHasErrors(email);
   }
 
-  const emailHasErrors = (emailInput) => {
-    return !EmailValidator.validate(emailInput);
+  const checkEmailHasErrors = (emailInput) => {
+    let isValid = EmailValidator.validate(emailInput);
+    setEmailError(!isValid);
+    return !isValid;
   };
 
   return (
-    <View style={styles.appContainer}>
-      <View style={styles.container}>
-        <Dialog isVisible={loading}>
-          <Dialog.Loading />
-        </Dialog>
-
-        <View style={styles.logoContainer}>
-          <Image style={styles.logo} source={require('./../../img/logo.png')} />
+    <SafeAreaView style={{flex: 1, justifyContent: 'center'}}>
+      <Dialog isVisible={loading}>
+        <Dialog.Loading />
+      </Dialog>
+      <View style={{paddingHorizontal: 25}}>
+        <View style={{alignItems: 'center'}}>
+          <LoginSVG
+            height={270}
+            width={270}
+            style={{transform: [{rotate: '-5deg'}]}}
+          />
         </View>
 
-        <View style={styles.bottomContainer}></View>
+        <Text
+          style={{
+            fontFamily: 'Roboto-Medium',
+            fontSize: 28,
+            fontWeight: '500',
+            color: '#333',
+            marginBottom: 30,
+          }}>
+          Password recovery
+        </Text>
 
-        <View>
-          <ValidatedTextInput 
-            label="Email"
-            value={email}
-            onChangeText={setEmail}
-            hasError={emailHasErrors}
-            validationErrorMessage="Email address is invalid"
-            maxLength={321}
-          />
+        <AppInput.Email
+          value={email}
+          onChangeText={setEmail}
+          onEndEditing={checkEmailHasErrors}
+          errorMessage={emailError? "Email must be valid." : null}
+        />
+        
+        <CustomButton label={"Start"} onPress={handleSubmit} />
 
-          <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-            <Text style={styles.buttonText}>Confirm</Text>
-          </TouchableOpacity>
 
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            marginBottom: 30,
+          }}>
+          <Text>Remembered?</Text>
           <TouchableOpacity onPress={navigateToLogin}>
-            <Text style={{ textAlign: 'center' }}>Back to login</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={navigateToSignUp}>
-            <Text style={{ textAlign: 'center' }}>Don't have an account? Sign up</Text>
+            <Text style={{color: '#E86DC3', fontWeight: '700'}}> Tap here</Text>
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
