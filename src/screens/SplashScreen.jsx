@@ -1,14 +1,12 @@
 import React from 'react';
-import { View } from 'react-native';
+import ScreenTemplate from '../components/ScreenTemplate';
 
 const SplashScreen = ({ navigation, route }) => {
 
   return (
-    <View style={null}>
-      <View style={null}>
-        {/* Empty splash screen for modification */}
-      </View>
-    </View>
+    <ScreenTemplate>
+      <ScreenTemplate.Logo/>
+    </ScreenTemplate>
   );
 };
 

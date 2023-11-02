@@ -5,8 +5,7 @@ import { PieChart } from "react-native-chart-kit";
 import { fetchUserCategories,fetchExpensesList} from '../utils/apiFetch';
 import { AuthContext } from '../context/AuthContext';
 import FilterModal from '../components/FilterModal';
-import { LinearGradient } from 'react-native-linear-gradient';
-import { Dialog } from '@rneui/themed';
+import ScreenTemplate from '../components/ScreenTemplate';
 
 const GraphScreen = () => {
   const [loading, setLoading] = React.useState(false);
@@ -117,19 +116,10 @@ const GraphScreen = () => {
   const categoryExpenses = calculateCategoryExpenses();
   
   return (
-    <LinearGradient colors={['#E86DC3', 'white']} style={styles.appContainer}>
+    <ScreenTemplate loading={loading}>
+      <ScreenTemplate.Logo />
 
-      <View style={styles.contentContainer}>
-        <Dialog isVisible={loading}>
-          <Dialog.Loading />
-        </Dialog>
-
-        <View style={styles.headerContainer}>
-          <View style={styles.logoContainer}>
-            <Image style={styles.logo} source={require('./../../img/logo.png')} />
-          </View>
-        </View>
-
+      <ScreenTemplate.Content>
         <View style={styles.addExpenseButtonContainer}>
         <TouchableOpacity style={styles.button} onPress={toggleFilterModal}>
             <Text style={styles.buttonText}>Use a Filter</Text>
@@ -157,62 +147,14 @@ const GraphScreen = () => {
             <Text style={styles.textForNoData}>There is no expenses data available for selected parameters. Please try again</Text>
           )}
         </View>
+      </ScreenTemplate.Content>
 
-      </View>
       <FilterModal visible={isFilterModalVisible} data={categories} onDone={handleFilterModalSubmit} onCancel={toggleFilterModal} />
-    </LinearGradient>
+    </ScreenTemplate>
   );
 };
 
 const styles = StyleSheet.create({
-  appContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-
-    backgroundColor: 'white',
-    height: '100%',
-  },
-  contentContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-
-    margin: "2%",
-    marginTop: 20,
-    borderRadius: 14,
-    backgroundColor: 'white', // Background color
-    height: '100%',
-    width: '96%',
-  },
-
-  // Logo Container
-
-  headerContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-
-    height: 80,
-    width: '100%',
-
-    justifyContent: 'space-around',
-    alignItems: 'center'
-  },
-
-  logoContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-
-    aspectRatio: 3.55,
-    width: '65%',
-
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
-  logo: {
-    width: '100%',
-    aspectRatio: 2,
-    resizeMode: 'contain',
-  },
 
   addExpenseButtonContainer: {
     height: '5%',
@@ -237,28 +179,6 @@ const styles = StyleSheet.create({
   },
 
   // Scrollview
-
-  rowMiddleContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-
-    width: 200, // Máximo posible
-    height: '100%',
-
-    justifyContent: 'flex-start',
-    alignItems: 'stretch',
-  },
-
-
-  amount: {
-    display: 'flex',
-    flexDirection: 'row',
-
-    fontSize: 15,
-    color: '#000000',
-
-    textAlign: 'left',
-  },
 
   textForNoData: {
     marginTop: '50%',

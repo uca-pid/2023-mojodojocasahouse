@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, Image, Alert, StyleSheet } from 'react-na
 import { Dialog } from '@rneui/themed';
 import { TextInput, HelperText } from 'react-native-paper';
 import { postResetPasswordFormToApi } from '../utils/apiFetch';
+import ScreenTemplate from '../components/ScreenTemplate';
 
 const ResetPasswordScreen = ({ navigation, route }) => {
   const [newPassword, setNewPassword] = React.useState("");
@@ -41,16 +42,10 @@ const ResetPasswordScreen = ({ navigation, route }) => {
   };
 
   return (
-    <View style={styles.appContainer}>
-      <View style={styles.container}>
-        <Dialog isVisible={loading}>
-          <Dialog.Loading />
-        </Dialog>
+    <ScreenTemplate loading={loading}>
+      <ScreenTemplate.Logo />
 
-        <View style={styles.logoContainer}>
-          <Image style={styles.logo} source={require('./../../img/logo.png')} />
-        </View>
-
+      <ScreenTemplate.Content>
         <View style={styles.bottomContainer}></View>
 
         <View>
@@ -89,16 +84,12 @@ const ResetPasswordScreen = ({ navigation, route }) => {
             <Text style={styles.buttonText}>Cancel</Text>
           </TouchableOpacity>
         </View>
-      </View>
-    </View>
+      </ScreenTemplate.Content>
+    </ScreenTemplate>
   );
 };
 
 const styles = StyleSheet.create({
-  appContainer: {
-    backgroundColor: 'white',
-    flex: 1,
-  },
 
   button: {
     backgroundColor: 'lightgray',
@@ -116,15 +107,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     
   },
-  
-  logoContainer: {
-    flexDirection: 'row',
-    display: 'flex',
-    height: '10%',
-    margin: 5,
-
-
-  },
 
   bottomContainer: {
     height: '4.5%',
@@ -132,18 +114,6 @@ const styles = StyleSheet.create({
     marginTop: '4%',
     backgroundColor: '#433FF4',
     marginBottom: '10%',
-  },
-
-  container: {
-    flex: 1,
-    margin: 10,
-    borderRadius: 20,
-    backgroundColor: '#AEB4E8', // Background color
-  },
-  logo: {
-    width: '70%',
-    aspectRatio: 4,
-    resizeMode: 'contain',
   },
 
 });

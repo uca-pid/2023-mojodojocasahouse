@@ -4,6 +4,7 @@ import { Dialog } from '@rneui/themed';
 import { postChangePassToApi } from '../utils/apiFetch';
 import { LinearGradient } from 'react-native-linear-gradient';
 import { AppInput } from '../components/AppInput';
+import ScreenTemplate from '../components/ScreenTemplate';
 
 
 const ChangePassScreen = ({ navigation, route }) => { // Add navigation prop
@@ -49,17 +50,10 @@ const ChangePassScreen = ({ navigation, route }) => { // Add navigation prop
   };
 
   return (
-    <LinearGradient colors={['#E86DC3', 'white']} style={styles.appContainer}>
-      <View style={styles.container}>
-        <Dialog isVisible={loading}>
-          <Dialog.Loading />
-        </Dialog>
+    <ScreenTemplate loading={loading}>
+      <ScreenTemplate.Logo />
 
-        <View style={styles.logoContainer}>
-          <Image style={styles.logo} source={require('./../../img/logo.png')} />
-        </View>
-
-
+      <ScreenTemplate.Content style={{paddingHorizontal: 15}}>
         <ScrollView contentContainerStyle={styles.contentContainer} keyboardShouldPersistTaps="handled">
           <View style={styles.textTitleContainer}>
             <Text style={styles.textTitle}>Change password:</Text>
@@ -98,16 +92,12 @@ const ChangePassScreen = ({ navigation, route }) => { // Add navigation prop
             <Text style={{ textAlign: 'center' }}>I don't want to change my password. Send me back.</Text>
           </TouchableOpacity>
         </ScrollView>
-      </View>
-      </LinearGradient>
+      </ScreenTemplate.Content>
+    </ScreenTemplate>
   );
 };
 
 const styles = StyleSheet.create({
-  appContainer: {
-    backgroundColor: 'white',
-    flex: 1,
-  },
 
   button: {
     backgroundColor: '#E86DC3',
@@ -128,32 +118,11 @@ const styles = StyleSheet.create({
   
   // Logo Container
 
-
-  logoContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-
-    aspectRatio: 3.55,
-    width: '100%',
-
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
-  container: {
-    flex: 1,
-    margin: 10,
-    borderRadius: 20,
-    backgroundColor: 'white', // Background color
-    height: '100%',
-    paddingHorizontal: 20,
-  },
   contentContainer: {
     paddingBottom: 20,
 
     backgroundColor: 'white', // Background color
   },
-  
 
   textTitleContainer: {
     marginBottom: '5%',
@@ -164,13 +133,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
-  },
-
-  logo: {
-    width: '70%',
-    aspectRatio: 4,
-    resizeMode: 'contain',
-
   },
 
 });

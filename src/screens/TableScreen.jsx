@@ -3,11 +3,11 @@ import { View, Text, TouchableOpacity, Image, ScrollView, Alert, StyleSheet } fr
 import { useNavigation } from '@react-navigation/native';
 import AddExpenseModal from '../components/AddExpenseModal';
 import { postExpenseToApi, fetchUserCategories, postEditExpenseToApi,fetchExpensesList, deleteExpense} from '../utils/apiFetch';
-import { Dialog, ListItem, Button, Icon as MaterialIcon } from '@rneui/themed';
+import { ListItem, Button, Icon as MaterialIcon } from '@rneui/themed';
 import { AuthContext } from '../context/AuthContext';
 import FilterModal from '../components/FilterModal';
 import EditExpenseModal from '../components/EditExpenseModal';
-import { LinearGradient } from 'react-native-linear-gradient';
+import ScreenTemplate from '../components/ScreenTemplate';
 
 
 
@@ -128,19 +128,10 @@ const TableScreen = () => {
   },[navigation]);
 
   return (
-    <LinearGradient colors={['#E86DC3', 'white']} style={styles.appContainer}>
-      
-      <View style={styles.contentContainer}>
-        <Dialog isVisible={loading}>
-          <Dialog.Loading />
-        </Dialog>
-        <View style={styles.headerContainer}>
-          <View style={styles.logoContainer}>
-            <Image style={styles.logo} source={require('./../../img/logo.png')} />
-          </View>
-        </View>
+    <ScreenTemplate loading={loading}>
+      <ScreenTemplate.Logo/>
 
-
+      <ScreenTemplate.Content>
         <View style={styles.addExpenseButtonContainer}>
           <TouchableOpacity style={styles.button} onPress={toggleModal}>
             <Text style={styles.buttonText}>Add Expense</Text>
@@ -207,64 +198,16 @@ const TableScreen = () => {
               </ListItem.Swipeable>
             ))}
         </ScrollView>
-      </View>
+      </ScreenTemplate.Content>
+      
       <AddExpenseModal isVisible={isModalVisible} onClose={toggleModal} onSave={handleSaveExpense} />
       <FilterModal visible={isFilterModalVisible} data={categories} onDone={handleFilterModalSubmit} onCancel={toggleFilterModal} />
       <EditExpenseModal isVisible={isEditModalVisible} onClose={() => setEditModalVisible(false)} onSave={handleSaveEditExpense} selectedExpense={selectedExpense}/>
-    </LinearGradient>
+    </ScreenTemplate>
   );
 };
 
 const styles = StyleSheet.create({
-  appContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-
-    backgroundColor: 'white',
-    height: '100%',
-  },
-
-  contentContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-
-    margin: "2%",
-    marginTop: "6%",
-    borderRadius: 14,
-    backgroundColor: 'white', // Background color
-    height: '96%',
-    width: '96%',
-  },
-
-  // Logo Container
-
-  headerContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-
-    height: 80,
-    width: '100%',
-
-    justifyContent: 'space-around',
-    alignItems: 'center'
-  },
-
-  logoContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-
-    aspectRatio: 3.55,
-    width: '65%',
-
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
-  logo: {
-    width: '100%',
-    aspectRatio: 2,
-    resizeMode: 'contain',
-  },
 
   // Bottom container
 

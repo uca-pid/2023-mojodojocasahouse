@@ -43,21 +43,23 @@ const CustomDrawer = props => {
           <DrawerItemList {...props} />
         </View>
       </DrawerContentScrollView>
-      <View style={{padding: 20, borderTopWidth: 1, borderTopColor: '#ccc'}}>
-        <TouchableOpacity onPress={signOut} style={{paddingVertical: 15}}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Ionicons name="exit-outline" size={22} />
-            <Text
-              style={{
-                fontSize: 15,
-                fontFamily: 'Roboto-Medium',
-                marginLeft: 5,
-              }}>
-              Sign Out
-            </Text>
-          </View>
-        </TouchableOpacity>
-      </View>
+      {props.username != "Anonymous"? (
+        <View style={{padding: 20, borderTopWidth: 1, borderTopColor: '#ccc'}}>
+          <TouchableOpacity onPress={signOut} style={{paddingVertical: 15}}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Ionicons name="exit-outline" size={22} />
+              <Text
+                style={{
+                  fontSize: 15,
+                  fontFamily: 'Roboto-Medium',
+                  marginLeft: 5,
+                }}>
+                Sign Out
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      ) : null}
     </View>
   );
 };
