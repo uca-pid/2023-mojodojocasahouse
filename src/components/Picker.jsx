@@ -272,6 +272,8 @@ const PickerSingleIcon = (props) => {
 
 Picker.Text = PickerText;
 
+Picker.Text.Multiple = PickerTextMultiple;
+
 Picker.Icon = PickerSingleIcon;
 
 const defaultStyles = StyleSheet.create({
@@ -293,13 +295,6 @@ const defaultStyles = StyleSheet.create({
       color: 'white',
       fontSize: 14,
       fontWeight: 'bold',
-  },
-
-  iconButton: {
-      width: 55,
-      padding: 10,
-      height: 'auto',
-      backgroundColor: '#d9d9d9',
   },
 
 
@@ -486,4 +481,4 @@ const defaultStyles = StyleSheet.create({
 });
 
 
-export { Picker, PickerTextMultiple };
+export { Picker };

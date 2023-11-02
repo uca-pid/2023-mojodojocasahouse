@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Icon, Overlay, Button, ListItem } from '@rneui/themed';
 import DatePicker from 'react-native-date-picker';
-import { PickerTextMultiple } from './Picker';
+import { Picker } from './Picker';
 
 
 /**
@@ -39,7 +39,7 @@ const FilterModal = props => {
 
               <View style={styles.autocompleteContainer}>
 
-                <PickerTextMultiple 
+                <Picker.Text.Multiple 
                   value={categories}
                   onChange={setCategories}
                   data={props.data}
@@ -151,24 +151,6 @@ const FilterModal = props => {
 
 const styles = StyleSheet.create({
 
-  // Top Section
-
-  topSection: {
-      height: 40,
-      backgroundColor: '#d9d9d9',
-      justifyContent: 'center',
-      alignItems: 'flex-start',
-      marginBottom: 20,
-  },
-
-  topSectionTitle: {
-      fontSize: 30,
-      marginLeft: 10,
-  },
-
-
-
-
   // Middle Section
 
   middleSection: {
@@ -182,14 +164,6 @@ const styles = StyleSheet.create({
       zIndex: 1
   },
 
-  categoryTitleContainer: {
-
-  },
-
-  categoryTitle: {
-      fontSize: 17,
-  },
-
   autocompleteContainer: {
       position: 'absolute',
       width: 300,
@@ -200,9 +174,6 @@ const styles = StyleSheet.create({
       marginHorizontal: '4%',
       marginTop: 10
   },
-
-
-
 
   // Bottom section
 

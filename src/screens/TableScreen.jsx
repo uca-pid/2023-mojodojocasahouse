@@ -1,16 +1,12 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image, ScrollView, Alert, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/Entypo';
-import FeatherIcon from 'react-native-vector-icons/Feather';
-import ExpenseModal from '../components/ExpenseModal';
-import SettingModal from '../components/SettingsModal';
+import AddExpenseModal from '../components/AddExpenseModal';
 import { postExpenseToApi, fetchUserCategories, postEditExpenseToApi,fetchExpensesList, deleteExpense} from '../utils/apiFetch';
 import { Dialog, ListItem, Button, Icon as MaterialIcon } from '@rneui/themed';
 import { AuthContext } from '../context/AuthContext';
 import FilterModal from '../components/FilterModal';
-import EditModal from '../components/EditModal';
-import NewEditModal from '../components/NewEditModal';
+import EditExpenseModal from '../components/EditExpenseModal';
 import {LinearGradient} from 'react-native-linear-gradient';
 
 
@@ -40,7 +36,6 @@ const iconFactory = (id) => {
 
 const TableScreen = () => {
   const [isModalVisible, setModalVisible] = React.useState(false);
-  const [isModalSettingVisible, setModalSettingVisible] = React.useState(false);
   const [isFilterModalVisible, setFilterModalVisible] = React.useState(false);
   const [isEditModalVisible, setEditModalVisible] = React.useState(false);
   const [expenses, setExpenses] = React.useState([]);
@@ -57,10 +52,6 @@ const TableScreen = () => {
 
   const toggleFilterModal = () => {
     setFilterModalVisible(!isFilterModalVisible);
-  };
-
-  const toggleSettingModal = () => {
-    setModalSettingVisible(!isModalSettingVisible);
   };
 
 
@@ -217,11 +208,9 @@ const TableScreen = () => {
             ))}
         </ScrollView>
       </View>
-      <ExpenseModal isVisible={isModalVisible} onClose={toggleModal} onSave={handleSaveExpense} />
-      <SettingModal isVisible={isModalSettingVisible} onSettingClose={toggleSettingModal} navigation={navigation} /> 
+      <AddExpenseModal isVisible={isModalVisible} onClose={toggleModal} onSave={handleSaveExpense} />
       <FilterModal visible={isFilterModalVisible} data={categories} onDone={handleFilterModalSubmit} onCancel={toggleFilterModal} />
-      {/* <EditModal isVisible={isEditModalVisible} onClose={() => setEditModalVisible(false)} onSave={handleSaveEditExpense} /> */}
-      <NewEditModal isVisible={isEditModalVisible} onClose={() => setEditModalVisible(false)} onSave={handleSaveEditExpense} selectedExpense={selectedExpense}/>
+      <EditExpenseModal isVisible={isEditModalVisible} onClose={() => setEditModalVisible(false)} onSave={handleSaveEditExpense} selectedExpense={selectedExpense}/>
     </LinearGradient>
   );
 };

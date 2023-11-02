@@ -17,7 +17,7 @@ import SplashScreen from './screens/SplashScreen';
 import CustomDrawer from './components/CustomDrawer';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import RegisterScreen from './screens/RegisterScreen';
-import LoginScreen from './screens/NewLoginScreen';
+import LoginScreen from './screens/LoginScreen';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();

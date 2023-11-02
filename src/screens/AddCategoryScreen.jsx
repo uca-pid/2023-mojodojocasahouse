@@ -100,9 +100,6 @@ const AddCategoryScreen = ({ navigation, route }) => {
           <Dialog.Loading />
         </Dialog>
 
-        {/* <LoadingOverlay 
-          shown={loading}
-        /> */}
         <View style={styles.logoContainer}>
           <Image style={styles.logo} source={require('./../../img/logo.png')} />
         </View>

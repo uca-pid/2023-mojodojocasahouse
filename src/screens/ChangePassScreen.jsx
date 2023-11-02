@@ -128,16 +128,6 @@ const styles = StyleSheet.create({
   
   // Logo Container
 
-  headerContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-
-    height: 80,
-    width: '100%',
-
-    justifyContent: 'space-around',
-    alignItems: 'center'
-  },
 
   logoContainer: {
     display: 'flex',
@@ -148,20 +138,6 @@ const styles = StyleSheet.create({
 
     justifyContent: 'center',
     alignItems: 'center',
-  },
-
-  logo: {
-    width: '100%',
-    aspectRatio: 2,
-    resizeMode: 'contain',
-  },
-
-  bottomContainer: {
-    height: '4.5%',
-    width: '100%',
-    marginTop: '4%',
-    backgroundColor: '#433FF4',
-    marginBottom: '10%',
   },
 
   container: {
@@ -178,12 +154,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white', // Background color
   },
   
-
-  textStyle: {
-    marginLeft: '5%',
-    color: 'black',
-    marginBottom: '2%',
-  },
 
   textTitleContainer: {
     marginBottom: '5%',

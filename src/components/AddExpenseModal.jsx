@@ -31,7 +31,7 @@ const getIcon = (category) => {
   }
 };
 
-const ExpenseModal = ({ isVisible, onClose, onSave }) => {
+const AddExpenseModal = ({ isVisible, onClose, onSave }) => {
   const [concept, setConcept] = useState('');
   const [amount, setAmount] = useState('');
   const [date, setDate] = useState(new Date());
@@ -246,102 +246,10 @@ const styles = StyleSheet.create({
     padding: 20,
   },
 
-  categoryModal: {
-    display: 'flex',
-    flexDirection: 'column',
-    marginTop: '50%',
-    marginLeft: '10%',
-    marginRight: '10%',
-    backgroundColor: '#ADC4C0',
-    borderRadius: 10,
-    padding: 20,
-
-  },
-
-  categoryListItem: {
-    marginTop: '2%',
-    color: 'black',
-  },
-  
-  categoryCancelButton: {
-    alignSelf: 'center',
-  },
-
   modalTitle: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
-  },
-
-  validatedTextInput: {
-    container: {
-      marginTop: 10,
-    },
-    input: {
-
-    },
-    helperText: {
-
-    }
-  },
-  
-  rnPickerSelect: {
-    inputIOS: {
-      display: 'flex',
-      flexDirection: 'row',
-
-      // width: '100%',
-      height: '100%',
-      backgroundColor: '#a0d406',
-
-      color: 'black',
-      fontSize: 14,
-      fontWeight: 'bold',
-
-    },
-    placeholder: {
-      color: 'black',
-      fontSize: 14,
-      fontWeight: 'bold',
-    },
-    inputAndroid: {
-      display: 'flex',
-      flexDirection: 'row',
-
-      // width: '100%',
-      height: '100%',
-      backgroundColor: '#a0d406',
-
-      color: 'black',
-      fontSize: 14,
-      fontWeight: 'bold',
-    },
-    viewContainer: {
-      display: 'flex',
-      flexDirection: 'row',
-
-      height: 50,
-      width: '100%',
-      marginTop: 40,
-      marginBottom: 40,
-      backgroundColor: '#a0d406',
-
-      justifyContent: 'center',
-      alignItems: 'stretch',
-      borderRadius: 5,
-    }
-  },
-
-  dateButton: {
-    backgroundColor: '#eddeed',
-    height: 50,
-  },  
-
-  input: {
-    backgroundColor: 'white',
-    borderRadius: 5,
-    marginBottom: 10,
-
   },
   saveButton: {
     backgroundColor: '#E86DC3',
@@ -370,4 +278,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ExpenseModal;
+export default AddExpenseModal;
