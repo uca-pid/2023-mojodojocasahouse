@@ -5,6 +5,7 @@ import { postChangePassToApi } from '../utils/apiFetch';
 import { LinearGradient } from 'react-native-linear-gradient';
 import { AppInput } from '../components/AppInput';
 import ScreenTemplate from '../components/ScreenTemplate';
+import CustomButton from '../components/CustomButton';
 
 
 const ChangePassScreen = ({ navigation, route }) => { // Add navigation prop
@@ -84,9 +85,7 @@ const ChangePassScreen = ({ navigation, route }) => { // Add navigation prop
             errorMessage={repeatPasswordError? "Passwords do not match." : null}
           />
 
-          <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-            <Text style={styles.buttonText}>Change Password</Text>
-          </TouchableOpacity>
+          <CustomButton onPress={handleSubmit} label="Change Password" />
 
           <TouchableOpacity onPress={navigateToHomeScreen}>
             <Text style={{ textAlign: 'center' }}>I don't want to change my password. Send me back.</Text>
@@ -98,23 +97,6 @@ const ChangePassScreen = ({ navigation, route }) => { // Add navigation prop
 };
 
 const styles = StyleSheet.create({
-
-  button: {
-    backgroundColor: '#E86DC3',
-    borderRadius: 10,
-    padding: 10,
-    alignItems: 'center',
-    margin: 10,
-    marginLeft: '10%',
-    marginHorizontal: '10%',
-  },
-
-  buttonText: {
-    color: 'black',
-    fontSize: 16,
-    fontWeight: 'bold',
-    
-  },
   
   // Logo Container
 
