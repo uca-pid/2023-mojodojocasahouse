@@ -18,6 +18,8 @@ import CustomDrawer from './components/CustomDrawer';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import RegisterScreen from './screens/RegisterScreen';
 import LoginScreen from './screens/LoginScreen';
+import BudgetsScreen from './screens/BudgetsScreen';
+import BudgetStack from './navigation/BudgetStack';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -207,6 +209,16 @@ const App = () => {
                 title: "My expenses",
                 drawerIcon: ({color}) => (
                   <Ionicons name="home-outline" size={22} color={color} />
+                ),
+              }}
+            />
+            <Drawer.Screen 
+              name="Budgets"
+              component={BudgetStack}
+              options={{
+                title: "Budgets",
+                drawerIcon: ({color}) => (
+                  <Ionicons name="airplane" size={22} color={color} />
                 ),
               }}
             />
