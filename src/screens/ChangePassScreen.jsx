@@ -1,8 +1,7 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image, ScrollView, Alert, StyleSheet } from 'react-native';
-import { Dialog } from '@rneui/themed';
+import { View, Text, TouchableOpacity, ScrollView, Alert, StyleSheet } from 'react-native';
+
 import { postChangePassToApi } from '../utils/apiFetch';
-import { LinearGradient } from 'react-native-linear-gradient';
 import { AppInput } from '../components/AppInput';
 import ScreenTemplate from '../components/ScreenTemplate';
 import CustomButton from '../components/CustomButton';
