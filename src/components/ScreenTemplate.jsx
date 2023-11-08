@@ -1,16 +1,18 @@
 import React from 'react';
-import { View, Image } from 'react-native';
+import { View, Image, TouchableOpacity } from 'react-native';
+import { useNavigation, DrawerActions  } from '@react-navigation/native';
 import { Dialog } from '@rneui/themed';
 import LinearGradient from 'react-native-linear-gradient';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const ScreenTemplate = (props) => {
-
   return (
     <LinearGradient colors={['#E86DC3', 'white']} style={{
       backgroundColor: 'white',
       height: '100%',
     }}>
-      <View style={{margin: "2%",
+      <View style={{
+        margin: "2%",
         marginTop: "6%",
         borderRadius: 14,
         backgroundColor: 'white', // Background color
@@ -18,17 +20,19 @@ const ScreenTemplate = (props) => {
         width: '96%',
       }}>
         <Dialog isVisible={props.loading || false}>
-          <Dialog.Loading/>
+          <Dialog.Loading />
         </Dialog>
-
         {props.children}
-
       </View>
     </LinearGradient>
   );
 };
 
 const ExtraLogo = (props) => {
+  const navigation = useNavigation();
+  const openDrawer = () => {
+    navigation.dispatch(DrawerActions.toggleDrawer());
+  };
 
   return (
     <View style={{
@@ -36,7 +40,7 @@ const ExtraLogo = (props) => {
       height: 80,
       width: '100%',
       justifyContent: 'space-around',
-      alignItems: 'center'
+      alignItems: 'center',
     }}>
       <View style={{
         flexDirection: 'row',
@@ -45,28 +49,32 @@ const ExtraLogo = (props) => {
         justifyContent: 'center',
         alignItems: 'center',
       }}>
-        <Image 
+        <Image
           style={{
-              width: '100%',
-              aspectRatio: 2,
-              resizeMode: 'contain',
+            width: '100%',
+            aspectRatio: 2,
+            resizeMode: 'contain',
           }}
-          source={require('./../../img/logo.png')} 
+          source={require('./../../img/logo.png')}
         />
-      </View>
+        <View style={{ position: 'absolute', left: -45, top: 10 }}>
+          <TouchableOpacity onPress={openDrawer} style={{ padding: 10 }}>
+            <Ionicons name="menu-outline" size={35} color={'black'} />
+          </TouchableOpacity>
+        </View>
+          </View>
+    
     </View>
   );
 };
 
 const Content = (props) => {
-
   return (
     <View style={props.style}>
       {props.children}
     </View>
   );
 };
-
 ScreenTemplate.Logo = ExtraLogo;
 ScreenTemplate.Content = Content;
 
