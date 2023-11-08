@@ -122,7 +122,7 @@ const GraphScreen = () => {
       <ScreenTemplate.Content>
         <View style={styles.addExpenseButtonContainer}>
         <TouchableOpacity style={styles.button} onPress={toggleFilterModal}>
-            <Text style={styles.buttonText}>Use a Filter</Text>
+            <Text style={styles.buttonText}>Choose Categories and Date Range</Text>
           </TouchableOpacity>
         </View>
 
@@ -157,7 +157,7 @@ const GraphScreen = () => {
 const styles = StyleSheet.create({
 
   addExpenseButtonContainer: {
-    height: '5%',
+    height: '12%',
     width: '80%',
     marginLeft: '10%',
     marginTop: '1%',

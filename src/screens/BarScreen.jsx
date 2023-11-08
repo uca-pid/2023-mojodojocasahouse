@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, Alert, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, Alert, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { BarChart } from "react-native-chart-kit";
 import { fetchUserCategories, fetchExpensesList } from '../utils/apiFetch';
@@ -12,6 +12,8 @@ const BarScreen = () => {
   const [expenses, setExpenses] = React.useState([]);
   const [categories, setCategories] = React.useState([]);
   const [isFilterModalVisible, setFilterModalVisible] = React.useState(false);
+  const [selectedCategories, setSelectedCategories] = React.useState([]); // Updated
+  const [selectedDateRange, setSelectedDateRange] = React.useState({ from: null, until: null }); // Updated
   const { signOut, sessionExpired } = React.useContext(AuthContext);
 
   const handleFocusScreen = async () => {
@@ -48,7 +50,14 @@ const BarScreen = () => {
       if (!yearlyExpenses[expenseYear]) {
         yearlyExpenses[expenseYear] = 0;
       }
-      yearlyExpenses[expenseYear] += expense.amount;
+      if (selectedCategories.length === 0 || selectedCategories.includes(expense.category)) { // Check if the expense category is selected
+        if (
+          (!selectedDateRange.from || new Date(expense.date) >= selectedDateRange.from) &&
+          (!selectedDateRange.until || new Date(expense.date) <= selectedDateRange.until)
+        ) { // Check if the expense date is within the selected range
+          yearlyExpenses[expenseYear] += expense.amount;
+        }
+      }
     });
     return yearlyExpenses;
   };
@@ -69,15 +78,29 @@ const BarScreen = () => {
 
   const yearlyExpenses = calculateYearlyExpenses();
 
+  // Function to handle filter modal submission
+  const handleFilterModalSubmit = (data) => {
+    setSelectedCategories(data.categories);
+    setSelectedDateRange({ from: data.from, until: data.until });
+    setFilterModalVisible(false);
+  };
+
+  // Function to toggle filter modal visibility
+  const toggleFilterModal = () => {
+    setFilterModalVisible(!isFilterModalVisible);
+  };
+
+
   return (
     <ScreenTemplate loading={loading}>
       <ScreenTemplate.Logo/>
 
       <ScreenTemplate.Content>
-        <View style={styles.addExpenseButtonContainer}> 
-          <Text style={styles.titulo}>Gastos totales por año</Text>
+      <View style={styles.addExpenseButtonContainer}>
+        <TouchableOpacity style={styles.button} onPress={toggleFilterModal}>
+            <Text style={styles.titulo}>Choose Categories and Date Range</Text>
+        </TouchableOpacity>
         </View>
-
         <ScrollView contentContainerStyle={styles.scrollviewContentContainer} horizontal={true}>
           <View style={{ paddingLeft: '5%', paddingBottom: '7%', paddingTop: '16%' }}>
             {Object.keys(yearlyExpenses).length ? (
@@ -93,6 +116,7 @@ const BarScreen = () => {
                 accessor="population"
                 verticalLabelRotation={30}
                 absolute
+                fromZero={true}
               />
             ) : (
               <Text>No expenses data available.</Text>
@@ -100,6 +124,7 @@ const BarScreen = () => {
           </View>
         </ScrollView>
       </ScreenTemplate.Content>
+      <FilterModal visible={isFilterModalVisible} data={categories} onDone={handleFilterModalSubmit} onCancel={toggleFilterModal} />
     </ScreenTemplate>
   );
 };
@@ -107,7 +132,7 @@ const BarScreen = () => {
 const styles = StyleSheet.create({
 
   addExpenseButtonContainer: {
-    height: '5%',
+    height: '9%',
     width: '80%',
     marginLeft: '10%',
     marginTop: '1%',
@@ -125,9 +150,10 @@ const styles = StyleSheet.create({
 
   titulo:{
     textAlign: 'center',
-    marginTop: 5,
-    fontSize: 18,
+    marginTop: 7,
+    fontSize: 16,
     fontFamily: 'sans-serif-medium',
+    color: 'white',
   }
 
 });
