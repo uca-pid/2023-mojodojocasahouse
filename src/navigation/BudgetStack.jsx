@@ -4,7 +4,6 @@ import BudgetsScreen from '../screens/BudgetsScreen';
 import AddBudgetScreen from '../screens/AddBudgetScreen';
 import BudgetInfoScreen from '../screens/BudgetInfoScreen';
 import CategorySelectionScreen from '../screens/CategorySelectionScreen';
-import AddCategoryScreen from '../screens/AddCategoryScreen';
 
 const Stack = createStackNavigator();
 
