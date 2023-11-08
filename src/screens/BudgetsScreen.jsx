@@ -1,12 +1,12 @@
 import React from "react";
 import ScreenTemplate from "../components/ScreenTemplate";
 import { Icon, ListItem } from "@rneui/themed";
-import { ScrollView, View, Text } from "react-native";
+import { ScrollView, View, Text, TouchableOpacity } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 
 const example_budgets = [
-  {name: "Reforms", categoryIcon: "key", categoryName: "Housing", id: 0},
-  {name: "Streaming Cutbacks", categoryIcon: "clapperboard", categoryName: "Entertainment", id: 1}
+  {name: "Reforms", categoryIcon: "key", categoryName: "Housing", id: 1},
+  {name: "Streaming Cutbacks", categoryIcon: "clapperboard", categoryName: "Entertainment", id: 2}
 ];
 
 const BudgetsScreen = ({navigation, route}) => {
@@ -19,12 +19,18 @@ const BudgetsScreen = ({navigation, route}) => {
     setLoading(false);
   };
 
-  const handleBudgetSelection = (budgetId) => {
-    navigation.navigate("budget-add", { budgetId });
+  const handleBudgetSelection = (budget) => {
+    navigation.navigate("budget-info", {
+      selectedBudget: budget
+    });
   };
 
   const handleAddBudget = () => {
-    navigation.navigate("budget-add");
+    navigation.navigate("budget-add/categories-list");
+  };
+
+  const handleBack = async () => {
+    navigation.goBack();
   };
 
   React.useEffect(() => {
@@ -66,7 +72,7 @@ const BudgetsScreen = ({navigation, route}) => {
         </ListItem>
 
         {userBudgets.map((budget, index) => (
-          <ListItem key={index} bottomDivider onPress={() => handleBudgetSelection(budget.id)}>
+          <ListItem key={index} bottomDivider onPress={() => handleBudgetSelection(budget)}>
             <Icon name={budget.categoryIcon} type="entypo"/>
             <ListItem.Content>
               <ListItem.Title>{budget.name}</ListItem.Title>
@@ -75,6 +81,20 @@ const BudgetsScreen = ({navigation, route}) => {
             <ListItem.Chevron />
           </ListItem>
         ))}
+
+        <TouchableOpacity style={{
+          backgroundColor: 'grey',
+          borderRadius: 5,
+          padding: 10,
+          alignItems: 'center',
+          marginTop: 20,
+        }} onPress={handleBack}>
+          <Text style={{
+            color: 'white',
+            fontSize: 16,
+            fontWeight: 'bold',
+          }}>Back</Text>
+        </TouchableOpacity>
         
       </ScrollView>
 

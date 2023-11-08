@@ -276,4 +276,40 @@ const CategoryInput = props => {
 };
 AppInput.Category = CategoryInput;
 
+const BudgetNameInput = props => {
+  return(
+    <Input 
+      value={props.value}
+      onChangeText={props.onChangeText}
+      placeholder={props.placeholder || 'Budget name'}
+      containerStyle={{
+        width: '100%',
+        paddingHorizontal: 0,
+      }}
+      inputContainerStyle={{
+        borderBottomColor: '#ccc',
+        borderBottomWidth: 1,
+        height: 35,
+      }}
+      inputStyle={{
+        fontSize: 15,
+      }}
+      leftIcon={
+        <MaterialIcons
+          name="category"
+          size={20}
+          color="#666"
+          style={{marginRight: 5}}
+        />
+      }
+      rightIcon={props.rightIcon}
+      placeholderTextColor={"#c4c4c4"}
+      errorMessage={props.errorMessage}
+      maxLength={49}
+      onEndEditing={props.onEndEditing}
+    />
+  );
+};
+AppInput.Budget = BudgetNameInput;
+
 export {AppInput};
