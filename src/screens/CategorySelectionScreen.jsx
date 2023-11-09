@@ -4,9 +4,31 @@ import { ListItem, Icon } from "@rneui/themed";
 // import LinearGradient from "react-native-linear-gradient";
 
 import ScreenTemplate from "../components/ScreenTemplate";
-import { fetchUserCategories } from "../utils/apiFetch";
+import { fetchUserCategoriesWithIcons } from "../utils/apiFetch";
 import { AuthContext } from "../context/AuthContext";
 
+const iconFactory = (id) => {
+  switch (id) {
+    case 1:
+      return "aircraft"
+    case 2:
+      return "drink"
+    case 3:
+      return "key"
+    case 4:
+      return "shopping-cart"
+    case 5:
+      return "clapperboard"
+    case 6:
+      return "squared-plus"
+    case 7:
+      return "man"
+    case 8:
+      return "open-book"
+    default:
+      return "credit"
+  }
+};
 
 const CategorySelectionScreen = ({navigation, route}) => {
   const [loading, setLoading] = React.useState(false);
@@ -15,7 +37,7 @@ const CategorySelectionScreen = ({navigation, route}) => {
 
   const handleFocusScreen = async () => {
     setLoading(true);
-    await fetchUserCategories(setUserCategories, sessionExpired);
+    await fetchUserCategoriesWithIcons(setUserCategories, sessionExpired);
     setLoading(false);
   };
 
@@ -25,9 +47,7 @@ const CategorySelectionScreen = ({navigation, route}) => {
 
   const handleCategorySelection = (category) => {
     navigation.navigate('budget-add', {
-      params: {
-        selectedCategory: category
-      } 
+      selectedCategory: category
     });
   };
 
@@ -75,9 +95,9 @@ const CategorySelectionScreen = ({navigation, route}) => {
 
         {userCategories.map((category, index) => (
           <ListItem key={index} bottomDivider onPress={() => handleCategorySelection(category)}>
-            {/* <Icon name={category.icon || "help"} type="entypo"/> */}
+            <Icon name={iconFactory(category.iconId)} type="entypo"/>
             <ListItem.Content>
-              <ListItem.Title>{category}</ListItem.Title>
+              <ListItem.Title>{category.category}</ListItem.Title>
             </ListItem.Content>
             <ListItem.Chevron />
           </ListItem>

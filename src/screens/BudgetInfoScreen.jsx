@@ -6,30 +6,37 @@ import { ListItem, Icon } from "@rneui/themed";
 import { ProgressChart } from "react-native-chart-kit";
 import { ScrollView } from "react-native";
 
-const BudgetInfoScreen = ({navigation, route}) => {
-  const [loading, setLoading] = React.useState(false);
-  const [budgetInfo, setBudgetInfo] = React.useState(route.params.selectedBudget);
+const iconFactory = (id) => {
+  switch (id) {
+    case 1:
+      return "aircraft"
+    case 2:
+      return "drink"
+    case 3:
+      return "key"
+    case 4:
+      return "shopping-cart"
+    case 5:
+      return "clapperboard"
+    case 6:
+      return "squared-plus"
+    case 7:
+      return "man"
+    case 8:
+      return "open-book"
+    default:
+      return "credit"
+  }
+};
 
-  const handleFocusScreen = async () => {
-    setLoading(true);
-    // await fetchBudgetInfo(route.params.selectedBudget.id, setBudgetInfo);
-    setLoading(false);
-  };
+const BudgetInfoScreen = ({navigation, route}) => {
 
   const handleBack = async () => {
     navigation.goBack();
   };
 
-  React.useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      handleFocusScreen();
-    });
-
-    return unsubscribe;
-  }, [navigation]);
-
   return (
-    <ScreenTemplate loading={loading}>
+    <ScreenTemplate >
 
       <ScreenTemplate.Content style={{paddingHorizontal: 15}}>
         <ScrollView>
@@ -40,13 +47,13 @@ const BudgetInfoScreen = ({navigation, route}) => {
           color: '#333',
           marginBottom: 30,
           marginTop: 30,
-          }}>{budgetInfo.name}</Text>
+          }}>{route.params.selectedBudget.name}</Text>
 
           <Text>Category</Text>
           <ListItem>
-              <Icon name={budgetInfo.categoryIcon} type="entypo" />
+              <Icon name={iconFactory(route.params.selectedBudget.iconId)} type="entypo" />
               <ListItem.Content>
-                  <ListItem.Title>{budgetInfo.categoryName}</ListItem.Title>
+                  <ListItem.Title>{route.params.selectedBudget.category}</ListItem.Title>
               </ListItem.Content>
           </ListItem>
 
@@ -54,7 +61,7 @@ const BudgetInfoScreen = ({navigation, route}) => {
           <ListItem>
               <Icon name="arrow-expand-right" type="material-community" />
               <ListItem.Content>
-                  <ListItem.Title>{budgetInfo.categoryName}</ListItem.Title>
+                  <ListItem.Title>{route.params.selectedBudget.creationDate}</ListItem.Title>
               </ListItem.Content>
           </ListItem>
 
@@ -62,7 +69,7 @@ const BudgetInfoScreen = ({navigation, route}) => {
           <ListItem>
               <Icon name="arrow-expand-left" type="material-community" />
               <ListItem.Content>
-                  <ListItem.Title>{budgetInfo.categoryName}</ListItem.Title>
+                  <ListItem.Title>{route.params.selectedBudget.limitDate}</ListItem.Title>
               </ListItem.Content>
           </ListItem>
 
@@ -70,7 +77,7 @@ const BudgetInfoScreen = ({navigation, route}) => {
           <ListItem>
               <Icon name="credit" type="entypo" />
               <ListItem.Content>
-                  <ListItem.Title>{budgetInfo.categoryName}</ListItem.Title>
+                  <ListItem.Title>{route.params.selectedBudget.limitAmount}</ListItem.Title>
               </ListItem.Content>
           </ListItem>
 
@@ -78,14 +85,14 @@ const BudgetInfoScreen = ({navigation, route}) => {
           <ListItem>
             <Icon name="credit" type="entypo" />
             <ListItem.Content>
-              <ListItem.Title>{budgetInfo.categoryName}</ListItem.Title>
+              <ListItem.Title>{route.params.selectedBudget.currentAmount}</ListItem.Title>
             </ListItem.Content>
           </ListItem>
 
           <ProgressChart 
             data={{
               labels: ["Spent"], // optional
-              data: [0.7]
+              data: [parseFloat(route.params.selectedBudget.currentAmount) / parseFloat(route.params.selectedBudget.limitAmount)]
             }}
             width={330}
             height={150}

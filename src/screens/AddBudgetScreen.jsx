@@ -5,6 +5,30 @@ import DatePicker from 'react-native-date-picker';
 
 import ScreenTemplate from '../components/ScreenTemplate';
 import { AppInput } from '../components/AppInput';
+import { postBudgetToApi } from '../utils/apiFetch';
+
+const iconFactory = (id) => {
+  switch (id) {
+    case 1:
+      return "aircraft"
+    case 2:
+      return "drink"
+    case 3:
+      return "key"
+    case 4:
+      return "shopping-cart"
+    case 5:
+      return "clapperboard"
+    case 6:
+      return "squared-plus"
+    case 7:
+      return "man"
+    case 8:
+      return "open-book"
+    default:
+      return "credit"
+  }
+};
 
 const AddBudgetScreen = ({navigation, route}) => {
   const [loading, setLoading] = React.useState(false);
@@ -24,14 +48,10 @@ const AddBudgetScreen = ({navigation, route}) => {
     }
 
     setLoading(true);
-    // await postBudgetToApi({
-    //   name, amount, ...(route.params.selectedCategory), startDate, endDate
-    // });
+    await postBudgetToApi({
+      name, limitAmount: amount, ...(route.params.selectedCategory), startingDate: startDate, limitDate: endDate
+    });
     setLoading(false);
-
-    Alert.alert("Success", "Budget created successfully!", [
-      {text: 'OK', onPress: () => {navigation.navigate("budget-list"); navigation.navigate("Table")}}
-    ]);
   };
 
   const handleBack = async () => {
@@ -72,9 +92,9 @@ const AddBudgetScreen = ({navigation, route}) => {
 
         <Text>Category</Text>
         <ListItem containerStyle={{marginBottom: 20}}>
-          <Icon name="help" type="entypo" />
+          <Icon name={iconFactory(route.params.selectedCategory.iconId)} type="entypo" />
           <ListItem.Content>
-            <ListItem.Title>Category Name</ListItem.Title>
+            <ListItem.Title>{route.params.selectedCategory.category}</ListItem.Title>
           </ListItem.Content>
         </ListItem>
         
