@@ -119,6 +119,39 @@ const fetchUserCategories = async (setCategories, sessionExpiredCallback) => {
   Alert.alert("API Error", responseBody.message);
 };
 
+const fetchUserCategoriesWithIcons = async (setCategories, sessionExpiredCallback) => {
+  let response = await fetchWithTimeout(API_URL + "/getAllCategoriesWithIcons", {
+    method: "GET",
+    credentials: "include",
+  });
+  let responseBody = await response.json();
+
+  // OK
+  if(response.ok){
+    setCategories(responseBody);
+    return;
+  }
+  
+  // UNAUTHORIZED
+  if(response.status == 401){
+    Alert.alert(
+      "Session Expired", 
+      "Please log in again to continue",
+      [{text: 'OK', onPress: sessionExpiredCallback}]
+    );
+    return;
+  }
+
+  // INTERNAL ERROR
+  if(response.status >= 500){
+    Alert.alert("Server Error", "Oops! An unknown error happened");
+    return;
+  }
+
+  // OTHER ERROR
+  Alert.alert("API Error", responseBody.message);
+};
+
 
 const fetchExpensesList = async (setExpenses, sessionExpiredCallback, request = {}) => {
   try{
@@ -221,6 +254,7 @@ const doSignIn = async (request) => {
   } catch (error) {
     console.log(error);
     Alert.alert("Connection Error", "There was an error connecting to API");
+    return {status: "5xx", credentials: null}
   }
 };
 
@@ -481,10 +515,130 @@ const postEditExpenseToApi = async (request) => {
   }
 };
 
+const fetchBudgetInfo = async (budgetId, setBudgetInfo) => {
+  try {
+    let response = await fetchWithTimeout(API_URL + "/budget/" + budgetId, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        Accept: 'application/json'
+      },
+    });
+    let responseBody = await response.json();
+
+    // OK
+    if(response.ok){
+      setBudgetInfo(responseBody);
+      return;
+    }
+
+    // INTERNAL ERROR
+    if(response.status >= 500){
+      Alert.alert("Server Error", "Oops! An unknown error happened");
+      return;
+    }
+
+    // OTHER ERROR
+    Alert.alert("API Error", responseBody.message);
+
+  } catch (error) {
+    console.log("fetchBudgetInfo");
+    console.log(error);
+    Alert.alert(
+      "Connection Error", 
+      "There was an error connecting to API"
+    );
+  }
+
+};
+
+const fetchUserBudgets = async (setUserBudgets) => {
+  try {
+    let response = await fetchWithTimeout(API_URL + "/allBudgets", {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        Accept: 'application/json'
+      },
+    });
+    let responseBody = await response.json();
+
+    // OK
+    if(response.ok){
+      setUserBudgets(responseBody);
+      return;
+    }
+
+    // INTERNAL ERROR
+    if(response.status >= 500){
+      Alert.alert("Server Error", "Oops! An unknown error happened");
+      return;
+    }
+
+    // OTHER ERROR
+    Alert.alert("API Error", responseBody.message);
+
+  } catch (error) {
+    console.log("fetchUserBudgets");
+    console.log(error);
+    Alert.alert(
+      "Connection Error", 
+      "There was an error connecting to API"
+    );
+  }
+
+};
+
+const postBudgetToApi = async (request) => {
+  try {
+    let response = await fetchWithTimeout(API_URL + "/addBudget", {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type':'application/json',
+      },
+      body: JSON.stringify(request)
+    });
+    let responseBody = await response.json();
+
+    // OK
+    if(response.ok){
+      Alert.alert(
+        "Success", 
+        "Budget was created successfully", 
+      );
+      return;
+    }
+
+    // INTERNAL ERROR
+    if(response.status >= 500){
+      Alert.alert("Server Error", "Oops! An unknown error happened");
+      return;
+    }
+
+    // OTHER ERROR
+    Alert.alert("API Error", responseBody.message);
+
+  } catch (error) {
+    console.log("postBudgetToApi");
+    console.log(error);
+    Alert.alert(
+      "Connection Error", 
+      "There was an error connecting to API"
+    );
+  }
+};
+
+
 export {
+  postBudgetToApi,
+  fetchBudgetInfo,
+  fetchUserBudgets,
   postExpenseToApi, 
   fetchWithTimeout,
   fetchUserCategories, 
+  fetchUserCategoriesWithIcons,
   postEditExpenseToApi,
   deleteExpense,
   fetchExpensesList,
