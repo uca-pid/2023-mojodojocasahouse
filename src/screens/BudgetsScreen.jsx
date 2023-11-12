@@ -62,6 +62,8 @@ const BudgetsScreen = ({navigation, route}) => {
 
   return(
     <ScreenTemplate loading={loading}>
+      <ScreenTemplate.Logo />
+
       <ScrollView style={{padding: 15}}>
 
         <Text style={{
