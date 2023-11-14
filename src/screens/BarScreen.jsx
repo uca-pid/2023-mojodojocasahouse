@@ -1,7 +1,9 @@
 import React from 'react';
 import { View, Text, ScrollView, Alert, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { BarChart } from "react-native-chart-kit";
+import { FlatList } from 'react-native-gesture-handler';
+import { BarChart } from 'react-native-chart-kit';
+import { ListItem } from 'react-native-elements'; // Import ListItem
 import { fetchUserCategories, fetchExpensesList } from '../utils/apiFetch';
 import { AuthContext } from '../context/AuthContext';
 import FilterModal from '../components/FilterModal';
@@ -90,34 +92,54 @@ const BarScreen = () => {
     setFilterModalVisible(!isFilterModalVisible);
   };
 
+  const ListItemComponent = ({ year, value }) => (
+    <ListItem key={year} bottomDivider>
+      <ListItem.Content style={styles.listItemContent}>
+        
+        <ListItem.Title style={styles.listItemTitle}>{year}</ListItem.Title>
+        <ListItem.Subtitle  style={{ color: 'gray', marginLeft: 10 }} >${value}</ListItem.Subtitle>
+      </ListItem.Content>
+    </ListItem>
+  );
 
+
+  
   return (
     <ScreenTemplate loading={loading}>
-      <ScreenTemplate.Logo/>
+      <ScreenTemplate.Logo />
 
       <ScreenTemplate.Content>
-      <View style={styles.addExpenseButtonContainer}>
-        <TouchableOpacity style={styles.button} onPress={toggleFilterModal}>
+        <View style={styles.addExpenseButtonContainer}>
+          <TouchableOpacity style={styles.button} onPress={toggleFilterModal}>
             <Text style={styles.titulo}>Choose Categories and Date Range</Text>
-        </TouchableOpacity>
+          </TouchableOpacity>
         </View>
         <ScrollView contentContainerStyle={styles.scrollviewContentContainer} horizontal={true}>
-          <View style={{ paddingLeft: '5%', paddingBottom: '7%', paddingTop: '16%' }}>
+          <View style={{ paddingLeft: '5%', paddingBottom: '8%', paddingTop: '16%' }}>
             {Object.keys(yearlyExpenses).length ? (
-              <BarChart
-                data={{
-                  labels: Object.keys(yearlyExpenses).map(String),
-                  datasets: [{ data: Object.values(yearlyExpenses) }],
-                }}
-                width={340}
-                height={230}
-                yAxisLabel="$"
-                chartConfig={chartConfig2}
-                accessor="population"
-                verticalLabelRotation={30}
-                absolute
-                fromZero={true}
-              />
+              <>
+                <BarChart
+                  data={{
+                    labels: Object.keys(yearlyExpenses).map(String),
+                    datasets: [{ data: Object.values(yearlyExpenses) }],
+                  }}
+                  width={340}
+                  height={230}
+                  yAxisLabel="$"
+                  chartConfig={chartConfig2}
+                  accessor="population"
+                  verticalLabelRotation={10}
+                  absolute
+                  fromZero={true}
+                />
+                <FlatList
+                  data={Object.entries(yearlyExpenses)}
+                  keyExtractor={(item) => item[0]}
+                  renderItem={({ item }) => (
+                    <ListItemComponent year={item[0]} value={item[1]} />
+                  )}
+                />
+              </>
             ) : (
               <Text>No expenses data available.</Text>
             )}
@@ -154,7 +176,25 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'sans-serif-medium',
     color: 'white',
-  }
+  },
+
+  listItemContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 10,
+    color: 'black',
+    position: 'absolute'
+  },
+  listItemTextContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    color: 'black',
+  },
+  listItemTitle: {
+    marginLeft: 10,
+    color: '#A24875',
+
+  },
 
 });
 
