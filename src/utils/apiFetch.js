@@ -81,6 +81,7 @@ const doLogout = async () => {
     return "2xx";
 
   } catch (error) {
+    console.log("doLogout");
     console.log(error);
     Alert.alert("Connection Error", "There was an error connecting to API");
   }
@@ -88,6 +89,39 @@ const doLogout = async () => {
 
 const fetchUserCategories = async (setCategories, sessionExpiredCallback) => {
   let response = await fetchWithTimeout(API_URL + "/getAllCategories", {
+    method: "GET",
+    credentials: "include",
+  });
+  let responseBody = await response.json();
+
+  // OK
+  if(response.ok){
+    setCategories(responseBody);
+    return;
+  }
+  
+  // UNAUTHORIZED
+  if(response.status == 401){
+    Alert.alert(
+      "Session Expired", 
+      "Please log in again to continue",
+      [{text: 'OK', onPress: sessionExpiredCallback}]
+    );
+    return;
+  }
+
+  // INTERNAL ERROR
+  if(response.status >= 500){
+    Alert.alert("Server Error", "Oops! An unknown error happened");
+    return;
+  }
+
+  // OTHER ERROR
+  Alert.alert("API Error", responseBody.message);
+};
+
+const fetchUserCategoriesWithIcons = async (setCategories, sessionExpiredCallback) => {
+  let response = await fetchWithTimeout(API_URL + "/getAllCategoriesWithIcons", {
     method: "GET",
     credentials: "include",
   });
@@ -157,8 +191,8 @@ const fetchExpensesList = async (setExpenses, sessionExpiredCallback, request = 
     Alert.alert("API Error", responseBody.message);
 
   } catch(error){
-    console.log(error);
     console.log("fetchExpensesList");
+    console.log(error);
     Alert.alert("Connection Error", "There was an error connecting to API");
   }
 };
@@ -186,7 +220,9 @@ const verifyCredentials = async () => {
     return "2xx";
 
   } catch (error) {
-    Alert.alert("Connection Error", "There was an error connecting to API");
+    console.log("verifyCredentials");
+    console.log(error);
+    return "5xx";
   }
 };
 
@@ -219,8 +255,10 @@ const doSignIn = async (request) => {
     return {status: "2xx", credentials: responseBody.response};
 
   } catch (error) {
+    console.log("doSignIn");
     console.log(error);
     Alert.alert("Connection Error", "There was an error connecting to API");
+    return {status: "5xx", credentials: null}
   }
 };
 
@@ -253,6 +291,7 @@ const deleteExpense = async (expenseId) => {
     );
 
   } catch (error){
+    console.log("deleteExpense");
     console.log(error);
     Alert.alert('Invalid Operation', 'Could not delete expense');
   }
@@ -301,6 +340,7 @@ const postForgottenPasswordFormToApi = async (formHasErrors, email, navigation) 
     );
 
   } catch (error) {
+    console.log("postForgottenPasswordFormToApi");
     console.log(error);
     Alert.alert(
       "Connection Error", 
@@ -347,6 +387,8 @@ const postResetPasswordFormToApi = async (formHasErrors, request, navigation) =>
     Alert.alert("API Error", responseBody.message);
 
   } catch (error) {
+    console.log("postResetPasswordFormToApi");
+    console.log(error);
     Alert.alert(
       "Connection Error", 
       "There was an error connecting to API"
@@ -386,6 +428,8 @@ const postRegistrationToApi = async (request, navigation) => {
     Alert.alert("API Error", responseBody.message);
 
   } catch (error) {
+    console.log("postRegistrationToApi");
+    console.log(error);
     Alert.alert(
       "Connection Error", 
       "There was an error connecting to API"
@@ -426,6 +470,8 @@ const postChangePassToApi = async (request, navigation) => {
     Alert.alert("API Error", responseBody.message);
 
   } catch (error) {
+    console.log("postChangePassToApi");
+    console.log(error);
     Alert.alert(
       "Connection Error", 
       "There was an error connecting to API"
@@ -481,10 +527,130 @@ const postEditExpenseToApi = async (request) => {
   }
 };
 
+const fetchBudgetInfo = async (budgetId, setBudgetInfo) => {
+  try {
+    let response = await fetchWithTimeout(API_URL + "/budget/" + budgetId, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        Accept: 'application/json'
+      },
+    });
+    let responseBody = await response.json();
+
+    // OK
+    if(response.ok){
+      setBudgetInfo(responseBody);
+      return;
+    }
+
+    // INTERNAL ERROR
+    if(response.status >= 500){
+      Alert.alert("Server Error", "Oops! An unknown error happened");
+      return;
+    }
+
+    // OTHER ERROR
+    Alert.alert("API Error", responseBody.message);
+
+  } catch (error) {
+    console.log("fetchBudgetInfo");
+    console.log(error);
+    Alert.alert(
+      "Connection Error", 
+      "There was an error connecting to API"
+    );
+  }
+
+};
+
+const fetchUserBudgets = async (setUserBudgets) => {
+  try {
+    let response = await fetchWithTimeout(API_URL + "/allBudgets", {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        Accept: 'application/json'
+      },
+    });
+    let responseBody = await response.json();
+
+    // OK
+    if(response.ok){
+      setUserBudgets(responseBody);
+      return;
+    }
+
+    // INTERNAL ERROR
+    if(response.status >= 500){
+      Alert.alert("Server Error", "Oops! An unknown error happened");
+      return;
+    }
+
+    // OTHER ERROR
+    Alert.alert("API Error", responseBody.message);
+
+  } catch (error) {
+    console.log("fetchUserBudgets");
+    console.log(error);
+    Alert.alert(
+      "Connection Error", 
+      "There was an error connecting to API"
+    );
+  }
+
+};
+
+const postBudgetToApi = async (request) => {
+  try {
+    let response = await fetchWithTimeout(API_URL + "/addBudget", {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type':'application/json',
+      },
+      body: JSON.stringify(request)
+    });
+    let responseBody = await response.json();
+
+    // OK
+    if(response.ok){
+      Alert.alert(
+        "Success", 
+        "Budget was created successfully", 
+      );
+      return;
+    }
+
+    // INTERNAL ERROR
+    if(response.status >= 500){
+      Alert.alert("Server Error", "Oops! An unknown error happened");
+      return;
+    }
+
+    // OTHER ERROR
+    Alert.alert("API Error", responseBody.message);
+
+  } catch (error) {
+    console.log("postBudgetToApi");
+    console.log(error);
+    Alert.alert(
+      "Connection Error", 
+      "There was an error connecting to API"
+    );
+  }
+};
+
+
 export {
+  postBudgetToApi,
+  fetchBudgetInfo,
+  fetchUserBudgets,
   postExpenseToApi, 
   fetchWithTimeout,
   fetchUserCategories, 
+  fetchUserCategoriesWithIcons,
   postEditExpenseToApi,
   deleteExpense,
   fetchExpensesList,
