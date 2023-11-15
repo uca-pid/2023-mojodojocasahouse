@@ -44,14 +44,17 @@ const CategorySelectionScreen = ({navigation, route}) => {
   const handleAddCategory = () => {
     const targetScreen = route.name.split("/")[0];
 
-    navigation.navigate(targetScreen + '/categories-add');
+    navigation.navigate(targetScreen + '/categories-add', {
+      selectedItem: route.params?.selectedItem
+    });
   };
 
   const handleCategorySelection = (category) => {
     const targetScreen = route.name.split("/")[0];
 
     navigation.navigate(targetScreen, {
-      selectedCategory: category
+      selectedCategory: category,
+      selectedItem: route.params?.selectedItem
     });
   };
 
@@ -98,7 +101,12 @@ const CategorySelectionScreen = ({navigation, route}) => {
         </ListItem>
 
         {userCategories.map((category, index) => (
-          <ListItem key={index} bottomDivider onPress={() => handleCategorySelection(category)}>
+          <ListItem 
+            containerStyle={route.params?.selectedCategory?.category == category.category ? {backgroundColor: '#caffc2'}: null} 
+            key={index} 
+            bottomDivider 
+            onPress={() => handleCategorySelection(category)}
+          >
             <Icon name={iconFactory(category.iconId)} type="entypo"/>
             <ListItem.Content>
               <ListItem.Title>{category.category}</ListItem.Title>

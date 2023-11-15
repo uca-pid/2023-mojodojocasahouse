@@ -84,6 +84,14 @@ const AddExpenseScreen = ({navigation, route}) => {
     return !isValid;
   };
 
+  const handleFocus = async () => {
+    
+  };
+
+  React.useEffect(() => {
+    navigation.addListener('focus', handleFocus);
+  }, []);
+
   return (
     <ScreenTemplate loading={loading}>
       <ScreenTemplate.Content style={{paddingHorizontal: 15}}>

@@ -1,12 +1,9 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image, ScrollView, Alert, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import AddExpenseModal from '../components/AddExpenseModal';
-import { postExpenseToApi, fetchUserCategories, postEditExpenseToApi,fetchExpensesList, deleteExpense} from '../utils/apiFetch';
+import { fetchUserCategories,fetchExpensesList, deleteExpense} from '../utils/apiFetch';
 import { ListItem, Button, Icon as MaterialIcon } from '@rneui/themed';
 import { AuthContext } from '../context/AuthContext';
 import FilterModal from '../components/FilterModal';
-import EditExpenseModal from '../components/EditExpenseModal';
 import ScreenTemplate from '../components/ScreenTemplate';
 
 
@@ -34,20 +31,13 @@ const iconFactory = (id) => {
   }
 };
 
-const TableScreen = () => {
-  const [isModalVisible, setModalVisible] = React.useState(false);
+const TableScreen = ({navigation, route}) => {
   const [isFilterModalVisible, setFilterModalVisible] = React.useState(false);
-  const [isEditModalVisible, setEditModalVisible] = React.useState(false);
   const [expenses, setExpenses] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const [categories, setCategories] = React.useState([]);
-  const navigation = useNavigation();
   const {signOut, sessionExpired} = React.useContext(AuthContext);
-  const [selectedExpense, setSelectedExpense] = React.useState({});
 
-  const toggleModal = () => {
-    setModalVisible(!isModalVisible);
-  };
 
   const handleAddExpense = () => {
     navigation.navigate("Add Expense", {
@@ -60,30 +50,9 @@ const TableScreen = () => {
   };
 
 
-  const handleSaveExpense = async (newExpense) => {
-    toggleModal(); // Close the modal after saving
-    try {
-      setLoading(true);
-      await postExpenseToApi(newExpense, sessionExpired);
-      await fetchExpensesList(setExpenses, sessionExpired);
-      await fetchUserCategories(setCategories, sessionExpired);
-      setLoading(false);
-
-    } catch (error) {
-      setLoading(false);
-      Alert.alert("Connection Error", "There was an error connecting to API");
-    }
-  };
-
   const fetchExpensesAndCategories = async () => {
     await fetchUserCategories(setCategories, sessionExpired);
     await fetchExpensesList(setExpenses, sessionExpired);
-  };
-
-  const handleLogout = async () => {
-    setLoading(true);
-    await signOut();
-    setLoading(false);
   };
 
   const handleFilterModalSubmit = async (data) => {
@@ -102,22 +71,13 @@ const TableScreen = () => {
   };
 
   const handleEditExpense = async (item) => {
-    setSelectedExpense(item);
-    setEditModalVisible(!isModalVisible);
-  };
-
-  const handleSaveEditExpense = async (request) => {
-    setLoading(true);
-    try {
-      await postEditExpenseToApi(request);
-      await fetchExpensesList(setExpenses, sessionExpired);
-      await fetchUserCategories(setCategories, sessionExpired);
-      setLoading(false);
-      setEditModalVisible(false); // Close the Edit Modal
-    } catch (error) {
-      setLoading(false);
-      Alert.alert("Connection Error", "There was an error connecting to API");
-    }
+    navigation.navigate("Add Expense", {
+      screen: "expense-modify/categories-list",
+      params: {
+        selectedCategory: {category: item.category, iconId: item.iconId},
+        selectedItem: item
+      },
+    });
   };
 
   const handleFocus = () => {
@@ -211,9 +171,7 @@ const TableScreen = () => {
         </ScrollView>
       </ScreenTemplate.Content>
       
-      <AddExpenseModal isVisible={isModalVisible} onClose={toggleModal} onSave={handleSaveExpense} />
       <FilterModal visible={isFilterModalVisible} data={categories} onDone={handleFilterModalSubmit} onCancel={toggleFilterModal} />
-      <EditExpenseModal isVisible={isEditModalVisible} onClose={() => setEditModalVisible(false)} onSave={handleSaveEditExpense} selectedExpense={selectedExpense}/>
     </ScreenTemplate>
   );
 };

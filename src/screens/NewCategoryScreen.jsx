@@ -23,7 +23,8 @@ const NewCategoryScreen = ({navigation, route}) => {
       selectedCategory: {
         category: categoryName,
         iconId: custIcon.value
-      }
+      },
+      selectedItem: route.params?.selectedItem
     });
   }
 

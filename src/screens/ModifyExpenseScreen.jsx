@@ -5,7 +5,9 @@ import DatePicker from 'react-native-date-picker';
 
 import ScreenTemplate from '../components/ScreenTemplate';
 import { AppInput } from '../components/AppInput';
+import { postEditExpenseToApi, postExpenseToApi } from '../utils/apiFetch';
 import BudgetFilledMeter from '../components/BudgetFilledMeter';
+import { AuthContext } from '../context/AuthContext';
 
 const iconFactory = (id) => {
   switch (id) {
@@ -32,9 +34,9 @@ const iconFactory = (id) => {
 
 const ModifyExpenseScreen = ({navigation, route}) => {
   const [loading, setLoading] = React.useState(false);
-  const [concept, setConcept] = React.useState("");
-  const [amount, setAmount] = React.useState("");
-  const [date, setDate] = React.useState(new Date());
+  const [concept, setConcept] = React.useState(route.params?.selectedItem?.concept || "");
+  const [amount, setAmount] = React.useState(route.params?.selectedItem?.amount?.toString() || "");
+  const [date, setDate] = React.useState(new Date(route.params?.selectedItem?.date) || new Date());
   const [dateModalOpen, setDateModalOpen] = React.useState(false);
   const [conceptHasError, setConceptError] = React.useState(false);
   const [amountHasError, setAmountError] = React.useState(false);
@@ -44,8 +46,18 @@ const ModifyExpenseScreen = ({navigation, route}) => {
       Alert.alert("Validation error", "Please correct selected fields and try again.");
       return;
     }
+    let newExpense = {
+      id: route.params.selectedItem.id,
+      concept,
+      amount,
+      date,
+      category: route.params.selectedCategory.category,
+      iconId: route.params.selectedCategory.iconId
+    };
+    console.log(newExpense);
 
     setLoading(true);
+    await postEditExpenseToApi(newExpense);
     setLoading(false);
   };
 
@@ -72,6 +84,14 @@ const ModifyExpenseScreen = ({navigation, route}) => {
     setAmountError(!isValid);
     return !isValid;
   };
+
+  const handleFocus = async () => {
+    
+  };
+
+  React.useEffect(() => {
+    navigation.addListener('focus', handleFocus);
+  }, []);
 
   return (
     <ScreenTemplate loading={loading}>
@@ -101,7 +121,7 @@ const ModifyExpenseScreen = ({navigation, route}) => {
           onEndEditing={checkConceptError}
         />
 
-        <Text>Expense amount</Text>
+        <Text>Amount</Text>
         <AppInput.Amount
           value={amount}
           onChangeText={setAmount}
@@ -127,11 +147,11 @@ const ModifyExpenseScreen = ({navigation, route}) => {
           onCancel={() => {
             setDateModalOpen(false);
           }}
-          maximumDate={endDate}
-          minimumDate={new Date()}
+          maximumDate={new Date()}
         />
 
         <BudgetFilledMeter 
+          name="Some budget"
           startFilled={100}
           add={50}
         />

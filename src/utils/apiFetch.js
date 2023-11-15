@@ -481,7 +481,7 @@ const postChangePassToApi = async (request, navigation) => {
 
 const postEditExpenseToApi = async (request) => {
   try {
-    let response = await fetchWithTimeout(API_URL + "/editExpense", {
+    let response = await fetchWithTimeout(API_URL + "/editExpense/" + request.id, {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -489,7 +489,6 @@ const postEditExpenseToApi = async (request) => {
         'Content-Type':'application/json',
       },
       body: JSON.stringify({
-        id: request.id,
         concept: request.concept,
         amount: request.amount,
         date: request.date,
