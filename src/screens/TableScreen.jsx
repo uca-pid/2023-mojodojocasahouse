@@ -49,6 +49,11 @@ const TableScreen = () => {
     setModalVisible(!isModalVisible);
   };
 
+  const handleAddExpense = () => {
+    navigation.navigate("Add Expense", {
+      screen: "expense-add/categories-list"
+    });
+  };
 
   const toggleFilterModal = () => {
     setFilterModalVisible(!isFilterModalVisible);
@@ -70,10 +75,9 @@ const TableScreen = () => {
     }
   };
 
-  const handleFocusScreen = async () => {
+  const fetchExpensesAndCategories = async () => {
     await fetchUserCategories(setCategories, sessionExpired);
     await fetchExpensesList(setExpenses, sessionExpired);
-    setLoading(false);
   };
 
   const handleLogout = async () => {
@@ -116,16 +120,23 @@ const TableScreen = () => {
     }
   };
 
-
-  React.useEffect(() => {
+  const handleFocus = () => {
     try{
       setLoading(true);
-      handleFocusScreen();
+      fetchExpensesAndCategories();
     } catch (error) {
-      setLoading(false);
       Alert.alert("Connection Error", "There was an error connecting to API");
+    } finally {
+      setLoading(false);
     }
-  },[navigation]);
+  };
+
+  React.useEffect(() => {
+    navigation.addListener('focus', handleFocus);
+    handleFocus();
+  },[]);
+
+
 
   return (
     <ScreenTemplate loading={loading}>
@@ -133,7 +144,7 @@ const TableScreen = () => {
 
       <ScreenTemplate.Content>
         <View style={styles.addExpenseButtonContainer}>
-          <TouchableOpacity style={styles.button} onPress={toggleModal}>
+          <TouchableOpacity style={styles.button} onPress={handleAddExpense}>
             <Text style={styles.buttonText}>Add Expense</Text>
           </TouchableOpacity>
         </View>
@@ -144,7 +155,7 @@ const TableScreen = () => {
           </TouchableOpacity>
         </View>
 
-        <ScrollView style={{marginBottom: 10, marginTop: 10}} contentContainerStyle={styles.scrollviewContentContainer}>
+        <ScrollView style={{height: 450}} contentContainerStyle={styles.scrollviewContentContainer}>
 
             { expenses.map((item, index) => (
               <ListItem.Swipeable
@@ -212,7 +223,7 @@ const styles = StyleSheet.create({
   // Bottom container
 
   addExpenseButtonContainer: {
-    height: '5%',
+    height: 35,
     width: '90%',
     marginLeft: '5%',
     marginTop: 10,
@@ -221,10 +232,11 @@ const styles = StyleSheet.create({
   },
 
   filterButtonContainer: {
-    height: '5%',
+    height: 35,
     width: '90%',
     marginLeft: '5%',
     marginTop: 10,
+    marginBottom: 10,
     borderRadius: 10,
     backgroundColor: '#e86dc3',
   },

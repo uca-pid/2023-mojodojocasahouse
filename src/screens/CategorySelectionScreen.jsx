@@ -1,7 +1,7 @@
 import React from "react";
 import { ScrollView, Text, TouchableOpacity } from "react-native";
 import { ListItem, Icon } from "@rneui/themed";
-// import LinearGradient from "react-native-linear-gradient";
+import LinearGradient from "react-native-linear-gradient";
 
 import ScreenTemplate from "../components/ScreenTemplate";
 import { fetchUserCategoriesWithIcons } from "../utils/apiFetch";
@@ -41,12 +41,16 @@ const CategorySelectionScreen = ({navigation, route}) => {
     setLoading(false);
   };
 
-  // const handleAddCategory = () => {
-  //   navigation.navigate('budget-add/categories-add');
-  // };
+  const handleAddCategory = () => {
+    const targetScreen = route.name.split("/")[0];
+
+    navigation.navigate(targetScreen + '/categories-add');
+  };
 
   const handleCategorySelection = (category) => {
-    navigation.navigate('budget-add', {
+    const targetScreen = route.name.split("/")[0];
+
+    navigation.navigate(targetScreen, {
       selectedCategory: category
     });
   };
@@ -76,7 +80,7 @@ const CategorySelectionScreen = ({navigation, route}) => {
           marginTop: 30,
         }}>Choose a category</Text>
 
-        {/* <ListItem 
+        <ListItem 
           linearGradientProps={{
             colors: ["#FFFFFF", "#E86DC3"],
             start: { x: 0.9, y: 0 },
@@ -91,7 +95,7 @@ const CategorySelectionScreen = ({navigation, route}) => {
             <ListItem.Title>Create new category</ListItem.Title>
           </ListItem.Content>
           <ListItem.Chevron />
-        </ListItem> */}
+        </ListItem>
 
         {userCategories.map((category, index) => (
           <ListItem key={index} bottomDivider onPress={() => handleCategorySelection(category)}>

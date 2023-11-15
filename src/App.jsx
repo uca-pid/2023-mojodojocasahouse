@@ -21,6 +21,7 @@ import LoginScreen from './screens/LoginScreen';
 import BudgetsScreen from './screens/BudgetsScreen';
 import BudgetStack from './navigation/BudgetStack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ExpenseStack from './navigation/ExpenseStack';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -224,7 +225,17 @@ const App = () => {
               options={{
                 title: "Budgets",
                 drawerIcon: ({color}) => (
-                  <Ionicons name="airplane" size={22} color={color} />
+                  <Ionicons name="cash-outline" size={22} color={color} />
+                ),
+              }}
+            />
+            <Drawer.Screen 
+              name='Add Expense'
+              component={ExpenseStack}
+              options={{
+                title: "Add Expense",
+                drawerIcon: ({color}) => (
+                  <Ionicons name="add" size={22} color={color} />
                 ),
               }}
             />
