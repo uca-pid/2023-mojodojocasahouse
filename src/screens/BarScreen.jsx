@@ -102,8 +102,6 @@ const BarScreen = () => {
     </ListItem>
   );
 
-
-  
   return (
     <ScreenTemplate loading={loading}>
       <ScreenTemplate.Logo />

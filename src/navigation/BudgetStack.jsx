@@ -3,6 +3,7 @@ import React from 'react';
 import BudgetsScreen from '../screens/BudgetsScreen';
 import AddBudgetScreen from '../screens/AddBudgetScreen';
 import BudgetInfoScreen from '../screens/BudgetInfoScreen';
+import CategorySelectionScreen from '../screens/CategorySelectionScreen';
 
 const Stack = createStackNavigator();
 
@@ -27,6 +28,13 @@ const BudgetStack = (props) => {
       <Stack.Screen 
         name='budget-info'
         component={BudgetInfoScreen}
+        options={{
+          headerShown: false
+        }}
+      />
+      <Stack.Screen 
+        name="budget-add/categories-list"
+        component={CategorySelectionScreen}
         options={{
           headerShown: false
         }}

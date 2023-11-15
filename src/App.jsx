@@ -20,6 +20,7 @@ import RegisterScreen from './screens/RegisterScreen';
 import LoginScreen from './screens/LoginScreen';
 import BudgetsScreen from './screens/BudgetsScreen';
 import BudgetStack from './navigation/BudgetStack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -45,9 +46,9 @@ const App = () => {
         case 'RESTORE_TOKEN':
           return {
             ...prevState,
-            hasCredentials: action.hasCredentials,
             isLoading: false,
-            userCredentials: null,
+            hasCredentials: action.hasCredentials,
+            userCredentials: action.userCredentials,
           };
         case 'SIGN_IN':
           return {
@@ -69,6 +70,7 @@ const App = () => {
       isLoading: true,
       isSignout: false,
       hasCredentials: false,
+      userCredentials: null
     }
   );
 
@@ -81,14 +83,17 @@ const App = () => {
         
       switch(responseStatus) {
         case("2xx"):
-          dispatch({ type: 'RESTORE_TOKEN', hasCredentials: true });
+          const credentials = await AsyncStorage.getItem('userCredentials');
+          dispatch({ type: 'RESTORE_TOKEN', hasCredentials: true, userCredentials: credentials });
           break;
         case("4xx"):
-          // await AsyncStorage.removeItem("rememberMeCookie");
-          dispatch({ type: 'RESTORE_TOKEN', hasCredentials: false });
+          await AsyncStorage.removeItem("userCredentials");
+          dispatch({ type: 'RESTORE_TOKEN', hasCredentials: false, userCredentials: null });
           break;
         case("5xx"):
-          Alert.alert("Oops!", "An error ocurred, try again later.");
+          Alert.alert("Oops!", "An error ocurred, try again later.", [
+            {text: "Try Again", onPress: bootstrapAsync}
+          ]);
           break;
       }
     };
@@ -103,7 +108,7 @@ const App = () => {
 
         switch(status){
           case("2xx"):
-            // await AsyncStorage.setItem("rememberMeCookie", cookieResponse);
+            await AsyncStorage.setItem("userCredentials", JSON.stringify(credentials));
             dispatch({ type: 'SIGN_IN', hasCredentials: true, userCredentials: credentials });
             break;
           case("4xx"):
@@ -121,11 +126,11 @@ const App = () => {
 
         switch(apiStatusResponse){
           case("2xx"):
-            // await AsyncStorage.removeItem("rememberMeCookie");
+            await AsyncStorage.removeItem("userCredentials");
             dispatch({ type: 'SIGN_OUT' });
             break;
           case("4xx"):
-            // await AsyncStorage.removeItem("rememberMeCookie");
+            await AsyncStorage.removeItem("userCredentials");
             dispatch({ type: 'SIGN_OUT' });
             break;
           case("5xx"):
@@ -134,6 +139,7 @@ const App = () => {
         }
       },
       sessionExpired: async () => {
+        await AsyncStorage.removeItem("userCredentials");
         dispatch({ type: "SIGN_OUT" });
       }
     }),
