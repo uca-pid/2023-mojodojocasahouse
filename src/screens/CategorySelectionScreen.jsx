@@ -1,7 +1,7 @@
 import React from "react";
 import { ScrollView, Text, TouchableOpacity } from "react-native";
 import { ListItem, Icon } from "@rneui/themed";
-// import LinearGradient from "react-native-linear-gradient";
+import LinearGradient from "react-native-linear-gradient";
 
 import ScreenTemplate from "../components/ScreenTemplate";
 import { fetchUserCategoriesWithIcons } from "../utils/apiFetch";
@@ -41,13 +41,20 @@ const CategorySelectionScreen = ({navigation, route}) => {
     setLoading(false);
   };
 
-  // const handleAddCategory = () => {
-  //   navigation.navigate('budget-add/categories-add');
-  // };
+  const handleAddCategory = () => {
+    const targetScreen = route.name.split("/")[0];
+
+    navigation.navigate(targetScreen + '/categories-add', {
+      selectedItem: route.params?.selectedItem
+    });
+  };
 
   const handleCategorySelection = (category) => {
-    navigation.navigate('budget-add', {
-      selectedCategory: category
+    const targetScreen = route.name.split("/")[0];
+
+    navigation.navigate(targetScreen, {
+      selectedCategory: category,
+      selectedItem: route.params?.selectedItem
     });
   };
 
@@ -56,17 +63,13 @@ const CategorySelectionScreen = ({navigation, route}) => {
   };
 
   React.useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      handleFocusScreen();
-    });
-
-    return unsubscribe;
-  }, [navigation]);
+    handleFocusScreen();
+  }, [route]);
 
   return (
     <ScreenTemplate loading={loading}>
-      <ScrollView style={{padding: 15}}>
 
+      <ScreenTemplate.Content style={{paddingHorizontal: 15}}>
         <Text style={{
           fontFamily: 'Roboto-Medium',
           fontSize: 28,
@@ -76,32 +79,41 @@ const CategorySelectionScreen = ({navigation, route}) => {
           marginTop: 30,
         }}>Choose a category</Text>
 
-        {/* <ListItem 
-          linearGradientProps={{
-            colors: ["#FFFFFF", "#E86DC3"],
-            start: { x: 0.9, y: 0 },
-            end: { x: -0.7, y: 0 },
-          }}
-          ViewComponent={LinearGradient}
-          bottomDivider
-          onPress={handleAddCategory}
-          >
-          <Icon name="add" type="ionicon"/>
-          <ListItem.Content>
-            <ListItem.Title>Create new category</ListItem.Title>
-          </ListItem.Content>
-          <ListItem.Chevron />
-        </ListItem> */}
 
-        {userCategories.map((category, index) => (
-          <ListItem key={index} bottomDivider onPress={() => handleCategorySelection(category)}>
-            <Icon name={iconFactory(category.iconId)} type="entypo"/>
+        <ScrollView style={{height: 450}}>
+          <ListItem 
+            linearGradientProps={{
+              colors: ["#FFFFFF", "#E86DC3"],
+              start: { x: 0.9, y: 0 },
+              end: { x: -0.7, y: 0 },
+            }}
+            ViewComponent={LinearGradient}
+            bottomDivider
+            onPress={handleAddCategory}
+            >
+            <Icon name="add" type="ionicon"/>
             <ListItem.Content>
-              <ListItem.Title>{category.category}</ListItem.Title>
+              <ListItem.Title>Create new category</ListItem.Title>
             </ListItem.Content>
             <ListItem.Chevron />
           </ListItem>
-        ))}
+
+          {userCategories.map((category, index) => (
+            <ListItem 
+              containerStyle={route.params?.selectedCategory?.category == category.category ? {backgroundColor: '#caffc2'}: null} 
+              key={index} 
+              bottomDivider 
+              onPress={() => handleCategorySelection(category)}
+            >
+              <Icon name={iconFactory(category.iconId)} type="entypo"/>
+              <ListItem.Content>
+                <ListItem.Title>{category.category}</ListItem.Title>
+              </ListItem.Content>
+              <ListItem.Chevron />
+            </ListItem>
+          ))}
+
+        </ScrollView>
 
         <TouchableOpacity style={{
           backgroundColor: 'grey',
@@ -116,9 +128,7 @@ const CategorySelectionScreen = ({navigation, route}) => {
             fontWeight: 'bold',
           }}>Back</Text>
         </TouchableOpacity>
-        
-      </ScrollView>
-
+      </ScreenTemplate.Content>
     </ScreenTemplate>
   );
 };

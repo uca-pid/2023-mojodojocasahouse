@@ -1,47 +1,53 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
-import BudgetsScreen from '../screens/BudgetsScreen';
-import AddBudgetScreen from '../screens/AddBudgetScreen';
-import BudgetInfoScreen from '../screens/BudgetInfoScreen';
 import CategorySelectionScreen from '../screens/CategorySelectionScreen';
+import AddExpenseScreen from '../screens/AddExpenseScreen';
 import NewCategoryScreen from '../screens/NewCategoryScreen';
+import ModifyExpenseScreen from '../screens/ModifyExpenseScreen';
 
 const Stack = createStackNavigator();
 
-const BudgetStack = (props) => {
+const ExpenseStack = (props) => {
 
   return (
-    <Stack.Navigator initialRouteName='budget-list'>
+    <Stack.Navigator initialRouteName='expense-add/categories-list'>
       <Stack.Screen 
-        name='budget-list'
-        component={BudgetsScreen}
+        name='expense-add'
+        component={AddExpenseScreen}
         options={{
           headerShown: false
         }}
       />
       <Stack.Screen 
-        name='budget-add'
-        component={AddBudgetScreen}
+        name='expense-modify'
+        component={ModifyExpenseScreen}
         options={{
           headerShown: false
         }}
       />
       <Stack.Screen 
-        name='budget-info'
-        component={BudgetInfoScreen}
-        options={{
-          headerShown: false
-        }}
-      />
-      <Stack.Screen 
-        name="budget-add/categories-list"
+        name="expense-add/categories-list"
         component={CategorySelectionScreen}
         options={{
           headerShown: false
         }}
       />
       <Stack.Screen 
-        name="budget-add/categories-add"
+        name="expense-modify/categories-list"
+        component={CategorySelectionScreen}
+        options={{
+          headerShown: false
+        }}
+      />
+      <Stack.Screen 
+        name="expense-add/categories-add"
+        component={NewCategoryScreen}
+        options={{
+          headerShown: false
+        }}
+      />
+      <Stack.Screen 
+        name="expense-modify/categories-add"
         component={NewCategoryScreen}
         options={{
           headerShown: false
@@ -51,4 +57,4 @@ const BudgetStack = (props) => {
   );
 };
 
-export default BudgetStack;
+export default ExpenseStack;
