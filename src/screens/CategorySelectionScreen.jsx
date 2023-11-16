@@ -63,8 +63,12 @@ const CategorySelectionScreen = ({navigation, route}) => {
   };
 
   React.useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      handleFocusScreen();
+    });
     handleFocusScreen();
-  }, [route]);
+    return unsubscribe;
+  }, []);
 
   return (
     <ScreenTemplate loading={loading}>
