@@ -93,8 +93,8 @@ const ModifyExpenseScreen = ({navigation, route}) => {
   };
 
   React.useEffect(() => {
-    navigation.addListener('focus', handleFocus);
-  }, []);
+    handleFocus();
+  }, [route, date]);
 
   return (
     <ScreenTemplate loading={loading}>
@@ -155,9 +155,10 @@ const ModifyExpenseScreen = ({navigation, route}) => {
 
         {activeBudget? (
           <BudgetFilledMeter 
-            name="Some budget"
-            startFilled={100}
-            add={50}
+            name={activeBudget.name}
+            startFilled={activeBudget.currentAmount}
+            limit={activeBudget.limitAmount}
+            add={amount}
           />
         ) : null}
 

@@ -92,9 +92,11 @@ const TableScreen = ({navigation, route}) => {
   };
 
   React.useEffect(() => {
-    navigation.addListener('focus', handleFocus);
+    const unsubscribe = navigation.addListener('focus', handleFocus);
     handleFocus();
-  },[]);
+
+    return unsubscribe;
+  },[navigation]);
 
 
 

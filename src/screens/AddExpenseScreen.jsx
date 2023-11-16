@@ -93,8 +93,8 @@ const AddExpenseScreen = ({navigation, route}) => {
   };
 
   React.useEffect(() => {
-    navigation.addListener('focus', handleFocus);
-  }, []);
+    handleFocus();
+  }, [route, date]);
 
   return (
     <ScreenTemplate loading={loading}>
