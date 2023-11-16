@@ -5,9 +5,8 @@ import DatePicker from 'react-native-date-picker';
 
 import ScreenTemplate from '../components/ScreenTemplate';
 import { AppInput } from '../components/AppInput';
-import { postEditExpenseToApi, postExpenseToApi } from '../utils/apiFetch';
+import { postEditExpenseToApi, fetchActiveBudgetsByDateAndCategory } from '../utils/apiFetch';
 import BudgetFilledMeter from '../components/BudgetFilledMeter';
-import { AuthContext } from '../context/AuthContext';
 
 const iconFactory = (id) => {
   switch (id) {
@@ -40,6 +39,8 @@ const ModifyExpenseScreen = ({navigation, route}) => {
   const [dateModalOpen, setDateModalOpen] = React.useState(false);
   const [conceptHasError, setConceptError] = React.useState(false);
   const [amountHasError, setAmountError] = React.useState(false);
+  const [activeBudget, setActiveBudget] = React.useState(null);
+
 
   const handleSubmit = async () => {
     if(checkForErrors()){
@@ -50,7 +51,7 @@ const ModifyExpenseScreen = ({navigation, route}) => {
       id: route.params.selectedItem.id,
       concept,
       amount,
-      date,
+      date: date.toISOString().substring(0, 10),
       category: route.params.selectedCategory.category,
       iconId: route.params.selectedCategory.iconId
     };
@@ -86,7 +87,9 @@ const ModifyExpenseScreen = ({navigation, route}) => {
   };
 
   const handleFocus = async () => {
-    
+    setLoading(true);
+    await fetchActiveBudgetsByDateAndCategory(date, route.params.selectedCategory.category, setActiveBudget);
+    setLoading(false);
   };
 
   React.useEffect(() => {
@@ -150,11 +153,13 @@ const ModifyExpenseScreen = ({navigation, route}) => {
           maximumDate={new Date()}
         />
 
-        <BudgetFilledMeter 
-          name="Some budget"
-          startFilled={100}
-          add={50}
-        />
+        {activeBudget? (
+          <BudgetFilledMeter 
+            name="Some budget"
+            startFilled={100}
+            add={50}
+          />
+        ) : null}
 
         <TouchableOpacity style={styles.saveButton} onPress={handleSubmit}>
           <Text style={styles.saveButtonText}>Create</Text>

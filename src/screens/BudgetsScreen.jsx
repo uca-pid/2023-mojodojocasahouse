@@ -64,7 +64,7 @@ const BudgetsScreen = ({navigation, route}) => {
     <ScreenTemplate loading={loading}>
       <ScreenTemplate.Logo />
 
-      <ScrollView style={{padding: 15}}>
+      <ScreenTemplate.Content style={{paddingHorizontal: 15}}>
 
         <Text style={{
           fontFamily: 'Roboto-Medium',
@@ -75,33 +75,36 @@ const BudgetsScreen = ({navigation, route}) => {
           marginTop: 30,
         }}>Budgets</Text>
 
-        <ListItem 
-          linearGradientProps={{
-            colors: ["#FFFFFF", "#E86DC3"],
-            start: { x: 0.9, y: 0 },
-            end: { x: -0.7, y: 0 },
-          }}
-          ViewComponent={LinearGradient}
-          bottomDivider
-          onPress={handleAddBudget}
-          >
-          <Icon name="add" type="ionicon"/>
-          <ListItem.Content>
-            <ListItem.Title>Create new budget</ListItem.Title>
-          </ListItem.Content>
-          <ListItem.Chevron />
-        </ListItem>
-
-        {userBudgets.map((budget, index) => (
-          <ListItem key={index} bottomDivider onPress={() => handleBudgetSelection(budget)}>
-            <Icon name={iconFactory(budget.iconId)} type="entypo"/>
+        <ScrollView style={{height: 370}}>
+          <ListItem 
+            linearGradientProps={{
+              colors: ["#FFFFFF", "#E86DC3"],
+              start: { x: 0.9, y: 0 },
+              end: { x: -0.7, y: 0 },
+            }}
+            ViewComponent={LinearGradient}
+            bottomDivider
+            onPress={handleAddBudget}
+            >
+            <Icon name="add" type="ionicon"/>
             <ListItem.Content>
-              <ListItem.Title>{budget.name}</ListItem.Title>
-              <ListItem.Subtitle>{budget.category}</ListItem.Subtitle>
+              <ListItem.Title>Create new budget</ListItem.Title>
             </ListItem.Content>
             <ListItem.Chevron />
           </ListItem>
-        ))}
+
+          {userBudgets.map((budget, index) => (
+            <ListItem key={index} bottomDivider onPress={() => handleBudgetSelection(budget)}>
+              <Icon name={iconFactory(budget.iconId)} type="entypo"/>
+              <ListItem.Content>
+                <ListItem.Title>{budget.name}</ListItem.Title>
+                <ListItem.Subtitle>{budget.category}</ListItem.Subtitle>
+              </ListItem.Content>
+              <ListItem.Chevron />
+            </ListItem>
+          ))}
+          
+        </ScrollView>
 
         <TouchableOpacity style={{
           backgroundColor: 'grey',
@@ -116,9 +119,8 @@ const BudgetsScreen = ({navigation, route}) => {
             fontWeight: 'bold',
           }}>Back</Text>
         </TouchableOpacity>
-        
-      </ScrollView>
 
+      </ScreenTemplate.Content>
     </ScreenTemplate>
   );
 };

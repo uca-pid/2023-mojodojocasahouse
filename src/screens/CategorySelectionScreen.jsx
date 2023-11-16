@@ -72,8 +72,8 @@ const CategorySelectionScreen = ({navigation, route}) => {
 
   return (
     <ScreenTemplate loading={loading}>
-      <ScrollView style={{padding: 15}}>
 
+      <ScreenTemplate.Content style={{paddingHorizontal: 15}}>
         <Text style={{
           fontFamily: 'Roboto-Medium',
           fontSize: 28,
@@ -83,37 +83,41 @@ const CategorySelectionScreen = ({navigation, route}) => {
           marginTop: 30,
         }}>Choose a category</Text>
 
-        <ListItem 
-          linearGradientProps={{
-            colors: ["#FFFFFF", "#E86DC3"],
-            start: { x: 0.9, y: 0 },
-            end: { x: -0.7, y: 0 },
-          }}
-          ViewComponent={LinearGradient}
-          bottomDivider
-          onPress={handleAddCategory}
-          >
-          <Icon name="add" type="ionicon"/>
-          <ListItem.Content>
-            <ListItem.Title>Create new category</ListItem.Title>
-          </ListItem.Content>
-          <ListItem.Chevron />
-        </ListItem>
 
-        {userCategories.map((category, index) => (
+        <ScrollView style={{height: 450}}>
           <ListItem 
-            containerStyle={route.params?.selectedCategory?.category == category.category ? {backgroundColor: '#caffc2'}: null} 
-            key={index} 
-            bottomDivider 
-            onPress={() => handleCategorySelection(category)}
-          >
-            <Icon name={iconFactory(category.iconId)} type="entypo"/>
+            linearGradientProps={{
+              colors: ["#FFFFFF", "#E86DC3"],
+              start: { x: 0.9, y: 0 },
+              end: { x: -0.7, y: 0 },
+            }}
+            ViewComponent={LinearGradient}
+            bottomDivider
+            onPress={handleAddCategory}
+            >
+            <Icon name="add" type="ionicon"/>
             <ListItem.Content>
-              <ListItem.Title>{category.category}</ListItem.Title>
+              <ListItem.Title>Create new category</ListItem.Title>
             </ListItem.Content>
             <ListItem.Chevron />
           </ListItem>
-        ))}
+
+          {userCategories.map((category, index) => (
+            <ListItem 
+              containerStyle={route.params?.selectedCategory?.category == category.category ? {backgroundColor: '#caffc2'}: null} 
+              key={index} 
+              bottomDivider 
+              onPress={() => handleCategorySelection(category)}
+            >
+              <Icon name={iconFactory(category.iconId)} type="entypo"/>
+              <ListItem.Content>
+                <ListItem.Title>{category.category}</ListItem.Title>
+              </ListItem.Content>
+              <ListItem.Chevron />
+            </ListItem>
+          ))}
+
+        </ScrollView>
 
         <TouchableOpacity style={{
           backgroundColor: 'grey',
@@ -128,9 +132,7 @@ const CategorySelectionScreen = ({navigation, route}) => {
             fontWeight: 'bold',
           }}>Back</Text>
         </TouchableOpacity>
-        
-      </ScrollView>
-
+      </ScreenTemplate.Content>
     </ScreenTemplate>
   );
 };

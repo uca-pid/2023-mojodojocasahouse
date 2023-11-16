@@ -641,8 +641,46 @@ const postBudgetToApi = async (request) => {
   }
 };
 
+const fetchActiveBudgetsByDateAndCategory = async (date, category, setActiveBudget) => {
+  try {
+    let response = await fetchWithTimeout(API_URL + "/getActiveBudgets", {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type':'application/json',
+      },
+      body: JSON.stringify({ date, category })
+    });
+    let responseBody = await response.json();
+
+    // OK
+    if(response.ok){
+      setActiveBudget(responseBody.response);
+      return;
+    }
+
+    // INTERNAL ERROR
+    if(response.status >= 500){
+      Alert.alert("Server Error", "Oops! An unknown error happened");
+      return;
+    }
+
+    // OTHER ERROR
+    Alert.alert("API Error", responseBody.message);
+  } catch (error) {
+    console.log("fetchActiveBudgetsByDateAndCategory");
+    console.log(error);
+    Alert.alert(
+      "Connection Error", 
+      "There was an error connecting to API"
+    );
+  }
+};
+
 
 export {
+  fetchActiveBudgetsByDateAndCategory,
   postBudgetToApi,
   fetchBudgetInfo,
   fetchUserBudgets,
