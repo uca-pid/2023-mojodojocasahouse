@@ -55,7 +55,6 @@ const AddExpenseScreen = ({navigation, route}) => {
       category: route.params.selectedCategory.category,
       iconId: route.params.selectedCategory.iconId
     };
-    console.log(newExpense);
 
     setLoading(true);
     await postExpenseToApi(newExpense, sessionExpired);

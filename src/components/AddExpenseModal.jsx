@@ -83,7 +83,6 @@ const AddExpenseModal = ({ isVisible, onClose, onSave }) => {
 
   const handleSave = () => {
     try {
-      console.log({ concept, amount, date, category, iconId })
       checkErrors();
       onSave({ 
         concept, 
