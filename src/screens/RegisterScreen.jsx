@@ -147,7 +147,10 @@ const RegisterScreen = ({navigation}) => {
             justifyContent: 'center',
             marginBottom: 30,
           }}>
-          <Text>Already registered?</Text>
+          <Text 
+          style={{
+            color: 'black',
+          }}>Already registered?</Text>
           <TouchableOpacity onPress={() => navigation.navigate("Login")}>
             <Text style={{color: '#AD40AF', fontWeight: '700'}}> Login</Text>
           </TouchableOpacity>

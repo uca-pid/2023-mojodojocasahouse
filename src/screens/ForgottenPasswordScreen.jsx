@@ -73,8 +73,12 @@ const ForgottenPasswordScreen = ({ navigation, route }) => {
             flexDirection: 'row',
             justifyContent: 'center',
             marginBottom: 30,
+          
           }}>
-          <Text>Remembered?</Text>
+          <Text 
+          style={{
+            color: 'black',
+          }}>Remembered?</Text>
           <TouchableOpacity onPress={navigateToLogin}>
             <Text style={{color: '#E86DC3', fontWeight: '700'}}> Tap here</Text>
           </TouchableOpacity>
