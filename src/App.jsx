@@ -176,8 +176,8 @@ const App = () => {
           ) : !state.hasCredentials ? (
           <>
             <Drawer.Screen
-              name="Login" // Define a new screen called "Login"
-              component={LoginScreen} // Use the Login component
+              name="Login" 
+              component={LoginScreen} 
               options={{
                 title: "Log in",
                 animationTypeForReplace: state.isSignout ? 'pop' : 'push',
@@ -187,8 +187,8 @@ const App = () => {
               }}
             />
             <Drawer.Screen
-              name="SignUp" // Define a new screen called "SignUp"
-              component={RegisterScreen} // Use the SignUp component
+              name="SignUp" 
+              component={RegisterScreen} 
               options={{
                 title: "Sign up",
                 drawerIcon: ({color}) => (
@@ -211,7 +211,7 @@ const App = () => {
           <>
             <Drawer.Screen
               name="Table"
-              component={TableScreen} // Use a separate component for the screen
+              component={TableScreen} 
               options={{
                 title: "My expenses",
                 drawerIcon: ({color}) => (

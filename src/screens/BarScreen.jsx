@@ -109,7 +109,7 @@ const BarScreen = () => {
       <ScreenTemplate.Content>
         <View style={styles.addExpenseButtonContainer}>
           <TouchableOpacity style={styles.button} onPress={toggleFilterModal}>
-            <Text style={styles.titulo}>Choose Categories and Date Range</Text>
+            <Text style={styles.buttonText}>Choose Categories and Date Range</Text>
           </TouchableOpacity>
         </View>
         <ScrollView contentContainerStyle={styles.scrollviewContentContainer} horizontal={true}>
@@ -152,7 +152,7 @@ const BarScreen = () => {
 const styles = StyleSheet.create({
 
   addExpenseButtonContainer: {
-    height: '9%',
+    height: '8',
     width: '80%',
     marginLeft: '10%',
     marginTop: '1%',
@@ -168,12 +168,17 @@ const styles = StyleSheet.create({
     backgroundColor: 'white', // Background color
   },
 
-  titulo:{
-    textAlign: 'center',
-    marginTop: 7,
-    fontSize: 16,
-    fontFamily: 'sans-serif-medium',
+  button: {
+    backgroundColor: '#E86DC3',
+    paddingBottom: '2.5%',
+    paddingTop: '2.5%',
+    alignItems: 'center',
+    borderRadius: 10,
+  },
+  buttonText: {
     color: 'white',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
 
   listItemContent: {
