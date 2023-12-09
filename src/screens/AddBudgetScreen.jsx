@@ -80,7 +80,7 @@ const AddBudgetScreen = ({navigation, route}) => {
 
   return (
     <ScreenTemplate loading={loading}>
-      <ScreenTemplate.Content style={{paddingHorizontal: 15}}>
+      <ScreenTemplate.Scrollable style={{paddingHorizontal: 15}}>
         <Text style={{
           fontFamily: 'Roboto-Medium',
           fontSize: 28,
@@ -165,7 +165,7 @@ const AddBudgetScreen = ({navigation, route}) => {
           <Text style={styles.cancelButtonText}>Back</Text>
         </TouchableOpacity>
         
-      </ScreenTemplate.Content>
+      </ScreenTemplate.Scrollable>
 
     </ScreenTemplate>
   );

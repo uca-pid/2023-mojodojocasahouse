@@ -8,7 +8,7 @@ import { AuthContext } from '../context/AuthContext';
 import FilterModal from '../components/FilterModal';
 import ScreenTemplate from '../components/ScreenTemplate';
 
-const GraphScreen = () => {
+const PieScreen = () => {
   const [loading, setLoading] = React.useState(false);
   const [expenses, setExpenses] = React.useState([]);
   const [categories, setCategories] = React.useState([]);
@@ -178,6 +178,7 @@ const GraphScreen = () => {
                 hasLegend={false}
               />
               <FlatList
+                style={{height: 300, borderTopWidth: 0.5, borderBottomWidth: 0.5, borderColor: '#d9d9d9'}}
                 data={legendData}
                 renderItem={renderItem}
                 keyExtractor={(item) => item.name}
@@ -199,7 +200,7 @@ const GraphScreen = () => {
 const styles = StyleSheet.create({
 
   addExpenseButtonContainer: {
-    height: '8',
+    height: 37,
     width: '80%',
     marginLeft: '10%',
     marginTop: '1%',
@@ -248,4 +249,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default GraphScreen;
+export default PieScreen;

@@ -193,6 +193,7 @@ const AmountInput = (props) => {
       errorMessage={props.errorMessage}
       maxLength={12}
       onEndEditing={props.onEndEditing}
+      keyboardType="decimal-pad"
     />
   );
 };
@@ -235,6 +236,7 @@ const DateInput = props => {
       }
       placeholderTextColor={"#c4c4c4"}
       disabled={true}
+      keyboardType="decimal-pad"
     />
   );
 };

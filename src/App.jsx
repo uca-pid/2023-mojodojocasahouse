@@ -9,7 +9,7 @@ import TableScreen from './screens/TableScreen';
 import ChangePassScreen from './screens/ChangePassScreen';
 import ForgottenPasswordScreen from './screens/ForgottenPasswordScreen';
 import ResetPasswordScreen from './screens/ResetPasswordScreen';
-import GraphScreen from './screens/GraphScreen';
+import PieScreen from './screens/PieScreen';
 import BarScreen from './screens/BarScreen';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { doLogout, doSignIn, verifyCredentials } from './utils/apiFetch';
@@ -241,7 +241,7 @@ const App = () => {
             />
             <Drawer.Screen
               name="GraphScreen"
-              component={GraphScreen} // Use a separate component for the screen
+              component={PieScreen} // Use a separate component for the screen
               options={{
               title: "Pie-Chart",
               drawerIcon: ({color}) => (

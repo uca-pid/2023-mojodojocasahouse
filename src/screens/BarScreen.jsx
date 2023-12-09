@@ -152,7 +152,7 @@ const BarScreen = () => {
 const styles = StyleSheet.create({
 
   addExpenseButtonContainer: {
-    height: '8',
+    height: 37,
     width: '80%',
     marginLeft: '10%',
     marginTop: '1%',
