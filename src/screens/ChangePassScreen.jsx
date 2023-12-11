@@ -71,7 +71,7 @@ const ChangePassScreen = ({ navigation, route }) => { // Add navigation prop
             value={newPassword}
             onChangeText={setNewPassword}
             placeholder="New Password"
-            onEndEditing={validatePassword}
+            onEndEditing={validatePassword && validateRepeatPassword}
             errorMessage={passwordError? "Must contain: 8 letters, 1 number, 1 capital, and 1 symbol." : null}
           />
 

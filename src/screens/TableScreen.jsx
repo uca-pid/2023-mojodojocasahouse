@@ -80,10 +80,10 @@ const TableScreen = ({navigation, route}) => {
     });
   };
 
-  const handleFocus = () => {
+  const handleFocus = async () => {
     try{
       setLoading(true);
-      fetchExpensesAndCategories();
+      await fetchExpensesAndCategories();
     } catch (error) {
       Alert.alert("Connection Error", "There was an error connecting to API");
     } finally {
@@ -232,7 +232,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#e1e1e8', // Table background color
     borderWidth: 1,
     borderColor: '#AEB4E7', // Border color
-    borderRadius: 5,
   },
 
 });

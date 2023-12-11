@@ -6,6 +6,7 @@ import DatePicker from 'react-native-date-picker';
 import ScreenTemplate from '../components/ScreenTemplate';
 import { AppInput } from '../components/AppInput';
 import { postBudgetToApi } from '../utils/apiFetch';
+import { AuthContext } from '../context/AuthContext';
 
 const iconFactory = (id) => {
   switch (id) {
@@ -40,18 +41,39 @@ const AddBudgetScreen = ({navigation, route}) => {
   const [endDateOpen, setEndDateOpen] = React.useState(false);
   const [nameHasError, setNameError] = React.useState(false);
   const [amountHasError, setAmountError] = React.useState(false);
+  const {sessionExpired} = React.useContext(AuthContext);
+
+  const delay = ms => new Promise(res => setTimeout(res, ms));
 
   const handleSubmit = async () => {
     if(checkForErrors()){
       Alert.alert("Validation error", "Please correct selected fields and try again.");
       return;
     }
+    let newBudget = {
+      name, 
+      limitAmount: amount, 
+      ...(route.params.selectedCategory), 
+      startingDate: startDate, 
+      limitDate: endDate
+    };
 
     setLoading(true);
-    await postBudgetToApi({
-      name, limitAmount: amount, ...(route.params.selectedCategory), startingDate: startDate, limitDate: endDate
-    });
-    setLoading(false);
+    try {
+      await postBudgetToApi(newBudget);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+
+      if(error.type == "Session Expired"){
+        Alert.alert(error.type, error.message, [{text: 'OK', onPress: sessionExpired}]);
+        return;
+      }
+      Alert.alert(error.type, error.message);
+      return;
+    }
+    Alert.alert("Success", "Budget created successfully", 
+    [{ text: 'OK', onPress: async () => {await delay(1000); navigation.navigate("budget-list"); navigation.navigate("Table");} }]);
   };
 
   const handleBack = async () => {

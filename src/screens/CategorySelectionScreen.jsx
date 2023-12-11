@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, Text, TouchableOpacity } from "react-native";
+import { ScrollView, Text, TouchableOpacity, Alert } from "react-native";
 import { ListItem, Icon } from "@rneui/themed";
 import LinearGradient from "react-native-linear-gradient";
 
@@ -36,9 +36,14 @@ const CategorySelectionScreen = ({navigation, route}) => {
   const {sessionExpired} = React.useContext(AuthContext);
 
   const handleFocusScreen = async () => {
-    setLoading(true);
-    await fetchUserCategoriesWithIcons(setUserCategories, sessionExpired);
-    setLoading(false);
+    try{
+      setLoading(true);
+      await fetchUserCategoriesWithIcons(setUserCategories, sessionExpired);
+    } catch (error) {
+      Alert.alert("Connection Error", "There was an error connecting to API");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleAddCategory = () => {
@@ -63,12 +68,11 @@ const CategorySelectionScreen = ({navigation, route}) => {
   };
 
   React.useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      handleFocusScreen();
-    });
+    const unsubscribe = navigation.addListener('focus', handleFocusScreen);
     handleFocusScreen();
+
     return unsubscribe;
-  }, []);
+  }, [navigation]);
 
   return (
     <ScreenTemplate loading={loading}>

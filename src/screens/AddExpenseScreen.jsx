@@ -57,8 +57,20 @@ const AddExpenseScreen = ({navigation, route}) => {
     };
 
     setLoading(true);
-    await postExpenseToApi(newExpense, sessionExpired);
-    setLoading(false);
+    try{
+      await postExpenseToApi(newExpense);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+
+      if(error.type == "Session Expired"){
+        Alert.alert(error.type, error.message, [{text: 'OK', onPress: sessionExpired}]);
+        return;
+      }
+      Alert.alert(error.type, error.message);
+      return;
+    } 
+    Alert.alert("Success", "Expense created successfully");
   };
 
   const handleBack = async () => {

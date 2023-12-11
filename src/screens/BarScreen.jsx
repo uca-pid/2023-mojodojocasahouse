@@ -1,90 +1,60 @@
 import React from 'react';
 import { View, Text, ScrollView, Alert, StyleSheet, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { FlatList } from 'react-native-gesture-handler';
 import { BarChart } from 'react-native-chart-kit';
 import { ListItem } from 'react-native-elements'; // Import ListItem
-import { fetchUserCategories, fetchExpensesList } from '../utils/apiFetch';
+import { fetchUserCategories, fetchYearlySumOfExpenses } from '../utils/apiFetch';
 import { AuthContext } from '../context/AuthContext';
 import FilterModal from '../components/FilterModal';
 import ScreenTemplate from '../components/ScreenTemplate';
 
-const BarScreen = () => {
+const BarScreen = ({navigation, route}) => {
   const [loading, setLoading] = React.useState(false);
-  const [expenses, setExpenses] = React.useState([]);
+  const [yearlyExpenses, setYearlyExpenses] = React.useState([]);
   const [categories, setCategories] = React.useState([]);
   const [isFilterModalVisible, setFilterModalVisible] = React.useState(false);
-  const [selectedCategories, setSelectedCategories] = React.useState([]); // Updated
-  const [selectedDateRange, setSelectedDateRange] = React.useState({ from: null, until: null }); // Updated
-  const { signOut, sessionExpired } = React.useContext(AuthContext);
+  const { sessionExpired } = React.useContext(AuthContext);
 
-  const handleFocusScreen = async () => {
-    await fetchUserCategories(setCategories, sessionExpired);
-    await fetchExpensesList(setExpenses, sessionExpired);
-    setLoading(false);
-  };
 
   const chartConfig2 = {
     backgroundGradientFrom: "white",
     backgroundGradientFromOpacity: 0,
     backgroundGradientTo: "white",
-    height: 10000,
-    backgroundGradientToOpacity: 0.5,
-    color: () => `#47132D`,
-    labelColor: () => `black`,
-    fillShadowGradient: `#D47DA8`,
-    fillShadowGradientOpacity: 1,
-    strokeWidth: 3,
+    backgroundGradientToOpacity: 1,
+    fillShadowGradientFromOpacity: 0.9,
+    fillShadowGradientToOpacity: 0.1,
+    color: (opacity = 1) => `rgba(232, 109, 195, ${opacity})`,
+    labelColor: (opacity = 1) => `rgba(52, 52, 52, ${opacity})`,
+    bgColor: "white",
     propsForLabels: {
-      fontSize: '12',
+      fontSize: 12,
     },
     decimalPlaces: 0,
     barPercentage: 0.5,
-    useShadowColorFromDataset: false,
   };
 
-  const navigation = useNavigation();
-
-  const calculateYearlyExpenses = () => {
-    const yearlyExpenses = {};
-    expenses.forEach((expense) => {
-      const expenseYear = new Date(expense.date).getFullYear();
-      if (!yearlyExpenses[expenseYear]) {
-        yearlyExpenses[expenseYear] = 0;
-      }
-      if (selectedCategories.length === 0 || selectedCategories.includes(expense.category)) { // Check if the expense category is selected
-        if (
-          (!selectedDateRange.from || new Date(expense.date) >= selectedDateRange.from) &&
-          (!selectedDateRange.until || new Date(expense.date) <= selectedDateRange.until)
-        ) { // Check if the expense date is within the selected range
-          yearlyExpenses[expenseYear] += expense.amount;
-        }
-      }
-    });
-    return yearlyExpenses;
+  const handleFocus = async () => {
+    try {
+      setLoading(true);
+      await fetchYearlySumOfExpenses(setYearlyExpenses, sessionExpired);
+      await fetchUserCategories(setCategories, sessionExpired);
+    } catch (error) {
+      Alert.alert("Connection Error", "There was an error connecting to API");
+    } finally {
+      setLoading(false);
+    }
   };
-
-  React.useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => {
-      try {
-        setLoading(true);
-        handleFocusScreen();
-      } catch (error) {
-        setLoading(false);
-        Alert.alert("Connection Error", "There was an error connecting to the API");
-      }
-    });
-    
-    return unsubscribe;
-  }, [navigation]);
-
-  const yearlyExpenses = calculateYearlyExpenses();
 
   // Function to handle filter modal submission
-  const handleFilterModalSubmit = (data) => {
-    setSelectedCategories(data.categories);
-    setSelectedDateRange({ from: data.from, until: data.until });
-    setFilterModalVisible(false);
+  const handleFilterModalSubmit = async (data) => {
+    try {
+      setLoading(true);
+      await fetchYearlySumOfExpenses(setYearlyExpenses, sessionExpired, data);
+    } catch (error) {
+      Alert.alert("Connection Error", "There was an error connecting to API");
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Function to toggle filter modal visibility
@@ -102,6 +72,18 @@ const BarScreen = () => {
     </ListItem>
   );
 
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", handleFocus);
+    handleFocus();
+    
+    return unsubscribe;
+  }, [navigation]);
+
+  React.useEffect(() => {
+    console.log(yearlyExpenses);
+  }, [yearlyExpenses]);
+
+
   return (
     <ScreenTemplate loading={loading}>
       <ScreenTemplate.Logo />
@@ -114,32 +96,35 @@ const BarScreen = () => {
         </View>
         <ScrollView contentContainerStyle={styles.scrollviewContentContainer} horizontal={true}>
           <View style={{ paddingLeft: '5%', paddingBottom: '8%', paddingTop: '16%' }}>
-            {Object.keys(yearlyExpenses).length ? (
+            {yearlyExpenses.length ? (
               <>
                 <BarChart
                   data={{
-                    labels: Object.keys(yearlyExpenses).map(String),
-                    datasets: [{ data: Object.values(yearlyExpenses) }],
+                    labels: yearlyExpenses.map(exp => "'" + exp.year.toString().slice(2)),
+                    datasets: [{ data: yearlyExpenses.map(exp => exp.amount) }],
                   }}
-                  width={340}
+                  width={310}
                   height={230}
                   yAxisLabel="$"
                   chartConfig={chartConfig2}
-                  accessor="population"
-                  verticalLabelRotation={10}
-                  absolute
+                  verticalLabelRotation={30}
+                  absolute={true}
                   fromZero={true}
                 />
                 <FlatList
-                  data={Object.entries(yearlyExpenses)}
-                  keyExtractor={(item) => item[0]}
+                  style={{height: 200}}
+                  data={yearlyExpenses}
                   renderItem={({ item }) => (
-                    <ListItemComponent year={item[0]} value={item[1]} />
+                    <ListItemComponent key={item.year} year={item.year} value={item.amount}/>
                   )}
                 />
               </>
             ) : (
-              <Text>No expenses data available.</Text>
+              <Text style={{
+                fontSize: 20,
+              }}>
+                There is no expenses data available for selected parameters. Please try again
+              </Text>
             )}
           </View>
         </ScrollView>
