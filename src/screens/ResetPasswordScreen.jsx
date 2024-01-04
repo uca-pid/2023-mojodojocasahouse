@@ -3,13 +3,14 @@ import { View, Text, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import ScreenTemplate from '../components/ScreenTemplate';
 import { usePasswordResetForm } from '../hooks/authentication';
 import { AppInput } from '../components/AppInput';
+import CustomButton from '../components/CustomButton';
 
 
 const ResetPasswordScreen = ({ navigation, route }) => {
   const [newPassword, setNewPassword] = React.useState("");
   const [newPasswordRepeat, setNewPasswordRepeat] = React.useState("");
 
-  const [passwordError, setPasswordError] = React.useState(true);
+  const [passwordError, setPasswordError] = React.useState(false);
   const [repeatPasswordError, setRepeatPasswordError] = React.useState(false);
 
   const { isPending: loading, mutate: sendForm } = usePasswordResetForm();
@@ -54,8 +55,11 @@ const ResetPasswordScreen = ({ navigation, route }) => {
     <ScreenTemplate loading={loading}>
       <ScreenTemplate.Logo />
 
-      <ScreenTemplate.Content>
-        <View style={styles.bottomContainer}></View>
+      <ScreenTemplate.Content style={{paddingHorizontal: 15}}>
+
+        <View style={styles.textTitleContainer}>
+          <Text style={styles.textTitle}>Change password:</Text>
+        </View>
 
         <View>
 
@@ -77,13 +81,9 @@ const ResetPasswordScreen = ({ navigation, route }) => {
             errorMessage={repeatPasswordError? "Passwords do not match." : null}
           />
 
-          <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-            <Text style={styles.buttonText}>Confirm</Text>
-          </TouchableOpacity>
+          <CustomButton onPress={handleSubmit} label="Confirm" />
 
-          <TouchableOpacity style={styles.button} onPress={navigateToLogin}>
-            <Text style={styles.buttonText}>Cancel</Text>
-          </TouchableOpacity>
+          <CustomButton onPress={navigateToLogin} label="Cancel" style={{ backgroundColor: '#c4c4c4' }} />
         </View>
       </ScreenTemplate.Content>
     </ScreenTemplate>
@@ -91,6 +91,26 @@ const ResetPasswordScreen = ({ navigation, route }) => {
 };
 
 const styles = StyleSheet.create({
+  
+  // Logo Container
+  
+  contentContainer: {
+    paddingBottom: 20,
+
+    backgroundColor: 'white', // Background color
+  },
+
+  textTitleContainer: {
+    marginBottom: '5%',
+    marginTop: 20,
+  },
+  
+  textTitle: {
+    textAlign: 'center',
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
 
   button: {
     backgroundColor: 'lightgray',
