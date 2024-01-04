@@ -58,12 +58,14 @@ const ExtraLogo = (props) => {
           }}
           source={require('./../../img/logo.png')}
         />
-        <View style={{ position: 'absolute', left: -45, top: 10 }}>
-          <TouchableOpacity onPress={openDrawer} style={{ padding: 10 }}>
-            <Ionicons name="menu-outline" size={35} color={'black'} />
-          </TouchableOpacity>
-        </View>
+        {props.hideNav ? null : (
+          <View style={{ position: 'absolute', left: -45, top: 10 }}>
+            <TouchableOpacity onPress={openDrawer} style={{ padding: 10 }}>
+              <Ionicons name="menu-outline" size={35} color={'black'} />
+            </TouchableOpacity>
           </View>
+        )}
+      </View>
     
     </View>
   );

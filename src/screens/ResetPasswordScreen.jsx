@@ -53,7 +53,7 @@ const ResetPasswordScreen = ({ navigation, route }) => {
 
   return (
     <ScreenTemplate loading={loading}>
-      <ScreenTemplate.Logo />
+      <ScreenTemplate.Logo hideNav />
 
       <ScreenTemplate.Content style={{paddingHorizontal: 15}}>
 
