@@ -1,26 +1,30 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, SafeAreaView, Alert } from 'react-native';
 import { Dialog } from '@rneui/themed';
 import * as EmailValidator from 'email-validator';
-import { postForgottenPasswordFormToApi } from '../utils/apiFetch';
 
 import LoginSVG from '../../img/login.svg';
 import CustomButton from '../components/CustomButton';
 import { AppInput } from '../components/AppInput';
+import { useForgottenPasswordForm } from '../hooks/authentication';
+import HelperLink from '../components/HelperLink';
+
 
 const ForgottenPasswordScreen = ({ navigation, route }) => {
   const [email, setEmail] = React.useState("");
+
   const [emailError, setEmailError] = React.useState(false);
-  const [loading, setLoading] = React.useState(false);
+  
+  const { isPending: loading, mutate: sendForm } = useForgottenPasswordForm();
 
-  const navigateToLogin = () => {
-    navigation.navigate('Login');
-  };
+  
+  const handleSubmit = () => {
+    if( formHasErrors() ) {
+      Alert.alert("Validation Error", "Check your fields and try again");
+      return;
+    }
 
-  const handleSubmit = async () => {
-    setLoading(true);
-    await postForgottenPasswordFormToApi(formHasErrors, email, navigation);
-    setLoading(false);
+    sendForm(email);
   };
 
   const formHasErrors = () => {
@@ -67,22 +71,11 @@ const ForgottenPasswordScreen = ({ navigation, route }) => {
         
         <CustomButton label={"Start"} onPress={handleSubmit} />
 
-
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            marginBottom: 30,
-          
-          }}>
-          <Text 
-          style={{
-            color: 'black',
-          }}>Remembered?</Text>
-          <TouchableOpacity onPress={navigateToLogin}>
-            <Text style={{color: '#E86DC3', fontWeight: '700'}}> Tap here</Text>
-          </TouchableOpacity>
-        </View>
+        <HelperLink 
+          label="Remembered?"
+          highlightedText="Go back"
+          onPress={() => navigation.goBack()}
+        />
       </View>
     </SafeAreaView>
   );

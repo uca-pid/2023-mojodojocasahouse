@@ -1,24 +1,22 @@
 import React from 'react';
-import {
-  SafeAreaView,
-  View,
-  Text,
-  TouchableOpacity
-} from 'react-native';
-import { Switch } from 'react-native-paper';
+import { SafeAreaView, View, Text, TouchableOpacity } from 'react-native';
+import { Dialog, Switch } from '@rneui/themed';
 
 import LoginSVG from '../../img/login.svg';
 import CustomButton from '../components/CustomButton';
 import { AppInput } from '../components/AppInput';
-import { AuthContext } from '../context/AuthContext';
-import { Dialog } from '@rneui/themed';
+import { useAuthentication } from '../hooks/authentication';
+import HelperLink from '../components/HelperLink';
+
+// FIXME: Use new signIn call
 
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [rememberMe, setRememberMe] = React.useState(false);
+
+  const { signIn } = useAuthentication();
   const [loading, setLoading] = React.useState(false);
-  const {signIn} = React.useContext(AuthContext);
 
   const handleSubmitLogin = async () => {
     setLoading(true);
@@ -84,36 +82,17 @@ const LoginScreen = ({navigation}) => {
         
         <CustomButton label={"Login"} onPress={handleSubmitLogin} />
 
+        <HelperLink 
+          label="New to the app?"
+          highlightedText="Register"
+          onPress={() => navigation.navigate('SignUp')}
+        />
 
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            marginBottom: 15,
-            color: 'black',
-          }}>
-          <Text style={{
-            color: 'black',
-          }}>New to the app?</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-            <Text style={{color: '#E86DC3', fontWeight: '700'}}> Register</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            marginBottom: 30,
-          }}>
-          <Text
-          style={{
-            color: 'black',
-          }}>Forgot your password?</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('forgotten-password')}>
-            <Text style={{color: '#E86DC3', fontWeight: '700'}}> Tap here</Text>
-          </TouchableOpacity>
-        </View>
+        <HelperLink 
+          label="Forgot your password?"
+          highlightedText="Tap here"
+          onPress={() => navigation.navigate('forgotten-password')}
+        />
       </View>
     </SafeAreaView>
   );

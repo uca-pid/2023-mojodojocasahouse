@@ -1,35 +1,34 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Alert, StyleSheet } from 'react-native';
 
-import { postChangePassToApi } from '../utils/apiFetch';
 import { AppInput } from '../components/AppInput';
 import ScreenTemplate from '../components/ScreenTemplate';
 import CustomButton from '../components/CustomButton';
+import { useChangePasswordForm } from '../hooks/authentication';
 
 
 const ChangePassScreen = ({ navigation, route }) => { // Add navigation prop
-  const [loading, setLoading] = React.useState(false);
-  const [newPassword, setNewPassword] = React.useState("");
   const [currentPassword, setCurrentPassword] = React.useState("");
+  const [newPassword, setNewPassword] = React.useState("");
   const [newPasswordRepeat, setNewPasswordRepeat] = React.useState("");
+  
   const [passwordError, setPasswordError] = React.useState(false);
   const [repeatPasswordError, setRepeatPasswordError] = React.useState(false);
+  
+  const { isPending: loading, mutate: sendForm } = useChangePasswordForm();
 
 
-
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (!validatePassword() || !validateRepeatPassword()){
-      Alert.alert("Validation Error", "Verify some of the fields and try again");
+      Alert.alert("Validation Error", "Verify your fields and try again");
       return;
     }
 
-    setLoading(true);
-    await postChangePassToApi({
+    sendForm({
       currentPassword,
-      newPasswordRepeat,
-      newPassword
-    }, navigation);
-    setLoading(false);
+      newPassword,
+      newPasswordRepeat
+    });
   };
 
   const navigateToHomeScreen = () => {

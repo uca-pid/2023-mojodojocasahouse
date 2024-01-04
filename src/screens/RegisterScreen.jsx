@@ -1,19 +1,14 @@
 import React from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  View,
-  Text,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
+import { SafeAreaView, ScrollView, View, Text, Alert } from 'react-native';
 import EmailValidator from 'email-validator';
 import { Dialog } from '@rneui/themed';
 
 import RegistrationSVG from '../../img/registration.svg';
 import CustomButton from '../components/CustomButton';
 import { AppInput } from '../components/AppInput';
-import { postRegistrationToApi } from '../utils/apiFetch';
+import { useRegistrationForm } from '../hooks/authentication';
+import HelperLink from '../components/HelperLink';
+
 
 const RegisterScreen = ({navigation}) => {
   const [firstName, setFirstName] = React.useState("");
@@ -21,12 +16,14 @@ const RegisterScreen = ({navigation}) => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [passwordRepeat, setPasswordRepeat] = React.useState("");
+
   const [firstNameError, setFirstNameError] = React.useState(false);
   const [lastNameError, setLastNameError] = React.useState(false);
   const [emailError, setEmailError] = React.useState(false);
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordRepeatError, setPasswordRepeatError] = React.useState(false);
-  const [loading, setLoading] = React.useState(false);
+
+  const { isPending: loading, mutate: sendForm } = useRegistrationForm();
 
   const validateEmail = () => {
     setEmailError(!EmailValidator.validate(email));
@@ -63,29 +60,39 @@ const RegisterScreen = ({navigation}) => {
   };
 
   const handleSubmit = async () => {
-    if(fieldsAreValid()){
-      setLoading(true);
-      await postRegistrationToApi({
-        firstName,
-        lastName,
-        email,
-        password,
-        passwordRepeat
-      }, navigation);
-      setLoading(false);
-    } else {
+    if( !fieldsAreValid() ){
       Alert.alert("Validation Error", "Check your fields and try again");
+      return;
     }
+
+    console.log({
+      firstName,
+      lastName,
+      email,
+      password,
+      passwordRepeat
+    });
+    sendForm({
+      firstName,
+      lastName,
+      email,
+      password,
+      passwordRepeat
+    });
   };
 
   return (
     <SafeAreaView style={{flex: 1, justifyContent: 'center'}}>
+
       <Dialog isVisible={loading}>
         <Dialog.Loading />
       </Dialog>
+
       <ScrollView
         showsVerticalScrollIndicator={false}
-        style={{paddingHorizontal: 25}}>
+        style={{paddingHorizontal: 25}}
+      >
+      
         <View style={{alignItems: 'center'}}>
           <RegistrationSVG
             height={300}
@@ -141,20 +148,12 @@ const RegisterScreen = ({navigation}) => {
 
         <CustomButton label={'Register'} onPress={handleSubmit} />
 
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            marginBottom: 30,
-          }}>
-          <Text 
-          style={{
-            color: 'black',
-          }}>Already registered?</Text>
-          <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-            <Text style={{color: '#AD40AF', fontWeight: '700'}}> Login</Text>
-          </TouchableOpacity>
-        </View>
+        <HelperLink 
+          label="Already registered?" 
+          highlightedText="Login"
+          onPress={() => navigation.navigate("Login")}
+        />
+
       </ScrollView>
     </SafeAreaView>
   );

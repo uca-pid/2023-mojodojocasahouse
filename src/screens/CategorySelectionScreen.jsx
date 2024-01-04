@@ -1,50 +1,12 @@
 import React from "react";
-import { ScrollView, Text, TouchableOpacity, Alert } from "react-native";
-import { ListItem, Icon } from "@rneui/themed";
-import LinearGradient from "react-native-linear-gradient";
+import { Text } from "react-native";
 
 import ScreenTemplate from "../components/ScreenTemplate";
-import { fetchUserCategoriesWithIcons } from "../utils/apiFetch";
-import { AuthContext } from "../context/AuthContext";
+import BackButton from "../components/BackButton";
+import CategoryList from "../components/CategoryList";
 
-const iconFactory = (id) => {
-  switch (id) {
-    case 1:
-      return "aircraft"
-    case 2:
-      return "drink"
-    case 3:
-      return "key"
-    case 4:
-      return "shopping-cart"
-    case 5:
-      return "clapperboard"
-    case 6:
-      return "squared-plus"
-    case 7:
-      return "man"
-    case 8:
-      return "open-book"
-    default:
-      return "credit"
-  }
-};
 
 const CategorySelectionScreen = ({navigation, route}) => {
-  const [loading, setLoading] = React.useState(false);
-  const [userCategories, setUserCategories] = React.useState([]);
-  const {sessionExpired} = React.useContext(AuthContext);
-
-  const handleFocusScreen = async () => {
-    try{
-      setLoading(true);
-      await fetchUserCategoriesWithIcons(setUserCategories, sessionExpired);
-    } catch (error) {
-      Alert.alert("Connection Error", "There was an error connecting to API");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleAddCategory = () => {
     const targetScreen = route.name.split("/")[0];
@@ -63,20 +25,8 @@ const CategorySelectionScreen = ({navigation, route}) => {
     });
   };
 
-  const handleBack = async () => {
-    navigation.goBack();
-  };
-
-  React.useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', handleFocusScreen);
-    handleFocusScreen();
-
-    return unsubscribe;
-  }, [navigation]);
-
   return (
-    <ScreenTemplate loading={loading}>
-
+    <ScreenTemplate>
       <ScreenTemplate.Content style={{paddingHorizontal: 15}}>
         <Text style={{
           fontFamily: 'Roboto-Medium',
@@ -87,55 +37,14 @@ const CategorySelectionScreen = ({navigation, route}) => {
           marginTop: 30,
         }}>Choose a category</Text>
 
+        <CategoryList 
+          onAdd={handleAddCategory}
+          onSelection={handleCategorySelection}
+          selectedCategory={route.params?.selectedCategory}
+        />
 
-        <ScrollView style={{height: 450}}>
-          <ListItem 
-            linearGradientProps={{
-              colors: ["#FFFFFF", "#E86DC3"],
-              start: { x: 0.9, y: 0 },
-              end: { x: -0.7, y: 0 },
-            }}
-            ViewComponent={LinearGradient}
-            bottomDivider
-            onPress={handleAddCategory}
-            >
-            <Icon name="add" type="ionicon"/>
-            <ListItem.Content>
-              <ListItem.Title>Create new category</ListItem.Title>
-            </ListItem.Content>
-            <ListItem.Chevron />
-          </ListItem>
+        <BackButton />
 
-          {userCategories.map((category, index) => (
-            <ListItem 
-              containerStyle={route.params?.selectedCategory?.category == category.category ? {backgroundColor: '#caffc2'}: null} 
-              key={index} 
-              bottomDivider 
-              onPress={() => handleCategorySelection(category)}
-            >
-              <Icon name={iconFactory(category.iconId)} type="entypo"/>
-              <ListItem.Content>
-                <ListItem.Title>{category.category}</ListItem.Title>
-              </ListItem.Content>
-              <ListItem.Chevron />
-            </ListItem>
-          ))}
-
-        </ScrollView>
-
-        <TouchableOpacity style={{
-          backgroundColor: 'grey',
-          borderRadius: 5,
-          padding: 10,
-          alignItems: 'center',
-          marginTop: 20,
-        }} onPress={handleBack}>
-          <Text style={{
-            color: 'white',
-            fontSize: 16,
-            fontWeight: 'bold',
-          }}>Back</Text>
-        </TouchableOpacity>
       </ScreenTemplate.Content>
     </ScreenTemplate>
   );

@@ -1,20 +1,18 @@
-import React from 'react';
-import { View, Text, ScrollView, Alert, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { BarChart } from 'react-native-chart-kit';
-import { ListItem } from 'react-native-elements'; // Import ListItem
-import { fetchUserCategories, fetchYearlySumOfExpenses } from '../utils/apiFetch';
-import { AuthContext } from '../context/AuthContext';
-import FilterModal from '../components/FilterModal';
+import { ListItem } from '@rneui/themed';
+
 import ScreenTemplate from '../components/ScreenTemplate';
+import { useYearlySumOfExpenses } from '../hooks/expenses';
+import FilterButton from '../components/Filter';
+
 
 const BarScreen = ({navigation, route}) => {
-  const [loading, setLoading] = React.useState(false);
-  const [yearlyExpenses, setYearlyExpenses] = React.useState([]);
-  const [categories, setCategories] = React.useState([]);
-  const [isFilterModalVisible, setFilterModalVisible] = React.useState(false);
-  const { sessionExpired } = React.useContext(AuthContext);
+  const [filterData, setFilterData] = useState({});
 
+  const { isPending: loading, data: yearlyExpenses } = useYearlySumOfExpenses(filterData);
 
   const chartConfig2 = {
     backgroundGradientFrom: "white",
@@ -33,55 +31,16 @@ const BarScreen = ({navigation, route}) => {
     barPercentage: 0.5,
   };
 
-  const handleFocus = async () => {
-    try {
-      setLoading(true);
-      await fetchYearlySumOfExpenses(setYearlyExpenses, sessionExpired);
-      await fetchUserCategories(setCategories, sessionExpired);
-    } catch (error) {
-      Alert.alert("Connection Error", "There was an error connecting to API");
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  // Function to handle filter modal submission
-  const handleFilterModalSubmit = async (data) => {
-    try {
-      setLoading(true);
-      await fetchYearlySumOfExpenses(setYearlyExpenses, sessionExpired, data);
-    } catch (error) {
-      Alert.alert("Connection Error", "There was an error connecting to API");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Function to toggle filter modal visibility
-  const toggleFilterModal = () => {
-    setFilterModalVisible(!isFilterModalVisible);
-  };
 
   const ListItemComponent = ({ year, value }) => (
     <ListItem key={year} bottomDivider>
       <ListItem.Content style={styles.listItemContent}>
-        
         <ListItem.Title style={styles.listItemTitle}>{year}</ListItem.Title>
         <ListItem.Subtitle  style={{ color: 'gray', marginLeft: 10 }} >${value}</ListItem.Subtitle>
       </ListItem.Content>
     </ListItem>
   );
-
-  React.useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", handleFocus);
-    handleFocus();
-    
-    return unsubscribe;
-  }, [navigation]);
-
-  React.useEffect(() => {
-    console.log(yearlyExpenses);
-  }, [yearlyExpenses]);
 
 
   return (
@@ -89,14 +48,12 @@ const BarScreen = ({navigation, route}) => {
       <ScreenTemplate.Logo />
 
       <ScreenTemplate.Content>
-        <View style={styles.addExpenseButtonContainer}>
-          <TouchableOpacity style={styles.button} onPress={toggleFilterModal}>
-            <Text style={styles.buttonText}>Choose Categories and Date Range</Text>
-          </TouchableOpacity>
-        </View>
-        <ScrollView contentContainerStyle={styles.scrollviewContentContainer} horizontal={true}>
+        
+        <FilterButton onDone={setFilterData} />
+
+        <ScrollView style={styles.scrollviewContentContainer} horizontal={true}>
           <View style={{ paddingLeft: '5%', paddingBottom: '8%', paddingTop: '16%' }}>
-            {yearlyExpenses.length ? (
+            {yearlyExpenses && yearlyExpenses.length ? (
               <>
                 <BarChart
                   data={{
@@ -129,7 +86,6 @@ const BarScreen = ({navigation, route}) => {
           </View>
         </ScrollView>
       </ScreenTemplate.Content>
-      <FilterModal visible={isFilterModalVisible} data={categories} onDone={handleFilterModalSubmit} onCancel={toggleFilterModal} />
     </ScreenTemplate>
   );
 };

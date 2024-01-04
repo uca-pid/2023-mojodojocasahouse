@@ -5,9 +5,9 @@ import DatePicker from 'react-native-date-picker';
 
 import ScreenTemplate from '../components/ScreenTemplate';
 import { AppInput } from '../components/AppInput';
-import { postExpenseToApi, fetchActiveBudgetsByDateAndCategory } from '../utils/apiFetch';
 import BudgetFilledMeter from '../components/BudgetFilledMeter';
-import { AuthContext } from '../context/AuthContext';
+import { useActiveBudgetByDateAndCategory } from '../hooks/budgets';
+import { useExpenseCreationForm } from '../hooks/expenses';
 
 const iconFactory = (id) => {
   switch (id) {
@@ -32,17 +32,23 @@ const iconFactory = (id) => {
   }
 };
 
+
 const AddExpenseScreen = ({navigation, route}) => {
-  const [loading, setLoading] = React.useState(false);
   const [concept, setConcept] = React.useState("");
   const [amount, setAmount] = React.useState("");
   const [date, setDate] = React.useState(new Date());
+
   const [dateModalOpen, setDateModalOpen] = React.useState(false);
   const [conceptHasError, setConceptError] = React.useState(false);
   const [amountHasError, setAmountError] = React.useState(false);
-  const [activeBudget, setActiveBudget] = React.useState(null);
-  const {sessionExpired} = React.useContext(AuthContext);
+  
+  // if budget === null, that means there's no budget for selected date.
+  // if budget === undefined, that means it's still fetching from api.
+  const { isPending: isPendingActiveBudgets , data: activeBudget } = useActiveBudgetByDateAndCategory(date, route.params.selectedCategory.category);
+  const { isPending: isPendingForm , mutate: sendForm } = useExpenseCreationForm();
 
+  const loading = isPendingActiveBudgets || isPendingForm;
+  
   const handleSubmit = async () => {
     if(checkForErrors()){
       Alert.alert("Validation error", "Please correct selected fields and try again.");
@@ -56,21 +62,7 @@ const AddExpenseScreen = ({navigation, route}) => {
       iconId: route.params.selectedCategory.iconId
     };
 
-    setLoading(true);
-    try{
-      await postExpenseToApi(newExpense);
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-
-      if(error.type == "Session Expired"){
-        Alert.alert(error.type, error.message, [{text: 'OK', onPress: sessionExpired}]);
-        return;
-      }
-      Alert.alert(error.type, error.message);
-      return;
-    } 
-    Alert.alert("Success", "Expense created successfully");
+    sendForm(newExpense);
   };
 
   const handleBack = async () => {
@@ -96,16 +88,6 @@ const AddExpenseScreen = ({navigation, route}) => {
     setAmountError(!isValid);
     return !isValid;
   };
-
-  const handleFocus = async () => {
-    setLoading(true);
-    await fetchActiveBudgetsByDateAndCategory(date, route.params.selectedCategory.category, setActiveBudget);
-    setLoading(false);
-  };
-
-  React.useEffect(() => {
-    handleFocus();
-  }, [route, date]);
 
   return (
     <ScreenTemplate loading={loading}>

@@ -1,21 +1,12 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  ImageBackground,
-  TouchableOpacity,
-} from 'react-native';
-import {
-  DrawerContentScrollView,
-  DrawerItemList,
-} from '@react-navigation/drawer';
-
+import { View, Text, ImageBackground, TouchableOpacity } from 'react-native';
+import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { AuthContext } from '../context/AuthContext';
+import { useAuthentication } from '../hooks/authentication';
 
 const CustomDrawer = props => {
-  const {signOut} = React.useContext(AuthContext);
+  const { signOut, userCredentials, isAuthenticated } = useAuthentication();
 
   return (
     <View style={{flex: 1}}>
@@ -36,16 +27,19 @@ const CustomDrawer = props => {
               fontFamily: 'Roboto-Medium',
               marginBottom: 5,
             }}>
-            {props.username}
+            {userCredentials? `${userCredentials.firstName} ${userCredentials.lastName}` : "Anonymous"}
           </Text>
         </ImageBackground>
         <View style={{flex: 1, backgroundColor: '#fff', paddingTop: 10}}>
           <DrawerItemList {...props} />
         </View>
       </DrawerContentScrollView>
-      {props.username != "Anonymous"? (
+      {isAuthenticated ? (
         <View style={{padding: 20, borderTopWidth: 1, borderTopColor: '#ccc'}}>
-          <TouchableOpacity onPress={signOut} style={{paddingVertical: 15}}>
+          <TouchableOpacity onPress={() => {
+              props.navigation.closeDrawer();
+              signOut();
+            }} style={{paddingVertical: 15}}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Ionicons name="exit-outline" size={22} color={'black'}/>
               <Text

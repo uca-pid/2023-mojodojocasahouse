@@ -5,8 +5,7 @@ import DatePicker from 'react-native-date-picker';
 
 import ScreenTemplate from '../components/ScreenTemplate';
 import { AppInput } from '../components/AppInput';
-import { postBudgetToApi } from '../utils/apiFetch';
-import { AuthContext } from '../context/AuthContext';
+import { useBudgetCreationForm } from '../hooks/budgets';
 
 const iconFactory = (id) => {
   switch (id) {
@@ -31,19 +30,21 @@ const iconFactory = (id) => {
   }
 };
 
+
 const AddBudgetScreen = ({navigation, route}) => {
-  const [loading, setLoading] = React.useState(false);
   const [name, setName] = React.useState("");
   const [amount, setAmount] = React.useState("");
   const [startDate, setStartDate] = React.useState(new Date());
   const [endDate, setEndDate] = React.useState(new Date());
-  const [startDateOpen, setStartDateOpen] = React.useState(false);
-  const [endDateOpen, setEndDateOpen] = React.useState(false);
+  
   const [nameHasError, setNameError] = React.useState(false);
   const [amountHasError, setAmountError] = React.useState(false);
-  const {sessionExpired} = React.useContext(AuthContext);
 
-  const delay = ms => new Promise(res => setTimeout(res, ms));
+  const [startDateOpen, setStartDateOpen] = React.useState(false);
+  const [endDateOpen, setEndDateOpen] = React.useState(false);
+  
+  const { isPending: loading, mutate: sendForm } = useBudgetCreationForm();
+
 
   const handleSubmit = async () => {
     if(checkForErrors()){
@@ -58,22 +59,7 @@ const AddBudgetScreen = ({navigation, route}) => {
       limitDate: endDate
     };
 
-    setLoading(true);
-    try {
-      await postBudgetToApi(newBudget);
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-
-      if(error.type == "Session Expired"){
-        Alert.alert(error.type, error.message, [{text: 'OK', onPress: sessionExpired}]);
-        return;
-      }
-      Alert.alert(error.type, error.message);
-      return;
-    }
-    Alert.alert("Success", "Budget created successfully", 
-    [{ text: 'OK', onPress: async () => {await delay(1000); navigation.navigate("budget-list"); navigation.navigate("Table");} }]);
+    sendForm(newBudget);
   };
 
   const handleBack = async () => {

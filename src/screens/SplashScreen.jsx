@@ -1,6 +1,7 @@
 import React from 'react';
 import ScreenTemplate from '../components/ScreenTemplate';
 
+
 const SplashScreen = ({ navigation, route }) => {
 
   return (
