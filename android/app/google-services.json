@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "419273163889",
+    "project_id": "xtra-app-16800",
+    "storage_bucket": "xtra-app-16800.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:419273163889:android:71f9dd4bed502a98d9c7d0",
+        "android_client_info": {
+          "package_name": "com.extraapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-CMJRq5lHmP_i4ovZIUX2ww7qGRV4wlc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

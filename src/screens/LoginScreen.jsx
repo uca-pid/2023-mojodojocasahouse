@@ -6,12 +6,13 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { Switch } from 'react-native-paper';
-
 import LoginSVG from '../../img/login.svg';
 import CustomButton from '../components/CustomButton';
 import { AppInput } from '../components/AppInput';
 import { AuthContext } from '../context/AuthContext';
 import { Dialog } from '@rneui/themed';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import messaging from '@react-native-firebase/messaging';
 
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = React.useState("");
@@ -20,9 +21,15 @@ const LoginScreen = ({navigation}) => {
   const [loading, setLoading] = React.useState(false);
   const {signIn} = React.useContext(AuthContext);
 
+
+  // Function to handle login and send FCM token
   const handleSubmitLogin = async () => {
     setLoading(true);
-    await signIn({email, password, rememberMe});
+
+    // 1️⃣ Perform login request
+    await signIn({ email, password, rememberMe });
+
+  
     setLoading(false);
   };
 
@@ -71,6 +78,7 @@ const LoginScreen = ({navigation}) => {
           <Text style={{
             justifyContent: 'center',
             alignItems: 'center',
+            color: '#333',
           }} >Remember me:</Text>
 
           <View style={{
@@ -83,14 +91,15 @@ const LoginScreen = ({navigation}) => {
         
         <CustomButton label={"Login"} onPress={handleSubmitLogin} />
 
-
         <View
           style={{
             flexDirection: 'row',
             justifyContent: 'center',
             marginBottom: 15,
           }}>
-          <Text>New to the app?</Text>
+          <Text style={{
+            color: '#333',
+          }}>New to the app?</Text>
           <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
             <Text style={{color: '#E86DC3', fontWeight: '700'}}> Register</Text>
           </TouchableOpacity>
@@ -102,7 +111,9 @@ const LoginScreen = ({navigation}) => {
             justifyContent: 'center',
             marginBottom: 30,
           }}>
-          <Text>Forgot your password?</Text>
+          <Text style={{
+            color: '#333',
+          }} >Forgot your password?</Text>
           <TouchableOpacity onPress={() => navigation.navigate('forgotten-password')}>
             <Text style={{color: '#E86DC3', fontWeight: '700'}}> Tap here</Text>
           </TouchableOpacity>

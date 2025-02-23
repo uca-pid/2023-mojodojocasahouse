@@ -181,6 +181,7 @@ const GraphScreen = () => {
                 data={legendData}
                 renderItem={renderItem}
                 keyExtractor={(item) => item.name}
+                
               />
             </>
           ) : (

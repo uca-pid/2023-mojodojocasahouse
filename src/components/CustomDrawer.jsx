@@ -13,6 +13,7 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { AuthContext } from '../context/AuthContext';
+import { black } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
 
 const CustomDrawer = props => {
   const {signOut} = React.useContext(AuthContext);
@@ -53,6 +54,7 @@ const CustomDrawer = props => {
                   fontSize: 15,
                   fontFamily: 'Roboto-Medium',
                   marginLeft: 5,
+                  color: 'black',
                 }}>
                 Sign Out
               </Text>

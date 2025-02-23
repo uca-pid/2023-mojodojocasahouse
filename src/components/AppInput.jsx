@@ -163,11 +163,16 @@ const ConceptInput = (props) => {
 };
 AppInput.Concept = ConceptInput;
 
+const handleChange = (text, fnFromProps) => {
+  const numericText = text.replace(/[^0-9]/g, '');
+  fnFromProps(numericText)
+  };
+
 const AmountInput = (props) => {
   return(
     <Input 
       value={props.value}
-      onChangeText={props.onChangeText}
+      onChangeText={(text) => handleChange(text, props.onChangeText)}
       placeholder={props.placeholder || 'Amount'}
       containerStyle={{
         width: '100%',
@@ -193,10 +198,13 @@ const AmountInput = (props) => {
       errorMessage={props.errorMessage}
       maxLength={12}
       onEndEditing={props.onEndEditing}
+      keyboardType="number-pad"
+  
     />
   );
 };
 AppInput.Amount = AmountInput;
+
 
 const DateInput = props => {
   return(

@@ -42,17 +42,34 @@ const AddBudgetScreen = ({navigation, route}) => {
   const [amountHasError, setAmountError] = React.useState(false);
 
   const handleSubmit = async () => {
-    if(checkForErrors()){
+    if (checkForErrors()) {
       Alert.alert("Validation error", "Please correct selected fields and try again.");
       return;
     }
-
+  
     setLoading(true);
-    await postBudgetToApi({
-      name, limitAmount: amount, ...(route.params.selectedCategory), startingDate: startDate, limitDate: endDate
+    const postBudgetRes = await postBudgetToApi({
+      name,
+      limitAmount: amount,
+      ...(route.params.selectedCategory),
+      startingDate: startDate,
+      limitDate: endDate,
     });
+  
     setLoading(false);
+  
+    if (postBudgetRes === 0) {
+      // Budget created successfully
+      navigation.popToTop();
+      navigation.goBack();
+    } else if (postBudgetRes === 1) {
+      // Budget creation failed (handled in postBudgetToApi)
+      return;
+    } else {
+      Alert.alert("Error", "Please choose another set of Dates.");
+    }
   };
+  
 
   const handleBack = async () => {
     navigation.goBack();

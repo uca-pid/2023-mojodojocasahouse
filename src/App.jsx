@@ -12,7 +12,7 @@ import ResetPasswordScreen from './screens/ResetPasswordScreen';
 import GraphScreen from './screens/GraphScreen';
 import BarScreen from './screens/BarScreen';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { doLogout, doSignIn, verifyCredentials } from './utils/apiFetch';
+import { doLogout, doSignIn, fetchWithTimeout, verifyCredentials } from './utils/apiFetch';
 import SplashScreen from './screens/SplashScreen';
 import CustomDrawer from './components/CustomDrawer';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -22,6 +22,15 @@ import BudgetsScreen from './screens/BudgetsScreen';
 import BudgetStack from './navigation/BudgetStack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ExpenseStack from './navigation/ExpenseStack';
+import ShareExpenseScreen from './screens/ShareExpenseScreen';
+import { PermissionsAndroid } from 'react-native';
+import messaging from '@react-native-firebase/messaging'
+import { API_URL } from "@env";
+
+
+
+PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS)
+
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -81,10 +90,17 @@ const App = () => {
       let responseStatus;
 
       responseStatus = await verifyCredentials();
-        
+      // Fetch token. Usarlo cuando me registre para asignarlo a un usuario.
+      messaging().getToken().then((token) => console.log("Firebase token: ", token))
+
+      // Suscribir a Push notifications en foreground
+      const unsubscribe = messaging().onMessage(async remoteMessage => {
+        Alert.alert(remoteMessage.data.title, remoteMessage.data.body)}
+      )
       switch(responseStatus) {
         case("2xx"):
           const credentials = await AsyncStorage.getItem('userCredentials');
+          console.log(credentials)
           dispatch({ type: 'RESTORE_TOKEN', hasCredentials: true, userCredentials: credentials });
           break;
         case("4xx"):
@@ -97,6 +113,7 @@ const App = () => {
           ]);
           break;
       }
+      return unsubscribe;
     };
 
     bootstrapAsync();
@@ -105,24 +122,58 @@ const App = () => {
   const authContext = React.useMemo(
     () => ({
       signIn: async (request) => {
-        let {status, credentials} = await doSignIn(request);
-
-        switch(status){
-          case("2xx"):
-            await AsyncStorage.setItem("userCredentials", JSON.stringify(credentials));
-            dispatch({ type: 'SIGN_IN', hasCredentials: true, userCredentials: credentials });
-            break;
-          case("4xx"):
-            Alert.alert("Invalid credentials", "Check fields and try again.");
-            break;
-          case("5xx"):
-            Alert.alert("Oops!", "An error ocurred, try again later.");
-            break;
-        }
-      },
+        try {
+          const response = await doSignIn(request);
+  
+          if (!response) {
+              throw new Error("No response from signIn function");
+          }
+  
+          const { status, credentials } = response;
+  
+          if (!status) {
+              throw new Error("Missing 'status' in response");
+          }
+  
+          switch (status) {
+              case "2xx":
+                  console.log("✅ User successfully logged in:", credentials);
+                  await AsyncStorage.setItem("userCredentials", JSON.stringify(credentials));
+  
+                  console.log("✅ Fetching Firebase token...");
+                  const token = await messaging().getToken();
+                  console.log("🔥 Firebase Token:", token);
+  
+                  if (token) {
+                      await fetchWithTimeout(API_URL + "/update-firebase-token", {
+                          method: "POST",
+                          headers: {
+                              "Content-Type": "application/json",
+                          },
+                          body: JSON.stringify({ token }),
+                      });
+                      console.log("Token sent to backend successfully.");
+                  } else {
+                      console.error("Missing userId or Firebase token.");
+                  }
+  
+                  dispatch({ type: "SIGN_IN", hasCredentials: true, userCredentials: credentials });
+                  break;
+              case "4xx":
+                  Alert.alert("Invalid credentials", "Check fields and try again.");
+                  break;
+              case "5xx":
+                  Alert.alert("Oops!", "An error occurred, try again later.");
+                  break;
+              default:
+                  console.error("Unexpected status:", status);
+          }
+      } catch (error) {
+          console.error("Error in signIn function:", error);
+      }
+  },
       signOut: async () => {
-        // First we call API to indicate that we are signing out,
-        // this way we can invalidate credentials from backend
+
         let apiStatusResponse = await doLogout();
 
         switch(apiStatusResponse){
@@ -148,6 +199,7 @@ const App = () => {
   );
 
   const DrawerNavigation = (props) => {
+    {console.log(state.userCredentials)}
     return (
       <Drawer.Navigator 
       drawerContent={props => (
@@ -166,7 +218,6 @@ const App = () => {
       }} 
       backBehavior='history'>
       {state.isLoading ? (
-            // We haven't finished checking for the token yet
             <>
               <Drawer.Screen 
                 name="Splash" 
@@ -269,6 +320,16 @@ const App = () => {
                 ),
               }}
             />
+             <Drawer.Screen
+            name="Share Expense"
+            component={ShareExpenseScreen}
+            options={{
+              title: "Shared Expenses",
+              drawerIcon: ({color}) => (
+                <Ionicons name="people-outline" size={22} color={color} />
+              ),
+            }}
+          />
           </>
         )}
       </Drawer.Navigator>

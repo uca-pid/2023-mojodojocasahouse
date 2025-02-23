@@ -8,6 +8,7 @@ import { AppInput } from '../components/AppInput';
 import { postExpenseToApi, fetchActiveBudgetsByDateAndCategory } from '../utils/apiFetch';
 import BudgetFilledMeter from '../components/BudgetFilledMeter';
 import { AuthContext } from '../context/AuthContext';
+import { StackActions } from '@react-navigation/native';
 
 const iconFactory = (id) => {
   switch (id) {
@@ -48,17 +49,30 @@ const AddExpenseScreen = ({navigation, route}) => {
       Alert.alert("Validation error", "Please correct selected fields and try again.");
       return;
     }
+
+    let localDate = new Date(date.getTime()) // ✅ Adjust for timezone
+  .toISOString()
+   
+
     let newExpense = {
       concept,
       amount,
-      date: date.toISOString().substring(0, 10),
+      date: localDate,
       category: route.params.selectedCategory.category,
       iconId: route.params.selectedCategory.iconId
     };
 
     setLoading(true);
-    await postExpenseToApi(newExpense, sessionExpired);
+    const postExpenseRes = await postExpenseToApi(newExpense, sessionExpired)
+    console.log("Selected Date:", date);
+console.log("Adjusted Date Sent to API:", localDate);
     setLoading(false);
+    if(postExpenseRes){
+      return
+    }
+      navigation.popToTop()
+      navigation.goBack()
+      return
   };
 
   const handleBack = async () => {

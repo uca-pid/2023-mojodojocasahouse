@@ -6,27 +6,39 @@ import { AppInput } from "../components/AppInput";
 import { Icon } from "@rneui/themed";
 import { Picker } from "../components/Picker";
 
-const NewCategoryScreen = ({navigation, route}) => {
+const NewCategoryScreen = ({ navigation, route }) => {
   const [categoryName, setCategoryName] = React.useState("");
-  const [custIcon, setCustIcon] = React.useState({value: 0, iconName: 'credit', iconType: 'entypo'});
+  const [custIcon, setCustIcon] = React.useState({
+    value: 0,
+    iconName: "credit",
+    iconType: "entypo",
+  });
   const [isIconPickerVisible, setIconPickerVisible] = React.useState(false);
   const [nameHasError, setNameError] = React.useState(false);
 
   const handleCreate = () => {
-    if(checkCustomCategoryError()){
-      Alert.alert("Validation error", "Please correct selected fields and try again.");
+    if (checkCustomCategoryError()) {
+      Alert.alert(
+        "Validation error",
+        "Please correct selected fields and try again."
+      );
       return;
     }
+  
     const targetScreen = route.name.split("/")[0];
-
+  
+    const uppercaseCategoryName = categoryName.toUpperCase();
+  
+    console.log("Navigating with category:", uppercaseCategoryName); // Debugging log
+  
     navigation.navigate(targetScreen, {
       selectedCategory: {
-        category: categoryName,
-        iconId: custIcon.value
+        category: uppercaseCategoryName,
+        iconId: custIcon.value,
       },
-      selectedItem: route.params?.selectedItem
+      selectedItem: route.params?.selectedItem,
     });
-  }
+  };
 
   const handleBack = () => {
     navigation.goBack();
@@ -39,36 +51,48 @@ const NewCategoryScreen = ({navigation, route}) => {
     return !isValid;
   };
 
+  const handleEndEditing = () => {
+    // Convert to uppercase after editing ends
+    setCategoryName((prevName) => prevName.toUpperCase());
+    checkCustomCategoryError();
+  };
+
   return (
     <ScreenTemplate>
-      <ScreenTemplate.Content style={{paddingHorizontal: 15}}>
-        <Text style={{
-          fontFamily: 'Roboto-Medium',
-          fontSize: 28,
-          fontWeight: '500',
-          color: '#333',
-          marginBottom: 30,
-          marginTop: 30,
-        }}>Create Expense</Text>
-        
+      <ScreenTemplate.Content style={{ paddingHorizontal: 15 }}>
+        <Text
+          style={{
+            fontFamily: "Roboto-Medium",
+            fontSize: 28,
+            fontWeight: "500",
+            color: "#333",
+            marginBottom: 30,
+            marginTop: 30,
+          }}
+        >
+          Create Category
+        </Text>
+
         <Text>Name</Text>
         <AppInput.Category
           value={categoryName}
           onChangeText={setCategoryName}
-          errorMessage={nameHasError? "Concept may only contain letters or numbers" : null}
-          onEndEditing={checkCustomCategoryError}
+          errorMessage={
+            nameHasError ? "Concept may only contain letters or numbers" : null
+          }
+          onEndEditing={handleEndEditing}
           rightIcon={
             <Icon
               name={custIcon.iconName}
               type={custIcon.iconType}
               size={24}
-              color='black'
+              color="black"
               onPress={() => setIconPickerVisible(true)}
             />
           }
         />
 
-        <Picker.Icon 
+        <Picker.Icon
           visible={isIconPickerVisible}
           value={custIcon}
           onChange={setCustIcon}
@@ -83,40 +107,37 @@ const NewCategoryScreen = ({navigation, route}) => {
         <TouchableOpacity style={styles.cancelButton} onPress={handleBack}>
           <Text style={styles.cancelButtonText}>Back</Text>
         </TouchableOpacity>
-        
       </ScreenTemplate.Content>
-
     </ScreenTemplate>
   );
 };
 
 const styles = StyleSheet.create({
   saveButton: {
-    backgroundColor: '#E86DC3',
+    backgroundColor: "#E86DC3",
     borderRadius: 5,
     padding: 10,
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 10,
     marginTop: 20,
     borderWidth: 1,
   },
   saveButtonText: {
-    color: 'white',
+    color: "white",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   cancelButton: {
-    backgroundColor: 'grey',
+    backgroundColor: "grey",
     borderRadius: 5,
     padding: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
   cancelButtonText: {
-    color: 'white',
+    color: "white",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });
-
 
 export default NewCategoryScreen;

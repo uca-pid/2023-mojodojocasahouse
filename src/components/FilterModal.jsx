@@ -21,10 +21,10 @@ const FilterModal = props => {
         until,
         categories
       };
-
+    
+      console.log("FilterModal submitting:", data); // <-- Debugging log
       props.onDone(data);
     };
-
     const handleCancel = () => {
       props.onCancel();
     };

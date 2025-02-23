@@ -59,6 +59,8 @@ const ModifyExpenseScreen = ({navigation, route}) => {
     setLoading(true);
     await postEditExpenseToApi(newExpense);
     setLoading(false);
+    navigation.popToTop()
+    navigation.goBack()
   };
 
   const handleBack = async () => {

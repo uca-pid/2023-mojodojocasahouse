@@ -49,18 +49,20 @@ const BarScreen = () => {
     const yearlyExpenses = {};
     expenses.forEach((expense) => {
       const expenseYear = new Date(expense.date).getFullYear();
-      if (!yearlyExpenses[expenseYear]) {
-        yearlyExpenses[expenseYear] = 0;
-      }
+      
       if (selectedCategories.length === 0 || selectedCategories.includes(expense.category)) { // Check if the expense category is selected
         if (
           (!selectedDateRange.from || new Date(expense.date) >= selectedDateRange.from) &&
           (!selectedDateRange.until || new Date(expense.date) <= selectedDateRange.until)
         ) { // Check if the expense date is within the selected range
+          if (!yearlyExpenses[expenseYear]) {
+            yearlyExpenses[expenseYear] = 0;
+          }
           yearlyExpenses[expenseYear] += expense.amount;
         }
       }
     });
+    console.log(yearlyExpenses)
     return yearlyExpenses;
   };
 

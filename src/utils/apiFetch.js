@@ -1,7 +1,7 @@
 import { Alert } from "react-native";
 import { Buffer } from 'buffer';
 import { API_URL } from "@env";
-
+import messaging from '@react-native-firebase/messaging'
 
 
 async function fetchWithTimeout(resource, options = {}) {
@@ -19,6 +19,30 @@ async function fetchWithTimeout(resource, options = {}) {
   return response;
 }
 
+ const removeSharedUser = async (expenseId, userEmail) => {
+  try {
+    const response = await fetchWithTimeout(`${API_URL}/removeSharedUser`, {
+      method: "DELETE",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ expenseId, userEmail }),
+    });
+
+    if (response.ok) {
+      return true;
+    }
+
+    const responseBody = await response.json();
+    Alert.alert("Error", responseBody.message || "Failed to remove user.");
+    return false;
+  } catch (error) {
+    console.error("removeSharedUser Error:", error);
+    Alert.alert("Connection Error", "Unable to connect to the server.");
+    return false;
+  }
+};
+
+
 const postExpenseToApi = async (newExpense, sessionExpiredCallback) => {
   let response = await fetchWithTimeout( API_URL + "/addExpense", {
     method: 'POST',
@@ -34,7 +58,7 @@ const postExpenseToApi = async (newExpense, sessionExpiredCallback) => {
   // OK
   if(response.ok){
     Alert.alert("Success", "Expense added successfully!");
-    return;
+    return 0;
   }
 
   // UNAUTHORIZED
@@ -44,22 +68,205 @@ const postExpenseToApi = async (newExpense, sessionExpiredCallback) => {
       "Please log in again to continue",
       sessionExpiredCallback
     );
-    return;
+    return 1;
   }
 
   // INTERNAL ERROR
   if(response.status >= 500){
     Alert.alert("Server Error", "Oops! An unknown error happened");
-    return;
+    return 1;
   }
 
   // OTHER ERROR
   Alert.alert("API Error", responseBody.message);
+  return 1
+};
+
+const fetchAcceptedSharedExpenses = async (setExpenses, sessionExpiredCallback) => {
+  try {
+    const response = await fetchWithTimeout(API_URL + "/getAcceptedSharedExpenses", {
+      method: "GET",
+      credentials: "include",
+    });
+
+    if (response.ok) {
+      const responseBody = await response.json();
+      setExpenses(responseBody);
+      return;
+    }
+
+    if (response.status === 401) {
+      Alert.alert("Session Expired", "Please log in again to continue", [
+        { text: "OK", onPress: sessionExpiredCallback },
+      ]);
+      return;
+    }
+
+    Alert.alert("API Error", "Failed to fetch accepted shared expenses.");
+  } catch (error) {
+    console.error("fetchAcceptedSharedExpenses Error:", error);
+    Alert.alert("Connection Error", "Unable to connect to the server.");
+  }
+};
+
+const manageSharedExpense = async (shareExpenseData, sessionExpiredCallback) => {
+  try {
+      const response = await fetchWithTimeout(API_URL + "/shareExpense", {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(shareExpenseData),
+      });
+
+      if (response.ok) {
+          return await response.json();
+      }
+
+      if (response.status === 401) {
+          Alert.alert("Session Expired", "Please log in again to continue", [
+              { text: "OK", onPress: sessionExpiredCallback },
+          ]);
+          return null;
+      }
+
+      const responseBody = await response.json();
+      Alert.alert("API Error", responseBody.message || "Failed to share expense.");
+      return null;
+  } catch (error) {
+      console.error("manageSharedExpense Error:", error);
+      Alert.alert("Connection Error", "Unable to connect to the server.");
+      return null;
+  }
+};
+
+// Fetch shared expense statuses
+const fetchSharedExpenseStatuses = async (expenseId, setStatuses, sessionExpiredCallback) => {
+  try {
+    let response = await fetchWithTimeout(API_URL + `/sharedExpenseStatus/${expenseId}`, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    if (response.ok) {
+      const responseBody = await response.json();
+      setStatuses(responseBody);
+      return;
+    }
+
+    if (response.status === 401) {
+      Alert.alert("Session Expired", "Please log in again to continue", [
+        { text: "OK", onPress: sessionExpiredCallback },
+      ]);
+      return;
+    }
+
+    Alert.alert("API Error", "Failed to fetch shared expense statuses.");
+  } catch (error) {
+    console.error("fetchSharedExpenseStatuses", error);
+    Alert.alert("Connection Error", "Unable to connect to the server.");
+  }
+};
+
+// Respond to shared expense (ACCEPT, REJECT)
+const respondToSharedExpense = async (expenseId, responseData, sessionExpiredCallback) => {
+  try {
+    let response = await fetchWithTimeout(API_URL + `/respondToSharedExpense/${expenseId}`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(responseData),
+    });
+
+    if (response.ok) {
+      Alert.alert("Success", "Your response was recorded successfully.");
+      return;
+    }
+
+    if (response.status === 401) {
+      Alert.alert("Session Expired", "Please log in again to continue", [
+        { text: "OK", onPress: sessionExpiredCallback },
+      ]);
+      return;
+    }
+
+    const responseBody = await response.json();
+    Alert.alert("API Error", responseBody.message);
+  } catch (error) {
+    console.error("respondToSharedExpense", error);
+    Alert.alert("Connection Error", "Unable to connect to the server.");
+  }
+};
+const fetchSharedExpenseStatus = async (expenseId, sessionExpiredCallback) => {
+  try {
+    const response = await fetchWithTimeout(API_URL + `/sharedExpenseStatus/${expenseId}`, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    if (response.ok) {
+      // Return the parsed response body
+      return await response.json();
+    }
+
+    if (response.status === 401) {
+      Alert.alert("Session Expired", "Please log in again to continue", [
+        { text: "OK", onPress: sessionExpiredCallback },
+      ]);
+      return null;
+    }
+
+    const responseBody = await response.json();
+    console.log("internal fetch: " + responseBody)
+
+
+    Alert.alert("API Error", responseBody.message || "Failed to fetch shared expense status.");
+    return null;
+  } catch (error) {
+    console.error("fetchSharedExpenseStatus Error:", error);
+    Alert.alert("Connection Error", "Unable to connect to the server.");
+    return null;
+  }
+};
+
+const fetchPendingSharedExpenses = async (setPendingExpenses, sessionExpiredCallback) => {
+  try {
+    const response = await fetchWithTimeout(API_URL + "/getPendingSharedExpenses", {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.ok) {
+      const responseBody = await response.json();
+      setPendingExpenses(responseBody);
+      return;
+    }
+
+    if (response.status === 401) {
+      Alert.alert("Session Expired", "Please log in again to continue", [
+        { text: "OK", onPress: sessionExpiredCallback },
+      ]);
+      return;
+    }
+
+    Alert.alert("API Error", "Failed to fetch pending shared expenses.");
+  } catch (error) {
+    console.error("fetchPendingSharedExpenses Error:", error);
+    Alert.alert("Connection Error", "Unable to connect to the server.");
+  }
 };
 
 
 
+
 const doLogout = async () => {
+
+  await messaging().deleteToken();
+
   try {
     let response = await fetchWithTimeout( API_URL + "/logout", {
       method: "POST",
@@ -155,47 +362,44 @@ const fetchUserCategoriesWithIcons = async (setCategories, sessionExpiredCallbac
 
 
 const fetchExpensesList = async (setExpenses, sessionExpiredCallback, request = {}) => {
-  try{
-    let response = await fetchWithTimeout(API_URL + "/getMyExpenses?categories=" + (request.categories? request.categories.map(c => c + ",")  : "") + "&from=" + (request.from? request.from.toISOString().substring(0,10) : "") + "&until=" + (request.until? request.until.toISOString().substring(0,10) : ""), {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
+  let queryParams = "";
+
+
+  if (request.categories && request.categories.length > 0) {
+      queryParams += ("categories=" + request.categories.join(","));
+  }
+  if (request.from) {
+      queryParams +=((queryParams.length?"&":"")+"from=" + request.from.toISOString().substring(0, 10));
+  }
+  if (request.until) {
+      queryParams+=((queryParams.length?"&":"")+"until=" + request.until.toISOString().substring(0, 10));
+  }
+
+  const url = `${API_URL}/getMyExpenses?${queryParams}`;
+
+  try {
+      const response = await fetchWithTimeout(url, {
+          method: "GET",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+      });
+
+      const responseBody = await response.json();
+
+      if (response.ok) {
+          
+          setExpenses(responseBody.map(item => ({
+              ...item.expense,
+              isOwner: item.isOwner
+          })));
+      } else {
+          console.error("API returned error:", responseBody);
       }
-    });
-    let responseBody = await response.json();
-    // console.log(response);
-    // OK
-    if(response.ok){
-      setExpenses(responseBody);
-      return;
-    }
-    
-    // UNAUTHORIZED
-    if(response.status == 401){
-      Alert.alert(
-        "Session Expired", 
-        "Please log in again to continue",
-        [{text: 'OK', onPress: sessionExpiredCallback}]
-      );
-      return;
-    }
-
-    // INTERNAL ERROR
-    if(response.status >= 500){
-      Alert.alert("Server Error", "Oops! An unknown error happened");
-      return;
-    }
-
-    // OTHER ERROR
-    Alert.alert("API Error", responseBody.message);
-
-  } catch(error){
-    console.log("fetchExpensesList");
-    console.log(error);
-    Alert.alert("Connection Error", "There was an error connecting to API");
+  } catch (error) {
+      console.error("fetchExpensesList Error:", error);
   }
 };
+
 
 
 const verifyCredentials = async () => {
@@ -220,7 +424,8 @@ const verifyCredentials = async () => {
     return "2xx";
 
   } catch (error) {
-    console.log("verifyCredentials");
+    console.log("verifyCredentials Error");
+    console.log(error.message)
     console.log(error);
     return "5xx";
   }
@@ -229,13 +434,21 @@ const verifyCredentials = async () => {
 
 const doSignIn = async (request) => {
   try {
+
+    const fcmToken = await messaging().getToken();
+    let formData = new FormData()
+    formData.append('remember-me', request.rememberMe)
+    formData.append("fcm-token", fcmToken)
+
     let response = await fetchWithTimeout(API_URL + "/login", {
       method: 'POST',
       credentials: 'include',
       headers: {
         Accept: 'application/json',
+        
         Authorization: "Basic " + Buffer.from(request.email + ":" + request.password, 'utf8').toString('base64')
       },
+      //body: formData
       body: new FormData().append('remember-me', request.rememberMe)
     });
     let responseBody = await response.json();
@@ -603,43 +816,51 @@ const fetchUserBudgets = async (setUserBudgets) => {
 const postBudgetToApi = async (request) => {
   try {
     let response = await fetchWithTimeout(API_URL + "/addBudget", {
-      method: 'POST',
-      credentials: 'include',
+      method: "POST",
+      credentials: "include",
       headers: {
-        Accept: 'application/json',
-        'Content-Type':'application/json',
+        Accept: "application/json",
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(request)
+      body: JSON.stringify(request),
     });
+
     let responseBody = await response.json();
 
-    // OK
-    if(response.ok){
-      Alert.alert(
-        "Success", 
-        "Budget was created successfully", 
-      );
-      return;
+    // 201 CREATED -> Budget was added successfully
+    if (response.ok) {
+      Alert.alert("Success", "Budget was created successfully");
+      return 0;
     }
 
-    // INTERNAL ERROR
-    if(response.status >= 500){
-      Alert.alert("Server Error", "Oops! An unknown error happened");
-      return;
+    // 409 CONFLICT -> Budget already exists for the category and date range
+    if (response.status === 409) {
+      Alert.alert("Budget Conflict", "A budget already exists for this category in the selected date range.");
+      return 1;
     }
 
-    // OTHER ERROR
-    Alert.alert("API Error", responseBody.message);
+    // 401 UNAUTHORIZED -> User needs to log in again
+    if (response.status === 401) {
+      Alert.alert("Session Expired", "Please log in again to continue.");
+      return 1;
+    }
 
+    // 500+ SERVER ERROR
+    if (response.status >= 500) {
+      Alert.alert("Server Error", "Oops! An unknown error occurred.");
+      return 1;
+    }
+
+    // Handle other unexpected API errors
+    Alert.alert("API Error", responseBody.message || "Something went wrong.");
+    return 1;
   } catch (error) {
-    console.log("postBudgetToApi");
-    console.log(error);
-    Alert.alert(
-      "Connection Error", 
-      "There was an error connecting to API"
-    );
+    console.error("postBudgetToApi Error:", error);
+    Alert.alert("Connection Error", "Unable to connect to the server.");
+    return 1;
   }
 };
+
 
 const fetchActiveBudgetsByDateAndCategory = async (date, category, setActiveBudget) => {
   try {
@@ -652,10 +873,16 @@ const fetchActiveBudgetsByDateAndCategory = async (date, category, setActiveBudg
       },
       body: JSON.stringify({ date, category })
     });
+    if(response.headers.map["content-length"] == "0"){
+      console.log("No active budgets found")
+      return
+    }
     let responseBody = await response.json();
+    console.log(responseBody)
 
     // OK
     if(response.ok){
+      console.log(response.body)
       setActiveBudget(responseBody.response);
       return;
     }
@@ -670,7 +897,7 @@ const fetchActiveBudgetsByDateAndCategory = async (date, category, setActiveBudg
     Alert.alert("API Error", responseBody.message);
   } catch (error) {
     console.log("fetchActiveBudgetsByDateAndCategory");
-    console.log(error);
+    console.log(error.stack);
     Alert.alert(
       "Connection Error", 
       "There was an error connecting to API"
@@ -697,5 +924,12 @@ export {
   postChangePassToApi,
   verifyCredentials,
   doLogout,
-  doSignIn
+  doSignIn,
+  manageSharedExpense,
+  fetchSharedExpenseStatuses,
+  respondToSharedExpense,
+  fetchSharedExpenseStatus,
+  fetchPendingSharedExpenses,
+  fetchAcceptedSharedExpenses,
+  removeSharedUser
 };
